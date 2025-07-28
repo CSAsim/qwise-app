@@ -1,0 +1,33 @@
+spring:
+  application:
+    name: qwise
+  datasource:
+    url: jdbc:postgresql://localhost:5432/qwise_db
+    username: guest
+    password: guest123
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: asimpenahov6@gmail.com
+    password: "lcjf asvc wmgx gsxa"
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+jwt:
+  secret: "Zm9vYmFyYmF6cXV4eHl6Zm9vYmFyYmF6cXV4eHl6Zm9vYmFyYmF6cXV4eHl6MTIzNDU2"
+  expirationMs: 600000
+
+server:
+  port: 7775
