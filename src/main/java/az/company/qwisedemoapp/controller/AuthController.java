@@ -1,8 +1,10 @@
 package az.company.qwisedemoapp.controller;
 
 import az.company.qwisedemoapp.model.dto.AuthResponse;
+import az.company.qwisedemoapp.model.request.ForgotPasswordRequest;
 import az.company.qwisedemoapp.model.request.LoginUserRequest;
 import az.company.qwisedemoapp.model.request.RegisterUserRequest;
+import az.company.qwisedemoapp.model.request.ResetPasswordRequest;
 import az.company.qwisedemoapp.model.request.VerifyOtpRequest;
 import az.company.qwisedemoapp.service.AuthService;
 import jakarta.validation.Valid;
@@ -35,5 +37,15 @@ public class AuthController {
     @PostMapping("/verify-otp")
     public ResponseEntity<String> verifyOtp(@Valid @RequestBody VerifyOtpRequest request) {
         return ResponseEntity.ok(authService.verifyOtpCode(request));
+    }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<String> forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) {
+        return ResponseEntity.ok(authService.forgotPassword(request));
+    }
+
+    @PostMapping("/forgot-password/reset-password")
+    public ResponseEntity<String> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
+        return ResponseEntity.ok(authService.resetPassword(request));
     }
 }

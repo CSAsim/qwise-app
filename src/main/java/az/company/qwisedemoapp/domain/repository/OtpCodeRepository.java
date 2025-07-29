@@ -13,5 +13,5 @@ public interface OtpCodeRepository extends JpaRepository<OtpCode, Long> {
 
     List<OtpCode> findByExpirationDateTimeBefore(LocalDateTime expirationDateTimeBefore);
     Optional<OtpCode> findByCode(String code);
-    Optional<OtpCode> findByUserId(Long userId);
+    Optional<OtpCode> findUserByCode(String otpCode);
 }
