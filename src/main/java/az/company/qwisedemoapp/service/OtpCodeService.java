@@ -58,6 +58,19 @@ public class OtpCodeService {
         log.info("After save - OTP status: {}", token.getStatus());
     }
 
+    @Scheduled(fixedRate = 60000)
+    @Transactional
+    public void cleanUpExpiredOtpCodes() {
+        List<OtpCode> otpCodes = otpCodeRepository.findByExpirationDateTimeBefore(LocalDateTime.now());
+        otpCodes.forEach(obj -> obj.setStatus(OtpCodeStatus.DEACTIVATED));
+        otpCodeRepository.saveAll(otpCodes);
+    }
+
+    @Transactional
+    public void changeOtpStatus(Long userId) {
+        otpCodeRepository.updateOtpCodeStatusByUserId(userId, OtpCodeStatus.DEACTIVATED);
+    }
+
     private String generateOtpCode() {
         Random random = new SecureRandom();
         StringBuilder code = new StringBuilder();
@@ -67,11 +80,4 @@ public class OtpCodeService {
         return code.toString();
     }
 
-    @Scheduled(fixedRate = 60000)
-    @Transactional
-    public void cleanUpExpiredOtpCodes() {
-        List<OtpCode> otpCodes = otpCodeRepository.findByExpirationDateTimeBefore(LocalDateTime.now());
-        otpCodes.forEach(obj -> obj.setStatus(OtpCodeStatus.DEACTIVATED));
-        otpCodeRepository.saveAll(otpCodes);
-    }
 }
