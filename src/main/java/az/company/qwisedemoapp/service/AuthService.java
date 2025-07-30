@@ -10,8 +10,10 @@ import az.company.qwisedemoapp.mapper.UserMapper;
 import az.company.qwisedemoapp.model.dto.AuthResponse;
 import az.company.qwisedemoapp.model.enums.UserRole;
 import az.company.qwisedemoapp.model.enums.UserStatus;
+import az.company.qwisedemoapp.model.request.EmailRequest;
 import az.company.qwisedemoapp.model.request.LoginUserRequest;
 import az.company.qwisedemoapp.model.request.RegisterUserRequest;
+import az.company.qwisedemoapp.model.request.ResetPasswordRequest;
 import az.company.qwisedemoapp.model.request.VerifyOtpRequest;
 import az.company.qwisedemoapp.domain.entity.RefreshToken;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -71,29 +74,62 @@ public class AuthService {
 
         OtpCode otpCode = otpCodeService.createOtpCode(user);
 
-        emailService.sendEmail(user.getEmail(), "Please do not share this message!", "This is your OTP code: " + otpCode.getCode());
+        emailService.sendEmail(user.getEmail(), "Please do not share this message!",
+                "This is your OTP code: " + otpCode.getCode());
         log.info("OTP code has been sent");
-
         return "Otp code sent your email";
     }
 
     @Transactional
     public String verifyOtpCode(VerifyOtpRequest request) {
         otpCodeService.validateOtp(request.getOtpCode());
-        User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new InvalidInputException("Email is wrong"));
+        User user = getUser(request.getEmail());
         user.setStatus(UserStatus.ACTIVE);
         log.info("Before save - User status: {}", user.getStatus());
         userRepository.save(user);
         log.info("After save - User status: {}", user.getStatus());
         log.info("OTP code has been verified");
-        return "User successfully verified and registered please log in the system";
+        return "Otp code verified successfully";
+    }
+
+    @Transactional
+    public String forgotPassword(EmailRequest request) {
+        User user = getUser(request.getEmail());
+        sendOtp(user);
+        return "Otp code sent your email";
+    }
+
+    @Transactional
+    public String reSendOtpCode(EmailRequest request) {
+        User user = getUser(request.getEmail());
+        sendOtp(user);
+        return "Otp code sent your email";
+    }
+
+    @Transactional
+    public String resetPassword(ResetPasswordRequest request) {
+        if(!request.getNewPassword().equals(request.getConfirmPassword())) {
+            throw new InvalidInputException("Passwords do not match");
+        }
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = getUser(email);
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        userRepository.save(user);
+        refreshTokenRepository.deleteRefreshTokenByUserId(user.getId());
+        return "Your password has been reset. Please log in again";
+    }
+
+    private void sendOtp(User user) {
+        otpCodeService.changeOtpStatus(user.getId());
+        OtpCode otpCode = otpCodeService.createOtpCode(user);
+        emailService.sendEmail(user.getEmail(), "Please do not share this message!",
+                "This is your OTP code: " + otpCode.getCode());
     }
 
     private AuthResponse refresh(User user) {
         RefreshToken refreshTokenObj = refreshTokenRepository.findByUserId(user.getId())
                 .orElseGet(() -> createRefreshToken(user));
-
+        log.info("refresh token is called");
         if (refreshTokenObj.isExpired()) {
             refreshTokenRepository.delete(refreshTokenObj);
             String newRefreshToken = createRefreshToken(user).getToken();
@@ -117,6 +153,11 @@ public class AuthService {
         token.setUser(user);
         token.setExpiryDate(LocalDateTime.now().plusDays(7));
         return refreshTokenRepository.save(token);
+    }
+
+    private User getUser(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new InvalidInputException("Email is wrong"));
     }
 
 }

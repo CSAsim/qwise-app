@@ -4,6 +4,7 @@ import az.company.qwisedemoapp.domain.entity.OtpCode;
 import az.company.qwisedemoapp.domain.entity.User;
 import az.company.qwisedemoapp.domain.repository.OtpCodeRepository;
 import az.company.qwisedemoapp.exception.InvalidInputException;
+import az.company.qwisedemoapp.exception.NotFoundException;
 import az.company.qwisedemoapp.model.enums.OtpCodeStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -55,7 +56,19 @@ public class OtpCodeService {
         log.info("Before save - OTP status: {}", token.getStatus());
         otpCodeRepository.save(token);
         log.info("After save - OTP status: {}", token.getStatus());
+    }
 
+    @Scheduled(fixedRate = 60000)
+    @Transactional
+    public void cleanUpExpiredOtpCodes() {
+        List<OtpCode> otpCodes = otpCodeRepository.findByExpirationDateTimeBefore(LocalDateTime.now());
+        otpCodes.forEach(obj -> obj.setStatus(OtpCodeStatus.DEACTIVATED));
+        otpCodeRepository.saveAll(otpCodes);
+    }
+
+    @Transactional
+    public void changeOtpStatus(Long userId) {
+        otpCodeRepository.updateOtpCodeStatusByUserId(userId, OtpCodeStatus.DEACTIVATED);
     }
 
     private String generateOtpCode() {
@@ -67,12 +80,4 @@ public class OtpCodeService {
         return code.toString();
     }
 
-
-    @Scheduled(fixedRate = 60000)
-    @Transactional
-    public void cleanUpExpiredOtpCodes() {
-        List<OtpCode> otpCodes = otpCodeRepository.findByExpirationDateTimeBefore(LocalDateTime.now());
-        otpCodes.forEach(obj -> obj.setStatus(OtpCodeStatus.DEACTIVATED));
-        otpCodeRepository.saveAll(otpCodes);
-    }
 }
