@@ -37,7 +37,7 @@ public class UserService {
     }
 
     @Transactional
-    public UserResponse updateUser(String token, UpdateUserRequest request) {
+    public UserResponse updateUser(UpdateUserRequest request) {
         User entity = getEntity();
         entity.setFullName(request.getFullName());
         User savedEntity = userRepository.save(entity);
