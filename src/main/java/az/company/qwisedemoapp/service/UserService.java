@@ -19,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final JwtService jwtService;
     private final UserMapper userMapper;
 
     public UserResponse findByEmail(String email) {

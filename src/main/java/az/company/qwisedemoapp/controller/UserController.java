@@ -1,6 +1,5 @@
 package az.company.qwisedemoapp.controller;
 
-import az.company.qwisedemoapp.mapper.UserMapper;
 import az.company.qwisedemoapp.model.dto.UserResponse;
 import az.company.qwisedemoapp.model.request.UpdateUserRequest;
 import az.company.qwisedemoapp.service.UserService;
@@ -12,7 +11,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -29,13 +27,13 @@ public class UserController {
         return ResponseEntity.ok(userService.findById(id));
     }
 
-    @GetMapping("/email/{email}")
+    @GetMapping("/admin/email/{email}")
     public ResponseEntity<UserResponse> getByEmail(@PathVariable("email") String email) {
         return ResponseEntity.ok(userService.findByEmail(email));
     }
 
     @GetMapping("/user-info")
-    public ResponseEntity<UserResponse> getUserInfo() {
+    public ResponseEntity<UserResponse> getUserInfo()    {
         return ResponseEntity.ok(userService.findUserByToken());
     }
 

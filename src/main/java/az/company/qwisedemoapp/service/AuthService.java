@@ -8,7 +8,6 @@ import az.company.qwisedemoapp.exception.AlreadyExistsException;
 import az.company.qwisedemoapp.exception.InvalidInputException;
 import az.company.qwisedemoapp.mapper.UserMapper;
 import az.company.qwisedemoapp.model.dto.AuthResponse;
-import az.company.qwisedemoapp.model.enums.UserRole;
 import az.company.qwisedemoapp.model.enums.UserStatus;
 import az.company.qwisedemoapp.model.request.EmailRequest;
 import az.company.qwisedemoapp.model.request.LoginUserRequest;
@@ -68,7 +67,7 @@ public class AuthService {
 
         User entity = userMapper.toEntity(request);
         entity.setPassword(passwordEncoder.encode(request.getPassword()));
-        entity.setRoles(Set.of(UserRole.ROLE_STUDENT));
+        entity.setRoles(Set.of(request.getRole()));
         entity.setStatus(UserStatus.PENDING_VERIFICATION);
         User user = userRepository.save(entity);
 
@@ -159,5 +158,4 @@ public class AuthService {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new InvalidInputException("Email is wrong"));
     }
-
 }
