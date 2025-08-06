@@ -35,7 +35,7 @@ public class SecurityConfig {
                                 .requestMatchers(EndpointConstants.ADMIN_ENDPOINTS).hasRole("ADMIN")
                                 .anyRequest().authenticated()
                 )
-                .httpBasic(Customizer.withDefaults())
+                .httpBasic(AbstractHttpConfigurer::disable)
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )

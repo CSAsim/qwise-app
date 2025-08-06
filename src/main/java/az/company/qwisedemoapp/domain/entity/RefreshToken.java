@@ -35,6 +35,7 @@ public class RefreshToken {
 
     @OneToOne
     @JoinColumn(nullable = false, name = "user_id")
+    @ToString.Exclude
     private User user;
 
     @Column(name = "expiry_date", nullable = false)
