@@ -4,7 +4,6 @@ import az.company.qwisedemoapp.domain.entity.OtpCode;
 import az.company.qwisedemoapp.domain.entity.User;
 import az.company.qwisedemoapp.domain.repository.OtpCodeRepository;
 import az.company.qwisedemoapp.exception.InvalidInputException;
-import az.company.qwisedemoapp.exception.NotFoundException;
 import az.company.qwisedemoapp.model.enums.OtpCodeStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

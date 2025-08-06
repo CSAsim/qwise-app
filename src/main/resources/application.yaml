@@ -26,7 +26,6 @@ spring:
           starttls:
             enable: true
 jwt:
-  secret: "Zm9vYmFyYmF6cXV4eHl6Zm9vYmFyYmF6cXV4eHl6Zm9vYmFyYmF6cXV4eHl6MTIzNDU2"
   expirationMs: 600000
 
 server:
