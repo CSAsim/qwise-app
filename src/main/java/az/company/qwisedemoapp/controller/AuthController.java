@@ -3,12 +3,16 @@ package az.company.qwisedemoapp.controller;
 import az.company.qwisedemoapp.model.dto.AuthResponse;
 import az.company.qwisedemoapp.model.request.EmailRequest;
 import az.company.qwisedemoapp.model.request.LoginUserRequest;
+import az.company.qwisedemoapp.model.request.RefreshTokenRequest;
 import az.company.qwisedemoapp.model.request.RegisterUserRequest;
 import az.company.qwisedemoapp.model.request.ResetPasswordRequest;
 import az.company.qwisedemoapp.model.request.VerifyOtpRequest;
 import az.company.qwisedemoapp.service.AuthService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/auth")
 public class AuthController {
 
+    private static final Logger log = LoggerFactory.getLogger(AuthController.class);
     private final AuthService authService;
 
     @PostMapping("/register")
@@ -30,8 +35,19 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginUserRequest request) {
+    public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginUserRequest request, HttpServletRequest httpServletRequest) {
+        log.info(httpServletRequest.getRemoteAddr());
         return ResponseEntity.ok(authService.login(request));
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout() {
+        return ResponseEntity.ok(authService.logout());
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<AuthResponse> refresh(@RequestBody RefreshTokenRequest request) {
+        return ResponseEntity.ok(authService.refresh(request.getRefreshToken()));
     }
 
     @PostMapping("/verify-otp")
