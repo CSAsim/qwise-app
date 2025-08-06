@@ -1,5 +1,6 @@
 package az.company.qwisedemoapp.filter;
 
+import az.company.qwisedemoapp.domain.repository.RefreshTokenRepository;
 import az.company.qwisedemoapp.service.CustomUserDetailsService;
 import az.company.qwisedemoapp.service.JwtService;
 import jakarta.servlet.FilterChain;
@@ -42,6 +43,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
             UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
             if (jwtService.validateToken(token, userDetails)) {
+
                 UsernamePasswordAuthenticationToken authToken =
                         new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
