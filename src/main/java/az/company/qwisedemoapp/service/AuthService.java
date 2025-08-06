@@ -7,6 +7,7 @@ import az.company.qwisedemoapp.domain.repository.UserRepository;
 import az.company.qwisedemoapp.exception.AlreadyExistsException;
 import az.company.qwisedemoapp.exception.InvalidInputException;
 import az.company.qwisedemoapp.mapper.UserMapper;
+import az.company.qwisedemoapp.model.constants.ResponseMessages;
 import az.company.qwisedemoapp.model.dto.AuthResponse;
 import az.company.qwisedemoapp.model.enums.UserRole;
 import az.company.qwisedemoapp.model.enums.UserStatus;
@@ -59,7 +60,7 @@ public class AuthService {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = getUser(email);
         refreshTokenRepository.deleteRefreshTokenByUserId(user.getId());
-        return "User logged out successfully";
+        return ResponseMessages.LOG_OUT;
     }
 
     @Transactional
@@ -73,7 +74,7 @@ public class AuthService {
         }
 
         User user = existing.getUser();
-        refreshTokenRepository.deleteRefreshTokenByUserId(user.getId()); // rotate
+        refreshTokenRepository.deleteRefreshTokenByUserId(user.getId());
 
         return generateTokens(user);
     }
@@ -95,7 +96,7 @@ public class AuthService {
         User user = userRepository.save(entity);
 
         sendOtp(user);
-        return "Otp code sent to your email";
+        return ResponseMessages.OTP_SENT_MESSAGE;
     }
 
     @Transactional
@@ -104,21 +105,14 @@ public class AuthService {
         User user = getUser(request.getEmail());
         user.setStatus(UserStatus.ACTIVE);
         userRepository.save(user);
-        return "Otp code verified successfully";
+        return ResponseMessages.OTP_VERIFIED_MESSAGE;
     }
 
     @Transactional
     public String forgotPassword(EmailRequest request) {
         User user = getUser(request.getEmail());
         sendOtp(user);
-        return "Otp code sent to your email";
-    }
-
-    @Transactional
-    public String reSendOtpCode(EmailRequest request) {
-        User user = getUser(request.getEmail());
-        sendOtp(user);
-        return "Otp code sent to your email";
+        return ResponseMessages.OTP_SENT_MESSAGE;
     }
 
     @Transactional
@@ -131,7 +125,7 @@ public class AuthService {
         user.setPassword(passwordEncoder.encode(request.getNewPassword()));
         userRepository.save(user);
         refreshTokenRepository.deleteRefreshTokenByUserId(user.getId());
-        return "Your password has been reset. Please log in again";
+        return ResponseMessages.PASSWORD_RESET_MESSAGE;
     }
 
     private AuthResponse generateTokens(User user) {

@@ -67,6 +67,6 @@ public class AuthController {
 
     @PostMapping("/resend-otp")
     public  ResponseEntity<String> resendOtp(@Valid @RequestBody EmailRequest request) {
-        return ResponseEntity.ok(authService.reSendOtpCode(request));
+        return ResponseEntity.ok(authService.forgotPassword(request));
     }
 }
