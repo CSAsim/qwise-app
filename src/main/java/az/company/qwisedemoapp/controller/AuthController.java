@@ -3,6 +3,7 @@ package az.company.qwisedemoapp.controller;
 import az.company.qwisedemoapp.model.dto.AuthResponse;
 import az.company.qwisedemoapp.model.request.EmailRequest;
 import az.company.qwisedemoapp.model.request.LoginUserRequest;
+import az.company.qwisedemoapp.model.request.RefreshTokenRequest;
 import az.company.qwisedemoapp.model.request.RegisterUserRequest;
 import az.company.qwisedemoapp.model.request.ResetPasswordRequest;
 import az.company.qwisedemoapp.model.request.VerifyOtpRequest;
@@ -42,6 +43,11 @@ public class AuthController {
     @PostMapping("/logout")
     public ResponseEntity<String> logout() {
         return ResponseEntity.ok(authService.logout());
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<AuthResponse> refresh(@RequestBody RefreshTokenRequest request) {
+        return ResponseEntity.ok(authService.refresh(request.getRefreshToken()));
     }
 
     @PostMapping("/verify-otp")
