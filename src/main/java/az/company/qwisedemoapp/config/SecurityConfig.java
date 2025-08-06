@@ -1,6 +1,7 @@
 package az.company.qwisedemoapp.config;
 
 import az.company.qwisedemoapp.filter.JwtFilter;
+import az.company.qwisedemoapp.model.constants.EndpointConstants;
 import az.company.qwisedemoapp.provider.CustomAuthenticationProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -29,12 +30,9 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(requests ->
                         requests
-                                .requestMatchers(
-                                        "/api/v1/auth/login",
-                                        "/api/v1/auth/register",
-                                        "/api/v1/auth/verify-otp")
+                                .requestMatchers(EndpointConstants.PUBLIC_ENDPOINTS)
                                 .permitAll()
-                                .requestMatchers("/api/v1/users/admin/**").hasRole("ADMIN")
+                                .requestMatchers(EndpointConstants.ADMIN_ENDPOINTS).hasRole("ADMIN")
                                 .anyRequest().authenticated()
                 )
                 .httpBasic(Customizer.withDefaults())
