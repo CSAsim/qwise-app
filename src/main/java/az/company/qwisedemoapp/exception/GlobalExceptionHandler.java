@@ -1,6 +1,7 @@
 package az.company.qwisedemoapp.exception;
 
 import az.company.qwisedemoapp.model.enums.ErrorCode;
+import io.jsonwebtoken.UnsupportedJwtException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
@@ -73,6 +74,16 @@ public class GlobalExceptionHandler {
         List<String> errors = Collections.singletonList(e.getMessage());
 
         return buildResponse(ErrorCode.BAD_REQUEST, message, HttpStatus.BAD_REQUEST, errors);
+    }
+
+    @ExceptionHandler(UnsupportedJwtException.class)
+    public ResponseEntity<GlobalErrorResponse> handleUnsupportedJwtException(UnsupportedJwtException e) {
+        return buildResponse(
+                "UNSUPPORTED_JWT",
+                "The provided JWT token is not supported.",
+                HttpStatus.UNAUTHORIZED,
+                List.of(e.getMessage())
+        );
     }
 
     private ResponseEntity<GlobalErrorResponse> buildResponse(String code, String message, HttpStatus status, List<String> errors) {
