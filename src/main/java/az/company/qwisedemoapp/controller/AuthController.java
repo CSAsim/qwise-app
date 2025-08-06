@@ -39,6 +39,11 @@ public class AuthController {
         return ResponseEntity.ok(authService.login(request));
     }
 
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout() {
+        return ResponseEntity.ok(authService.logout());
+    }
+
     @PostMapping("/verify-otp")
     public ResponseEntity<String> verifyOtp(@Valid @RequestBody VerifyOtpRequest request) {
         return ResponseEntity.ok(authService.verifyOtpCode(request));

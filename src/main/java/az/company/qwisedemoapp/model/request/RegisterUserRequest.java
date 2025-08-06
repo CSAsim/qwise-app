@@ -26,7 +26,7 @@ public class RegisterUserRequest {
     private String email;
 
     @NotBlank
-    private UserRole role;
+    private String role;
 
     @NotBlank
     @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{8,}$")

@@ -6,8 +6,10 @@ import az.company.qwisedemoapp.domain.repository.RefreshTokenRepository;
 import az.company.qwisedemoapp.domain.repository.UserRepository;
 import az.company.qwisedemoapp.exception.AlreadyExistsException;
 import az.company.qwisedemoapp.exception.InvalidInputException;
+import az.company.qwisedemoapp.exception.NotFoundException;
 import az.company.qwisedemoapp.mapper.UserMapper;
 import az.company.qwisedemoapp.model.dto.AuthResponse;
+import az.company.qwisedemoapp.model.enums.UserRole;
 import az.company.qwisedemoapp.model.enums.UserStatus;
 import az.company.qwisedemoapp.model.request.EmailRequest;
 import az.company.qwisedemoapp.model.request.LoginUserRequest;
@@ -56,6 +58,15 @@ public class AuthService {
     }
 
     @Transactional
+    public String logout() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new NotFoundException("User not found!"));
+        refreshTokenRepository.deleteRefreshTokenByUserId(user.getId());
+        return "User logged out successfully";
+    }
+
+    @Transactional
     public String register(RegisterUserRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new AlreadyExistsException("The user already exists");
@@ -67,7 +78,7 @@ public class AuthService {
 
         User entity = userMapper.toEntity(request);
         entity.setPassword(passwordEncoder.encode(request.getPassword()));
-        entity.setRoles(Set.of(request.getRole()));
+        entity.setRoles(Set.of(UserRole.valueOf(request.getRole())));
         entity.setStatus(UserStatus.PENDING_VERIFICATION);
         User user = userRepository.save(entity);
 
