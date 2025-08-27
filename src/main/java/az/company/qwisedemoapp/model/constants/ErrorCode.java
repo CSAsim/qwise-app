@@ -1,4 +1,4 @@
-package az.company.qwisedemoapp.model.enums;
+package az.company.qwisedemoapp.model.constants;
 
 public final class ErrorCode {
 

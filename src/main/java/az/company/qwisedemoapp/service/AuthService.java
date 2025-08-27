@@ -2,6 +2,7 @@ package az.company.qwisedemoapp.service;
 
 import az.company.qwisedemoapp.domain.entity.OtpCode;
 import az.company.qwisedemoapp.domain.entity.User;
+import az.company.qwisedemoapp.domain.entity.UserPrincipal;
 import az.company.qwisedemoapp.domain.repository.RefreshTokenRepository;
 import az.company.qwisedemoapp.domain.repository.UserRepository;
 import az.company.qwisedemoapp.exception.AlreadyExistsException;
@@ -158,5 +159,16 @@ public class AuthService {
     private User getUser(String email) {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new InvalidInputException("Email is wrong"));
+    }
+
+    public static Long getCurrentUserId() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()) {
+            Object object = authentication.getPrincipal();
+            if (object instanceof UserPrincipal) {
+                return ((UserPrincipal) object).getId();
+            }
+        }
+        throw new IllegalStateException("No authenticated user found!");
     }
 }

@@ -26,4 +26,6 @@ public interface UserMapper {
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     User toEntity(RegisterUserRequest request);
+
+    User toEntity(UserResponse userResponse);
 }

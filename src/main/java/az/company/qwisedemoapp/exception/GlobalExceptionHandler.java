@@ -1,6 +1,6 @@
 package az.company.qwisedemoapp.exception;
 
-import az.company.qwisedemoapp.model.enums.ErrorCode;
+import az.company.qwisedemoapp.model.constants.ErrorCode;
 import io.jsonwebtoken.UnsupportedJwtException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;

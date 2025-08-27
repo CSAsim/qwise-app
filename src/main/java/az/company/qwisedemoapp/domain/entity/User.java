@@ -7,46 +7,32 @@ import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import lombok.experimental.SuperBuilder;
 
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 
 @Getter
 @Setter
 @ToString
 @Entity
-@Builder
+@SuperBuilder
 @Table(name = "users")
 @NoArgsConstructor
 @AllArgsConstructor
-@EntityListeners(AuditingEntityListener.class)
-public class User {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class User extends BaseEntity {
 
     @Column(name = "full_name", nullable = false)
     private String fullName;
@@ -69,20 +55,20 @@ public class User {
     @Enumerated(value = EnumType.STRING)
     private UserStatus status;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @ToString.Exclude
     private List<OtpCode> otpCodes;
 
+    @OneToMany(mappedBy = "author", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
+    @ToString.Exclude
+    private List<Packet> packets;
+
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @ToString.Exclude
+    private List<UserPacket> enrolledPackets;
+
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private RefreshToken refreshToken;
-
-    @Column(name = "created_at", nullable = false)
-    @CreatedDate
-    private LocalDateTime createdAt;
-
-    @Column(name = "updated_at", nullable = false)
-    @LastModifiedDate
-    private LocalDateTime updatedAt;
 
     public void addOtpCode(OtpCode otpCode) {
         otpCodes.add(otpCode);
@@ -94,18 +80,23 @@ public class User {
         otpCode.setUser(null);
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return Objects.equals(id, user.id) && Objects.equals(fullName, user.fullName) && Objects.equals(phoneNumber,
-                user.phoneNumber) && Objects.equals(email, user.email) && Objects.equals(password, user.password)
-                && Objects.equals(roles, user.roles) && status == user.status && Objects.equals(otpCodes, user.otpCodes)
-                && Objects.equals(createdAt, user.createdAt) && Objects.equals(updatedAt, user.updatedAt);
+    public void addPacket(Packet packet) {
+        packets.add(packet);
+        packet.setAuthor(this);
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, fullName, phoneNumber, email, password, roles, status, otpCodes, createdAt, updatedAt);
+    public void removePacket(Packet packet) {
+        packets.remove(packet);
+        packet.setAuthor(null);
+    }
+
+    public void addEnrolledPacket(UserPacket userPacket) {
+        enrolledPackets.add(userPacket);
+        userPacket.setStudent(this);
+    }
+
+    public void removeEnrolledPacket(UserPacket userPacket) {
+        enrolledPackets.remove(userPacket);
+        userPacket.setStudent(null);
     }
 }

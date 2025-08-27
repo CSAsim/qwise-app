@@ -1,0 +1,73 @@
+package az.company.qwisedemoapp.domain.entity;
+
+import az.company.qwisedemoapp.model.enums.PacketStatus;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.experimental.SuperBuilder;
+
+import java.util.List;
+
+@Getter
+@Setter
+@ToString
+@Entity
+@SuperBuilder
+@Table(name = "packets")
+@NoArgsConstructor
+@AllArgsConstructor
+public class Packet extends BaseEntity {
+
+    @Column(name = "sub_category")
+    private String subCategory;
+
+    @Column(name = "description")
+    private String description;
+
+    @Column(name = "category", nullable = false)
+    private String category;
+
+    @Column(name = "rating", nullable = false)
+    private Float rating;
+
+    @Column(name = "price", nullable = false)
+    private Float price;
+
+    @Column(name = "thumbnail_url")
+    private String thumbnailUrl;
+
+    @Column(name = "status", nullable = false)
+    @Enumerated(value = EnumType.STRING)
+    private PacketStatus status;
+
+    @ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "author_id")
+    @ToString.Exclude
+    private User author;
+
+    @OneToMany(mappedBy = "packet", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @ToString.Exclude
+    private List<UserPacket> enrolledStudents;
+
+    public void addEnrolledStudent(UserPacket userPacket) {
+        enrolledStudents.add(userPacket);
+        userPacket.setPacket(this);
+    }
+
+    public void removeEnrolledStudent(UserPacket userPacket) {
+        enrolledStudents.remove(userPacket);
+        userPacket.setPacket(null);
+    }
+}
