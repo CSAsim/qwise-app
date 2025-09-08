@@ -1,4 +1,4 @@
-package az.company.qwisedemoapp.service;
+package az.company.qwisedemoapp.service.auth;
 
 import az.company.qwisedemoapp.domain.entity.User;
 import az.company.qwisedemoapp.domain.entity.UserPrincipal;

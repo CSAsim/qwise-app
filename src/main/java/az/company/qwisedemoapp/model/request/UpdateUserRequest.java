@@ -1,6 +1,5 @@
 package az.company.qwisedemoapp.model.request;
 
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,6 +11,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class UpdateUserRequest {
 
-    @NotBlank(message = "Full name is mandatory")
     private String fullName;
+
+    private String profilePictureUrl;
+
+    private String phoneNumber;
 }

@@ -13,6 +13,7 @@ import az.company.qwisedemoapp.model.constants.ExceptionMessages;
 import az.company.qwisedemoapp.model.dto.UserPacketDto;
 import az.company.qwisedemoapp.model.enums.PacketUsageStatus;
 import az.company.qwisedemoapp.model.request.AssignPacketRequest;
+import az.company.qwisedemoapp.service.auth.AuthService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -66,7 +67,7 @@ public class UserPacketService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(User.class.getSimpleName() + ExceptionMessages.NOT_FOUND));
         UserPacket userPacket = user.getEnrolledPackets().stream()
-                .filter(up -> up.getPacket().getId().equals(packetId))
+                .filter(up -> up.getId().equals(packetId))
                 .findFirst()
                 .orElseThrow(() -> new NotFoundException("User packet" + ExceptionMessages.NOT_FOUND));
         user.removeEnrolledPacket(userPacket);

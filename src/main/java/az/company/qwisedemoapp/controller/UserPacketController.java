@@ -54,8 +54,8 @@ public class UserPacketController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
-        userPacketService.deleteUserPacket(id);
+    public ResponseEntity<Void> delete(@PathVariable("id") Long packetId) {
+        userPacketService.deleteUserPacket(packetId);
         return ResponseEntity.noContent().build();
     }
 }

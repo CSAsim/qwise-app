@@ -1,14 +1,13 @@
 package az.company.qwisedemoapp.config;
 
 import az.company.qwisedemoapp.filter.JwtFilter;
+import az.company.qwisedemoapp.handler.OAuth2LoginSuccessHandler;
 import az.company.qwisedemoapp.model.constants.EndpointConstants;
 import az.company.qwisedemoapp.provider.CustomAuthenticationProvider;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -22,6 +21,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final CustomAuthenticationProvider authenticationProvider;
+    private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
     private final JwtFilter jwtFilter;
 
     @Bean
@@ -32,20 +32,38 @@ public class SecurityConfig {
                         requests
                                 .requestMatchers(EndpointConstants.PUBLIC_ENDPOINTS)
                                 .permitAll()
-                                .requestMatchers(EndpointConstants.ADMIN_ENDPOINTS).hasRole("ADMIN")
+                                .requestMatchers(EndpointConstants.ADMIN_ENDPOINTS).hasAnyRole("ADMIN")
                                 .anyRequest().authenticated()
                 )
+                .oauth2Login(oauth ->
+                        oauth.successHandler(oAuth2LoginSuccessHandler)
+                )
+//                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling(exception -> exception
+
+                        .accessDeniedHandler((req, res, ex) ->
+                                res.setStatus(HttpServletResponse.SC_FORBIDDEN))
+                )
                 .build();
     }
-
-    @Bean
-    public AuthenticationManager authenticationManagerBean(AuthenticationConfiguration config) throws Exception {
-        return config.getAuthenticationManager();
-    }
+//
+//    @Bean
+//    public CorsConfigurationSource corsConfigurationSource() {
+//        CorsConfiguration configuration = new CorsConfiguration();
+//        configuration.setAllowedOrigins(List.of("*")); // frontend URL
+//        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+//        configuration.setAllowedHeaders(List.of("*"));
+//        configuration.setAllowCredentials(true);
+//
+//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+//        source.registerCorsConfiguration("/**", configuration);
+//        return source;
+//    }
 }
