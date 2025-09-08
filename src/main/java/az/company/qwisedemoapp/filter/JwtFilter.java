@@ -1,8 +1,7 @@
 package az.company.qwisedemoapp.filter;
 
-import az.company.qwisedemoapp.domain.repository.RefreshTokenRepository;
-import az.company.qwisedemoapp.service.CustomUserDetailsService;
-import az.company.qwisedemoapp.service.JwtService;
+import az.company.qwisedemoapp.service.auth.CustomUserDetailsService;
+import az.company.qwisedemoapp.service.auth.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

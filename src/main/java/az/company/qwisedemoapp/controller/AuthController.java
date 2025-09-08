@@ -1,13 +1,15 @@
 package az.company.qwisedemoapp.controller;
 
 import az.company.qwisedemoapp.model.dto.AuthResponse;
+import az.company.qwisedemoapp.model.request.ChangePasswordRequest;
 import az.company.qwisedemoapp.model.request.EmailRequest;
 import az.company.qwisedemoapp.model.request.LoginUserRequest;
 import az.company.qwisedemoapp.model.request.RefreshTokenRequest;
 import az.company.qwisedemoapp.model.request.RegisterUserRequest;
 import az.company.qwisedemoapp.model.request.ResetPasswordRequest;
 import az.company.qwisedemoapp.model.request.VerifyOtpRequest;
-import az.company.qwisedemoapp.service.AuthService;
+import az.company.qwisedemoapp.service.auth.AuthService;
+import az.company.qwisedemoapp.service.auth.PasswordResetTokenService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +29,7 @@ public class AuthController {
 
     private static final Logger log = LoggerFactory.getLogger(AuthController.class);
     private final AuthService authService;
+    private final PasswordResetTokenService passwordResetTokenService;
 
     @PostMapping("/register")
     public ResponseEntity<String> register(@Valid @RequestBody RegisterUserRequest request) {
@@ -56,17 +59,24 @@ public class AuthController {
     }
 
     @PostMapping("/forgot-password")
-    public ResponseEntity<String> forgotPassword(@Valid @RequestBody EmailRequest request) {
-        return ResponseEntity.ok(authService.forgotPassword(request));
+    public ResponseEntity<Void> forgotPassword(@Valid @RequestBody EmailRequest request) {
+        passwordResetTokenService.forgotPassword(request);
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/forgot-password/reset-password")
-    public ResponseEntity<String> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
-        return ResponseEntity.ok(authService.resetPassword(request));
+    public ResponseEntity<Void> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
+        passwordResetTokenService.resetPassword(request);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/change-password")
+    public ResponseEntity<String> changePassword(@Valid @RequestBody ChangePasswordRequest request) {
+        return ResponseEntity.ok(authService.changePassword(request));
     }
 
     @PostMapping("/resend-otp")
     public  ResponseEntity<String> resendOtp(@Valid @RequestBody EmailRequest request) {
-        return ResponseEntity.ok(authService.forgotPassword(request));
+        return ResponseEntity.ok(authService.resendOtp(request));
     }
 }

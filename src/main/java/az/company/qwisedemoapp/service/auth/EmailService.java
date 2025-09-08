@@ -1,4 +1,4 @@
-package az.company.qwisedemoapp.service;
+package az.company.qwisedemoapp.service.auth;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;

@@ -1,15 +1,13 @@
 package az.company.qwisedemoapp.domain.entity;
 
-import az.company.qwisedemoapp.model.enums.RefreshTokenStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,32 +20,26 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-@ToString
 @Entity
 @Builder
-@Table(name = "refresh_token")
+@ToString
+@Table(name = "password_reset_tokens")
 @NoArgsConstructor
 @AllArgsConstructor
-public class RefreshToken {
+public class PasswordResetToken {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "token", nullable = false, unique = true)
     private String token;
 
-    @OneToOne
-    @JoinColumn(nullable = false, name = "user_id")
+    @ManyToOne(fetch = FetchType.LAZY)
     @ToString.Exclude
+    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private User user;
 
     @Column(name = "expiry_date", nullable = false)
     private LocalDateTime expiryDate;
-
-    @Enumerated(EnumType.STRING)
-    private RefreshTokenStatus status;
-
-    public boolean isExpired() {
-        return expiryDate.isBefore(LocalDateTime.now());
-    }
 }

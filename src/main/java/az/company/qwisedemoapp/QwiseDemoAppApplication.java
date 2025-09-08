@@ -9,5 +9,4 @@ public class QwiseDemoAppApplication {
     public static void main(String[] args) {
         SpringApplication.run(QwiseDemoAppApplication.class, args);
     }
-
 }

@@ -2,13 +2,17 @@ package az.company.qwisedemoapp.service;
 
 import az.company.qwisedemoapp.domain.entity.User;
 import az.company.qwisedemoapp.domain.repository.UserRepository;
+import az.company.qwisedemoapp.exception.InvalidInputException;
 import az.company.qwisedemoapp.exception.NotFoundException;
 import az.company.qwisedemoapp.mapper.UserMapper;
+import az.company.qwisedemoapp.model.constants.ResponseMessages;
 import az.company.qwisedemoapp.model.dto.UserResponse;
+import az.company.qwisedemoapp.model.request.ChangePasswordRequest;
 import az.company.qwisedemoapp.model.request.UpdateUserRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +24,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final PasswordEncoder passwordEncoder;
 
     public UserResponse findByEmail(String email) {
         User user = userRepository.findByEmail(email).orElseThrow(UserService::notFound);
@@ -39,6 +44,8 @@ public class UserService {
     public UserResponse updateUser(UpdateUserRequest request) {
         User entity = getEntity();
         entity.setFullName(request.getFullName());
+        entity.setPhoneNumber(request.getPhoneNumber());
+        entity.setProfilePictureUrl(request.getProfilePictureUrl());
         User savedEntity = userRepository.save(entity);
         return userMapper.toResponse(savedEntity);
     }

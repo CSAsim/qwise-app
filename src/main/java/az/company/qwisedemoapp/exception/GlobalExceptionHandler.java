@@ -76,6 +76,13 @@ public class GlobalExceptionHandler {
         return buildResponse(ErrorCode.BAD_REQUEST, message, HttpStatus.BAD_REQUEST, errors);
     }
 
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<GlobalErrorResponse> handleException(MultipartException e) {
+        e.printStackTrace();
+
+        return buildResponse(ErrorCode.BAD_REQUEST, null, HttpStatus.BAD_REQUEST, null);
+    }
+
     @ExceptionHandler(UnsupportedJwtException.class)
     public ResponseEntity<GlobalErrorResponse> handleUnsupportedJwtException(UnsupportedJwtException e) {
         return buildResponse(
