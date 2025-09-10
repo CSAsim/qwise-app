@@ -1,0 +1,54 @@
+spring:
+  application:
+    name: qwise
+  datasource:
+    url: jdbc:postgresql://db:5432/qwise-db
+    username: qwise-user
+    password: s11m3R9*9w1n
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
+            scope: openid, profile, email
+            redirect-uri: "http://localhost:7775/login/oauth2/code/google"
+            client-name: Google
+  #          github:
+  #            client-id: ${GITHUB_CLIENT_ID} # GitHub Developer Settings-dən alın
+  #            client-secret: ${GITHUB_CLIENT_SECRET} # GitHub Developer Settings-dən alın
+  #            scope: user:email, read:user
+  #            redirect-uri: "{baseUrl}/login/oauth2/code/github"
+  #            client-name: GitHub
+  #        provider:
+  #          github:
+  #            authorization-uri: https://github.com/login/oauth/authorize
+  #            token-uri: https://github.com/login/oauth/access_token
+  #            user-info-uri: https://api.github.com/user
+  #            user-name-attribute: login
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: qwisecompany@gmail.com
+    password: ${GMAIL_APP_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+jwt:
+  expirationMs: 3600000
+
+server:
+  port: 7775
