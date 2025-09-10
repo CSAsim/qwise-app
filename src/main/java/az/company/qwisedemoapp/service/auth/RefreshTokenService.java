@@ -21,6 +21,7 @@ public class RefreshTokenService {
 
     private final RefreshTokenRepository refreshTokenRepository;
 
+    @Transactional
     public RefreshToken createRefreshToken(User user) {
         RefreshToken token = new RefreshToken();
         token.setToken(UUID.randomUUID().toString());
@@ -35,13 +36,17 @@ public class RefreshTokenService {
                 .orElseThrow(() -> new InvalidInputException("Invalid refresh token"));
     }
 
+    @Transactional
     public void deleteRefreshTokenByUserId(Long userId) {
-        RefreshToken refreshToken = refreshTokenRepository.findByUserId(userId)
-                .orElseThrow(() -> new InvalidInputException("User has no refresh token"));
-        refreshToken.setStatus(RefreshTokenStatus.DEACTIVATED);
-        refreshTokenRepository.save(refreshToken);
+        refreshTokenRepository.findByUserIdAndStatus(userId, RefreshTokenStatus.ACTIVE)
+                .ifPresent(token -> {
+                    token.setStatus(RefreshTokenStatus.DEACTIVATED);
+                    refreshTokenRepository.save(token);
+                });
+
     }
 
+    @Transactional
     public void deleteRefreshTokenByToken(String token) {
         RefreshToken refreshToken = refreshTokenRepository.findByToken(token)
                 .orElseThrow(() -> new InvalidInputException("Invalid refresh token"));

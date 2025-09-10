@@ -38,6 +38,7 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final RefreshTokenService refreshTokenService;
+    private final PasswordResetTokenService passwordResetTokenService;
     private final JwtService jwtService;
     private final OtpCodeService otpCodeService;
     private final EmailService emailService;
@@ -51,6 +52,7 @@ public class AuthService {
         if(!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new InvalidInputException("Password is wrong");
         }
+        user.setStatus(UserStatus.ACTIVE);
         return generateNewToken(user);
     }
 
@@ -58,6 +60,7 @@ public class AuthService {
     public String logout() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = getUser(email);
+        user.setStatus(UserStatus.INACTIVE);
         refreshTokenService.deleteRefreshTokenByUserId(user.getId());
         SecurityContextHolder.clearContext();
         return ResponseMessages.LOG_OUT;
@@ -105,6 +108,14 @@ public class AuthService {
         user.setStatus(UserStatus.ACTIVE);
         userRepository.save(user);
         return ResponseMessages.OTP_VERIFIED_MESSAGE;
+    }
+
+    @Transactional
+    public void verifyPasswordResetToken(VerifyOtpRequest request) {
+        passwordResetTokenService.validateToken(request.getOtpCode());
+        User user = getUser(request.getEmail());
+        user.setStatus(UserStatus.ACTIVE);
+        userRepository.save(user);
     }
 
     @Transactional

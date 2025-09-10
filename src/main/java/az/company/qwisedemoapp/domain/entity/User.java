@@ -80,8 +80,8 @@ public class User extends BaseEntity {
     @ToString.Exclude
     private List<UserPacket> enrolledPackets;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    private RefreshToken refreshToken;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<RefreshToken> refreshTokens;
 
     public void addOtpCode(OtpCode otpCode) {
         otpCodes.add(otpCode);

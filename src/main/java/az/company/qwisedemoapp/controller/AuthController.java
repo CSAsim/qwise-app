@@ -58,6 +58,12 @@ public class AuthController {
         return ResponseEntity.ok(authService.verifyOtpCode(request));
     }
 
+    @PostMapping("/verify-reset-token")
+    public ResponseEntity<Void> verifyPasswordResetToken(@Valid @RequestBody VerifyOtpRequest request) {
+        authService.verifyPasswordResetToken(request);
+        return ResponseEntity.noContent().build();
+    }
+
     @PostMapping("/forgot-password")
     public ResponseEntity<Void> forgotPassword(@Valid @RequestBody EmailRequest request) {
         passwordResetTokenService.forgotPassword(request);
