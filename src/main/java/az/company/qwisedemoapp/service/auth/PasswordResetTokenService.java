@@ -7,6 +7,8 @@ import az.company.qwisedemoapp.domain.repository.UserRepository;
 import az.company.qwisedemoapp.exception.InvalidInputException;
 import az.company.qwisedemoapp.exception.NotFoundException;
 import az.company.qwisedemoapp.exception.TokenExpiredException;
+import az.company.qwisedemoapp.model.constants.ResponseMessages;
+import az.company.qwisedemoapp.model.enums.PasswordResetTokenStatus;
 import az.company.qwisedemoapp.model.request.EmailRequest;
 import az.company.qwisedemoapp.model.request.ResetPasswordRequest;
 import lombok.RequiredArgsConstructor;
@@ -31,18 +33,20 @@ public class PasswordResetTokenService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public void forgotPassword(EmailRequest request) {
+    public String forgotPassword(EmailRequest request) {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new NotFoundException("User not found"));
 
         String token = UUID.randomUUID().toString();
         PasswordResetToken passwordResetToken = PasswordResetToken.builder()
                 .user(user)
+                .status(PasswordResetTokenStatus.ACTIVE)
                 .token(token)
                 .expiryDate(LocalDateTime.now().plusMinutes(1))
                 .build();
         tokenRepository.save(passwordResetToken);
         emailService.sendEmail(request.getEmail(), "Please do not share this token!: ", token);
+        return ResponseMessages.PASSWORD_RESET_TOKEN_MESSAGE;
     }
 
     @Transactional
@@ -64,5 +68,19 @@ public class PasswordResetTokenService {
         userRepository.save(user);
         refreshTokenService.deleteRefreshTokenByUserId(user.getId());
         tokenRepository.delete(token);
+    }
+
+    public void validateToken(String token) {
+        PasswordResetToken passwordResetToken = tokenRepository.findByToken(token)
+                .orElseThrow(() -> new RuntimeException("Invalid token"));
+        if (passwordResetToken.getExpiryDate().isBefore(LocalDateTime.now())) {
+            passwordResetToken.setStatus(PasswordResetTokenStatus.EXPIRED);
+            tokenRepository.save(passwordResetToken);
+            throw new TokenExpiredException("Token expired");
+        } else {
+            passwordResetToken.setStatus(PasswordResetTokenStatus.DEACTIVATED);
+            tokenRepository.save(passwordResetToken);
+        }
+        log.info("Token expired: {}", token);
     }
 }

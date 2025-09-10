@@ -2,12 +2,9 @@ package az.company.qwisedemoapp.service;
 
 import az.company.qwisedemoapp.domain.entity.User;
 import az.company.qwisedemoapp.domain.repository.UserRepository;
-import az.company.qwisedemoapp.exception.InvalidInputException;
 import az.company.qwisedemoapp.exception.NotFoundException;
 import az.company.qwisedemoapp.mapper.UserMapper;
-import az.company.qwisedemoapp.model.constants.ResponseMessages;
 import az.company.qwisedemoapp.model.dto.UserResponse;
-import az.company.qwisedemoapp.model.request.ChangePasswordRequest;
 import az.company.qwisedemoapp.model.request.UpdateUserRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
