@@ -26,8 +26,8 @@ public class JwtService {
     private final PublicKey publicKey;
 
     public JwtService() throws Exception {
-        this.privateKey = RSAKeyUtil.getPrivateKey("src/main/resources/private.key");
-        this.publicKey = RSAKeyUtil.getPublicKey("src/main/resources/public.key");
+        this.privateKey = RSAKeyUtil.getPrivateKey("private.key");
+        this.publicKey = RSAKeyUtil.getPublicKey("public.key");
     }
 
     @Value("${jwt.expirationMs}")

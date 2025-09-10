@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.Set;
+import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
@@ -33,9 +34,11 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         String email = oAuth2User.getAttribute("email");
         String name = oAuth2User.getAttribute("name");
         String registrationId = oAuth2AuthenticationToken.getAuthorizedClientRegistrationId();
+
         User useInfo = User.builder()
                 .email(email)
                 .fullName(name)
+                .password(UUID.randomUUID().toString())
                 .provider(registrationId.toUpperCase())
                 .status(UserStatus.ACTIVE)
                 .roles(Set.of(UserRole.ROLE_STUDENT))

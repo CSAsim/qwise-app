@@ -1,7 +1,10 @@
 package az.company.qwisedemoapp.domain.entity;
 
+import az.company.qwisedemoapp.model.enums.PasswordResetTokenStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -34,6 +37,11 @@ public class PasswordResetToken {
 
     @Column(name = "token", nullable = false, unique = true)
     private String token;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private PasswordResetTokenStatus status;
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     @ToString.Exclude

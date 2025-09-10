@@ -23,7 +23,6 @@ import java.util.Random;
 public class OtpCodeService {
 
     private final OtpCodeRepository otpCodeRepository;
-    private final EmailService emailService;
 
     private static final int OTP_LENGTH = 6;
     private static final int EXPIRATION_MINUTES = 5;
