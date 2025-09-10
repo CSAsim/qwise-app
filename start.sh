@@ -1,0 +1,1 @@
+./gradlew clean build; docker-compose up --build; docker-compose logs -f

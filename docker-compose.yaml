@@ -1,0 +1,45 @@
+version: "3.9"
+
+services:
+  qwise-app:
+    image: qwise-app:1.0
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: java-app-container
+    ports:
+      - "7775:7775"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/qwise-db
+      - SPRING_DATASOURCE_USERNAME=qwise-user
+      - SPRING_DATASOURCE_PASSWORD=s11m3R9*9w1n
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - shared-net
+
+  db:
+    image: postgres:latest
+    container_name: qwise-db-container
+    environment:
+      POSTGRES_DB: qwise-db
+      POSTGRES_USER: qwise-user
+      POSTGRES_PASSWORD: s11m3R9*9w1n
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./db_data:/var/lib/postgresql/data
+    networks:
+      - shared-net
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "qwise-user", "-d", "qwise-db" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  db_data:
+networks:
+  shared-net:
+    driver: bridge
