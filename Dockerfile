@@ -8,6 +8,6 @@ RUN gradle clean build -x test
 FROM openjdk:21-jdk
 WORKDIR /app
 RUN mkdir -p /app/logs && chmod -R 777 /app/logs
-COPY --from=builder /app/build/libs/*.jar app.jar
+COPY --from=builder /app/build/libs/qwise-demo-app-1.0.0.jar app.jar
 EXPOSE 7775
 ENTRYPOINT ["java", "-jar", "app.jar"]
