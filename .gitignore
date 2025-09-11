@@ -1,5 +1,9 @@
 HELP.md
 .gradle
+.env.dev
+.env.prod
+src/main/resources/private.key
+src/main/resources/public.key
 build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/

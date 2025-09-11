@@ -32,7 +32,7 @@ public class SecurityConfig {
                         requests
                                 .requestMatchers(EndpointConstants.PUBLIC_ENDPOINTS)
                                 .permitAll()
-                                .requestMatchers(EndpointConstants.ADMIN_ENDPOINTS).hasAnyRole("ADMIN")
+                                .requestMatchers(EndpointConstants.ADMIN_ENDPOINTS).hasRole("ADMIN")
                                 .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth ->
@@ -47,7 +47,8 @@ public class SecurityConfig {
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(exception -> exception
-
+                        .accessDeniedHandler((req, res, ex) ->
+                                res.setStatus(HttpServletResponse.SC_UNAUTHORIZED))
                         .accessDeniedHandler((req, res, ex) ->
                                 res.setStatus(HttpServletResponse.SC_FORBIDDEN))
                 )

@@ -30,10 +30,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
 
+@Slf4j
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-@Slf4j
 public class AuthService {
 
     private final UserRepository userRepository;
@@ -47,11 +47,13 @@ public class AuthService {
 
     @Transactional
     public AuthResponse login(LoginUserRequest request) {
+        log.info("Login user with email {}", request.getEmail());
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new NotFoundException("User" + ExceptionMessages.NOT_FOUND));
         if(!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new InvalidInputException("Password is wrong");
         }
+        log.info("Login user with email {} successfully", request.getEmail());
         user.setStatus(UserStatus.ACTIVE);
         return generateNewToken(user);
     }
@@ -83,6 +85,7 @@ public class AuthService {
 
     @Transactional
     public String register(RegisterUserRequest request) {
+        log.info("Register user with email {}", request.getEmail());
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new AlreadyExistsException("The user already exists");
         }
@@ -98,6 +101,7 @@ public class AuthService {
         User user = userRepository.save(entity);
 
         sendOtp(user);
+        log.info("Register user with email {} successfully", request.getEmail());
         return ResponseMessages.OTP_SENT_MESSAGE;
     }
 

@@ -20,6 +20,7 @@ public final class EndpointConstants {
 
     public static final String[] ADMIN_ENDPOINTS = {
             "/api/v1/users/admin/**",
-            "/api/v1/packets/admin/**"
+            "/api/v1/packets/admin/**",
+            "/actuator/**"
     };
 }

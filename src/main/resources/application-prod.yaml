@@ -2,7 +2,7 @@ spring:
   application:
     name: qwise
   datasource:
-    url: jdbc:postgresql://${PROD_DB_HOST}:${PROD_DB_PORT}/${PROD_DB_NAME}
+    url: ${PROD_DB_URL}
     username: ${PROD_DB_USERNAME}
     password: ${PROD_DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
@@ -19,8 +19,8 @@ spring:
       client:
         registration:
           google:
-            client-id: ${GOOGLE_CLIENT_ID}
-            client-secret: ${GOOGLE_CLIENT_SECRET}
+            client-id: ${PROD_GOOGLE_CLIENT_ID}
+            client-secret: ${PROD_GOOGLE_CLIENT_SECRET}
             scope: openid, profile, email
             redirect-uri: "https://qwise.company.com/login/oauth2/code/google"
             client-name: Google
@@ -39,14 +39,30 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: qwisecompany@gmail.com
-    password: ${GMAIL_APP_PASSWORD}
+    username: ${PROD_GMAIL_USERNAME}
+    password: ${PROD_GMAIL_APP_PASSWORD}
     properties:
       mail:
         smtp:
           auth: true
           starttls:
             enable: true
+
+logging:
+  level:
+    root: INFO
+  file:
+    name: &{PROD_LOG_PATH}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "info, health, metrics, prometheus"
+  endpoint:
+    health:
+      show-details: never
+
 jwt:
   expirationMs: 3600000
 
