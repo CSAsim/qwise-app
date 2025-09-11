@@ -22,7 +22,7 @@ spring:
             client-id: ${PROD_GOOGLE_CLIENT_ID}
             client-secret: ${PROD_GOOGLE_CLIENT_SECRET}
             scope: openid, profile, email
-            redirect-uri: "https://qwise.company.com/login/oauth2/code/google"
+            redirect-uri: "31.97.181.73:7775/login/oauth2/code/google"
             client-name: Google
   #          github:
   #            client-id: ${GITHUB_CLIENT_ID} # GitHub Developer Settings-dən alın
