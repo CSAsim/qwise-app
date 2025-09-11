@@ -77,7 +77,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<GlobalErrorResponse> handleException(MultipartException e) {
+    public ResponseEntity<GlobalErrorResponse> handleException(Exception e) {
         e.printStackTrace();
 
         return buildResponse(ErrorCode.BAD_REQUEST, null, HttpStatus.BAD_REQUEST, null);

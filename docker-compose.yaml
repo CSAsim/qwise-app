@@ -10,22 +10,29 @@ services:
     ports:
       - "7775:7775"
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/qwise-db
-      - SPRING_DATASOURCE_USERNAME=qwise-user
-      - SPRING_DATASOURCE_PASSWORD=s11m3R9*9w1n
+      - SPRING_PROFILES_ACTIVE=dev
+      - SPRING_DATASOURCE_URL=${DB_URL}
+      - SPRING_DATASOURCE_USERNAME=${DB_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD}
+      - LOG_PATH=${LOG_PATH}
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+      - GMAIL_APP_PASSWORD=${GMAIL_APP_PASSWORD}
     depends_on:
       db:
         condition: service_healthy
     networks:
       - shared-net
+    volumes:
+      - ./logs:/app/logs
 
   db:
     image: postgres:latest
     container_name: qwise-db-container
     environment:
       POSTGRES_DB: qwise-db
-      POSTGRES_USER: qwise-user
-      POSTGRES_PASSWORD: s11m3R9*9w1n
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
       - "5432:5432"
     volumes:
@@ -40,6 +47,7 @@ services:
 
 volumes:
   db_data:
+  logs:
 networks:
   shared-net:
     driver: bridge
