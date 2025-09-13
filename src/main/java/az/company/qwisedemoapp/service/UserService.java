@@ -5,13 +5,18 @@ import az.company.qwisedemoapp.domain.repository.UserRepository;
 import az.company.qwisedemoapp.exception.NotFoundException;
 import az.company.qwisedemoapp.mapper.UserMapper;
 import az.company.qwisedemoapp.model.dto.UserResponse;
+import az.company.qwisedemoapp.model.enums.UserStatus;
 import az.company.qwisedemoapp.model.request.UpdateUserRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Slf4j
 @Service
@@ -21,8 +26,11 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
-    private final PasswordEncoder passwordEncoder;
 
+    public Page<UserResponse> findAll(Pageable pageable) {
+        Page<User> page = userRepository.findAllByStatus(pageable, UserStatus.ACTIVE);
+        return userMapper.toResponsePage(page);
+    }
     public UserResponse findByEmail(String email) {
         User user = userRepository.findByEmail(email).orElseThrow(UserService::notFound);
         return userMapper.toResponse(user);
