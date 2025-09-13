@@ -7,6 +7,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.factory.Mappers;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -30,6 +31,10 @@ public interface UserMapper {
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     User toEntity(RegisterUserRequest request);
+
+    default Page<UserResponse> toResponsePage(Page<User> entities) {
+        return entities.map(this::toResponse);
+    }
 
     User toEntity(UserResponse userResponse);
 }
