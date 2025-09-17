@@ -1,6 +1,6 @@
 package az.company.qwisedemoapp.controller;
 
-import az.company.qwisedemoapp.model.dto.AuthResponse;
+import az.company.qwisedemoapp.model.dto.AuthResponseDto;
 import az.company.qwisedemoapp.model.request.ChangePasswordRequest;
 import az.company.qwisedemoapp.model.request.EmailRequest;
 import az.company.qwisedemoapp.model.request.LoginUserRequest;
@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/auth")
+@RequestMapping("/api/v1/qwise-app/auth")
 public class AuthController {
 
     private static final Logger log = LoggerFactory.getLogger(AuthController.class);
@@ -38,7 +38,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginUserRequest request, HttpServletRequest httpServletRequest) {
+    public ResponseEntity<AuthResponseDto> login(@Valid @RequestBody LoginUserRequest request, HttpServletRequest httpServletRequest) {
         log.info(httpServletRequest.getRemoteAddr());
         return ResponseEntity.ok(authService.login(request));
     }
@@ -49,7 +49,7 @@ public class AuthController {
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<AuthResponse> refresh(@RequestBody RefreshTokenRequest request) {
+    public ResponseEntity<AuthResponseDto> refresh(@RequestBody RefreshTokenRequest request) {
         return ResponseEntity.ok(authService.refresh(request.getRefreshToken()));
     }
 

@@ -1,6 +1,6 @@
 package az.company.qwisedemoapp.domain.entity;
 
-import az.company.qwisedemoapp.model.enums.PacketStatus;
+import az.company.qwisedemoapp.model.enums.FileStatus;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -22,13 +22,13 @@ import java.util.List;
 
 @Getter
 @Setter
-@ToString
 @Entity
+@ToString
 @SuperBuilder
-@Table(name = "packets")
 @NoArgsConstructor
 @AllArgsConstructor
-public class Packet extends BaseEntity {
+@Table(name = "files")
+public class File extends BaseEntity {
 
     @Column(name = "name", nullable = false)
     private String name;
@@ -36,14 +36,14 @@ public class Packet extends BaseEntity {
     @Column(name = "sub_category")
     private String subCategory;
 
-    @Column(name = "description")
-    private String description;
-
     @Column(name = "category", nullable = false)
     private String category;
 
+    @Column(name = "description")
+    private String description;
+
     @Column(name = "rating", nullable = false)
-    private Float rating;
+    private Float rating = 0.0f;
 
     @Column(name = "price", nullable = false)
     private Float price;
@@ -51,26 +51,29 @@ public class Packet extends BaseEntity {
     @Column(name = "thumbnail_url")
     private String thumbnailUrl;
 
+    @Column(name = "file_url", nullable = false)
+    private String fileUrl;
+
     @Column(name = "status", nullable = false)
     @Enumerated(value = EnumType.STRING)
-    private PacketStatus status;
+    private FileStatus status;
+
+    @OneToMany(mappedBy = "file", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @ToString.Exclude
+    private List<UserFile> enrolledStudents;
 
     @ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "author_id")
     @ToString.Exclude
     private User author;
 
-    @OneToMany(mappedBy = "packet", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @ToString.Exclude
-    private List<UserPacket> enrolledStudents;
-
-    public void addEnrolledStudent(UserPacket userPacket) {
-        enrolledStudents.add(userPacket);
-        userPacket.setPacket(this);
+    public void addEnrolledStudent(UserFile userFile) {
+        enrolledStudents.add(userFile);
+        userFile.setFile(this);
     }
 
-    public void removeEnrolledStudent(UserPacket userPacket) {
-        enrolledStudents.remove(userPacket);
-        userPacket.setPacket(null);
+    public void removeEnrolledStudent(UserFile userFile) {
+        enrolledStudents.remove(userFile);
+        userFile.setFile(null);
     }
 }

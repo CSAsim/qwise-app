@@ -15,6 +15,9 @@ import lombok.NoArgsConstructor;
 public class CreatePacketRequest {
 
     @NotBlank
+    private String name;
+
+    @NotBlank
     private String subCategory;
 
     @NotNull
@@ -22,9 +25,6 @@ public class CreatePacketRequest {
 
     @NotBlank
     private String category;
-
-    @NotNull
-    private Float rating;
 
     @NotNull
     private Float price;

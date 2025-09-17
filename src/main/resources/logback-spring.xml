@@ -6,7 +6,7 @@
         </encoder>
     </appender>
 
-    <!-- File appender -->
+    <!-- PacketFile appender -->
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <!-- Absolute path in container -->
         <file>${LOG_PATH}/app.log</file>

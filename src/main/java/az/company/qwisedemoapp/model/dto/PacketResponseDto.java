@@ -12,19 +12,21 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PacketDto {
+public class PacketResponseDto {
 
     private Long id;
-
-    private String subCategory;
 
     private Long authorId;
 
     private String authorName;
 
+    private String name;
+
     private String description;
 
     private String category;
+
+    private String subCategory;
 
     private Float rating;
 

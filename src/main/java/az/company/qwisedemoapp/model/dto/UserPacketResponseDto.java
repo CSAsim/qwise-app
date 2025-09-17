@@ -1,6 +1,5 @@
 package az.company.qwisedemoapp.model.dto;
 
-import az.company.qwisedemoapp.model.enums.PacketStatus;
 import az.company.qwisedemoapp.model.enums.PacketUsageStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,11 +12,11 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserPacketDto {
+public class UserPacketResponseDto {
 
     private Long id;
 
-    private PacketDto packet;
+    private PacketResponseDto packet;
 
     private Long userId;
 

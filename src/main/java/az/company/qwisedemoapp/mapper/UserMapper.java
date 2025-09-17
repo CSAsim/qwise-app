@@ -1,7 +1,7 @@
 package az.company.qwisedemoapp.mapper;
 
 import az.company.qwisedemoapp.domain.entity.User;
-import az.company.qwisedemoapp.model.dto.UserResponse;
+import az.company.qwisedemoapp.model.dto.UserResponseDto;
 import az.company.qwisedemoapp.model.request.RegisterUserRequest;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -16,9 +16,9 @@ public interface UserMapper {
 
     UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
 
-    UserResponse toResponse(User entity);
+    UserResponseDto toResponse(User entity);
 
-    List<UserResponse> toResponseList(List<User> entities);
+    List<UserResponseDto> toResponseList(List<User> entities);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "status", ignore = true)
@@ -32,9 +32,9 @@ public interface UserMapper {
     @Mapping(target = "updatedAt", ignore = true)
     User toEntity(RegisterUserRequest request);
 
-    default Page<UserResponse> toResponsePage(Page<User> entities) {
+    default Page<UserResponseDto> toResponsePage(Page<User> entities) {
         return entities.map(this::toResponse);
     }
 
-    User toEntity(UserResponse userResponse);
+    User toEntity(UserResponseDto userResponse);
 }

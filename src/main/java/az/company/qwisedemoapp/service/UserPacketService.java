@@ -10,7 +10,7 @@ import az.company.qwisedemoapp.exception.AlreadyExistsException;
 import az.company.qwisedemoapp.exception.NotFoundException;
 import az.company.qwisedemoapp.mapper.UserPacketMapper;
 import az.company.qwisedemoapp.model.constants.ExceptionMessages;
-import az.company.qwisedemoapp.model.dto.UserPacketDto;
+import az.company.qwisedemoapp.model.dto.UserPacketResponseDto;
 import az.company.qwisedemoapp.model.enums.PacketUsageStatus;
 import az.company.qwisedemoapp.model.request.AssignPacketRequest;
 import az.company.qwisedemoapp.service.auth.AuthService;
@@ -32,13 +32,13 @@ public class UserPacketService {
     private final PacketRepository packetRepository;
     private final UserPacketMapper userPacketMapper;
 
-    public Page<UserPacketDto> findAllUserPackets(PacketUsageStatus status, Pageable pageable) {
-        Page<UserPacket> entities = userPacketRepository.findAllByUsageStatus(status, pageable);
+    public Page<UserPacketResponseDto> findAllUserPackets(PacketUsageStatus status,Long studentId, Pageable pageable) {
+        Page<UserPacket> entities = userPacketRepository.findAllByUsageStatusAndStudentId(status, studentId, pageable);
         return userPacketMapper.toDtoPage(entities);
     }
 
     @Transactional
-    public UserPacketDto assignPacketToUser(AssignPacketRequest request) {
+    public UserPacketResponseDto assignPacketToUser(AssignPacketRequest request) {
         Long currentUserId = AuthService.getCurrentUserId();
         User student = userRepository.findById(currentUserId)
                 .orElseThrow(() -> new NotFoundException("Student" + ExceptionMessages.NOT_FOUND));
@@ -51,7 +51,7 @@ public class UserPacketService {
             throw new AlreadyExistsException("User packet already assigned");
         }
         UserPacket userPacket = UserPacket.builder()
-                .usageStatus(PacketUsageStatus.STORE)
+                .usageStatus(PacketUsageStatus.STORED)
                 .progress(0.0f)
                 .build();
         packet.addEnrolledStudent(userPacket);

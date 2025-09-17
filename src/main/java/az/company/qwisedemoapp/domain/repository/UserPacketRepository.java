@@ -12,7 +12,7 @@ import java.util.Optional;
 @Repository
 public interface UserPacketRepository extends JpaRepository<UserPacket, Long> {
 
-    Page<UserPacket> findAllByUsageStatus(PacketUsageStatus status, Pageable pageable);
+    Page<UserPacket> findAllByUsageStatusAndStudentId(PacketUsageStatus status, Long studentId, Pageable pageable);
     Page<UserPacket> findAllUserPacketByStudentId(Long userId, Pageable pageable);
     Optional<UserPacket> findByPacketId(Long packetId);
 }
