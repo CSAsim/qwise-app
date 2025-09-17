@@ -1,6 +1,6 @@
 package az.company.qwisedemoapp.controller;
 
-import az.company.qwisedemoapp.model.dto.UserResponse;
+import az.company.qwisedemoapp.model.dto.UserResponseDto;
 import az.company.qwisedemoapp.model.request.UpdateUserRequest;
 import az.company.qwisedemoapp.service.UserService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -18,24 +18,24 @@ import org.springframework.web.bind.annotation.RestController;
 @Validated
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/users")
+@RequestMapping("/api/v1/qwise-app/users")
 @SecurityRequirement(name = "bearerAuth")
 public class UserController {
 
     private final UserService userService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserResponse> getById(@PathVariable("id") Long id) {
+    public ResponseEntity<UserResponseDto> getById(@PathVariable("id") Long id) {
         return ResponseEntity.ok(userService.findById(id));
     }
 
     @GetMapping("/user-info")
-    public ResponseEntity<UserResponse> getUserInfo()    {
+    public ResponseEntity<UserResponseDto> getUserInfo()    {
         return ResponseEntity.ok(userService.findUserByToken());
     }
 
     @PutMapping("/update-user")
-    public ResponseEntity<UserResponse> update(@RequestBody @Valid UpdateUserRequest request) {
+    public ResponseEntity<UserResponseDto> update(@RequestBody @Valid UpdateUserRequest request) {
         return ResponseEntity.ok(userService.updateUser(request));
     }
 }

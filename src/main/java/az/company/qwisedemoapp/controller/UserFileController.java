@@ -1,12 +1,8 @@
 package az.company.qwisedemoapp.controller;
 
-import az.company.qwisedemoapp.model.dto.PacketResponseDto;
 import az.company.qwisedemoapp.model.dto.PageableResponseDto;
-import az.company.qwisedemoapp.model.request.CreatePacketRequest;
-import az.company.qwisedemoapp.model.request.FilteredRequest;
-import az.company.qwisedemoapp.model.request.UpdatePacketRequest;
-import az.company.qwisedemoapp.service.PacketService;
-import jakarta.validation.Valid;
+import az.company.qwisedemoapp.model.dto.UserFileResponseDto;
+import az.company.qwisedemoapp.service.UserFileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,26 +14,25 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
 
 @Validated
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/qwise-app/packets")
-public class PacketController {
+@RequestMapping("/api/v1/qwise-app/user/files")
+public class UserFileController {
 
-    private final PacketService packetService;
+    private final UserFileService userFileService;
 
-    @GetMapping("/all")
-    public ResponseEntity<PageableResponseDto<PacketResponseDto>> getAll(
+    @GetMapping("/all/{studentId}")
+    public ResponseEntity<PageableResponseDto<UserFileResponseDto>> getAll(
             @PageableDefault(size = 10) Pageable pageable,
-            @RequestBody FilteredRequest request
-            ) {
-        Page<PacketResponseDto> page = packetService.findAllPackets(request, pageable);
-        PageableResponseDto<PacketResponseDto> responseDto = PageableResponseDto.of(
+            @PathVariable("studentId") Long studentId) {
+        Page<UserFileResponseDto> page = userFileService.findAllUserFiles(studentId, pageable);
+        PageableResponseDto<UserFileResponseDto> responseDto = PageableResponseDto.of(
                 page.getContent(),
                 page.getPageable().getPageNumber(),
                 page.getSize(),
@@ -47,8 +42,15 @@ public class PacketController {
         return ResponseEntity.ok(responseDto);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<PacketResponseDto> getById(@PathVariable Long id) {
-        return ResponseEntity.ok(packetService.findById(id));
+    @PostMapping("/assign-to-file")
+    public ResponseEntity<UserFileResponseDto> assignToFIle(@RequestParam Long fileId) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(userFileService.assignFileToStudent(fileId));
+    }
+
+    @DeleteMapping("/remove-file/{fileId}")
+    public ResponseEntity<Void> removeFile(@PathVariable Long fileId) {
+        userFileService.removeFileFromStudent(fileId);
+        return ResponseEntity.noContent().build();
     }
 }

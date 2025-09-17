@@ -1,16 +1,16 @@
 package az.company.qwisedemoapp.filter;
 
-import az.company.qwisedemoapp.domain.entity.Packet;
+import az.company.qwisedemoapp.domain.entity.File;
 import az.company.qwisedemoapp.model.request.FilteredRequest;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 
-public class PacketSpecificationFilter {
+public class FileSpecificationFilter {
 
-    private PacketSpecificationFilter() {
+    private FileSpecificationFilter() {
     }
 
-    public static Specification<Packet> byFilters(FilteredRequest request) {
+    public static Specification<File> byFilters(FilteredRequest request) {
 
         return (root, query, criterialBuilder) -> {
             Predicate predicate = criterialBuilder.conjunction();

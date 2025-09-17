@@ -8,10 +8,10 @@ import az.company.qwisedemoapp.exception.NotFoundException;
 import az.company.qwisedemoapp.filter.PacketSpecificationFilter;
 import az.company.qwisedemoapp.mapper.PacketMapper;
 import az.company.qwisedemoapp.model.constants.ExceptionMessages;
-import az.company.qwisedemoapp.model.dto.PacketDto;
+import az.company.qwisedemoapp.model.dto.PacketResponseDto;
 import az.company.qwisedemoapp.model.enums.PacketStatus;
 import az.company.qwisedemoapp.model.request.CreatePacketRequest;
-import az.company.qwisedemoapp.model.request.FilteredPacketRequest;
+import az.company.qwisedemoapp.model.request.FilteredRequest;
 import az.company.qwisedemoapp.model.request.UpdatePacketRequest;
 import az.company.qwisedemoapp.service.auth.AuthService;
 import lombok.RequiredArgsConstructor;
@@ -32,24 +32,25 @@ public class PacketService {
     private final UserRepository userRepository;
     private final PacketMapper packetMapper;
 
-    public Page<PacketDto> findAllPackets(FilteredPacketRequest request, Pageable pageable) {
+    public Page<PacketResponseDto> findAllPackets(FilteredRequest request, Pageable pageable) {
         Specification<Packet> specification = PacketSpecificationFilter.byFilters(request);
         Page<Packet> page = packetRepository.findAll(specification, pageable);
         return packetMapper.toDtoPage(page);
     }
 
-    public PacketDto findById(Long id) {
+    public PacketResponseDto findById(Long id) {
         return packetMapper.toDto(packetRepository.findByIdWithStatus(id)
                 .orElseThrow(() -> new NotFoundException(Packet.class.getSimpleName() + ExceptionMessages.NOT_FOUND)));
     }
 
     @Transactional
-    public PacketDto createPacket(CreatePacketRequest request) {
+    public PacketResponseDto createPacket(CreatePacketRequest request) {
         log.info("Creating packet: {}", request);
         Long authorId = AuthService.getCurrentUserId();
         User author = userRepository.findById(authorId)
                 .orElseThrow(() -> new NotFoundException(User.class.getSimpleName() + ExceptionMessages.NOT_FOUND));
         Packet packet = packetMapper.toEntity(request);
+        packet.setStatus(PacketStatus.ACTIVE);
         author.addPacket(packet);
         packet.setRating(0.0f);
         Packet savedPacket = packetRepository.save(packet);
@@ -58,7 +59,7 @@ public class PacketService {
     }
 
     @Transactional
-    public PacketDto publishPacket(Long id) {
+    public PacketResponseDto publishPacket(Long id) {
         log.info("Publishing packet with id {}", id);
         Packet packet = packetRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(Packet.class.getSimpleName() + ExceptionMessages.NOT_FOUND));
@@ -68,7 +69,7 @@ public class PacketService {
     }
 
     @Transactional
-    public PacketDto updatePacket(Long id, UpdatePacketRequest request) {
+    public PacketResponseDto updatePacket(Long id, UpdatePacketRequest request) {
         log.info("Updating packet with id {}: {}", id, request);
         Packet oldPacket = packetRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(Packet.class.getSimpleName() + ExceptionMessages.NOT_FOUND));

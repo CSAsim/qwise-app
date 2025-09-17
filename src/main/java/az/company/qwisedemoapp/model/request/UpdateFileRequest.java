@@ -1,6 +1,6 @@
 package az.company.qwisedemoapp.model.request;
 
-import az.company.qwisedemoapp.model.enums.PacketStatus;
+import az.company.qwisedemoapp.model.enums.FileStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,21 +10,21 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UpdatePacketRequest {
+public class UpdateFileRequest {
 
     private String name;
 
     private String subCategory;
 
-    private String description;
-
     private String category;
 
-    private Float rating;
+    private String description;
 
     private Float price;
 
     private String thumbnailUrl;
 
-    private PacketStatus status;
+    private String fileUrl;
+
+    private FileStatus status;
 }

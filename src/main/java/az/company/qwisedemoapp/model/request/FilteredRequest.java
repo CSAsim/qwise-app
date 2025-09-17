@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class FilteredPacketRequest {
+public class FilteredRequest {
 
     private Long authorId;
     private String category;

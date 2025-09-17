@@ -1,7 +1,7 @@
 package az.company.qwisedemoapp.handler;
 
 import az.company.qwisedemoapp.domain.entity.User;
-import az.company.qwisedemoapp.model.dto.AuthResponse;
+import az.company.qwisedemoapp.model.dto.AuthResponseDto;
 import az.company.qwisedemoapp.model.enums.UserRole;
 import az.company.qwisedemoapp.model.enums.UserStatus;
 import az.company.qwisedemoapp.service.auth.AuthService;
@@ -43,7 +43,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
                 .status(UserStatus.ACTIVE)
                 .roles(Set.of(UserRole.ROLE_STUDENT))
                 .build();
-        AuthResponse authResponse = authService.loginOrRegisterOAuth2User(useInfo);
+        AuthResponseDto authResponse = authService.loginOrRegisterOAuth2User(useInfo);
 
         response.setContentType("application/json");
         new ObjectMapper().writeValue(response.getWriter(), authResponse);

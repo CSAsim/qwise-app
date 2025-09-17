@@ -1,7 +1,7 @@
 package az.company.qwisedemoapp.controller;
 
 import az.company.qwisedemoapp.model.dto.PageableResponseDto;
-import az.company.qwisedemoapp.model.dto.UserPacketDto;
+import az.company.qwisedemoapp.model.dto.UserPacketResponseDto;
 import az.company.qwisedemoapp.model.enums.PacketUsageStatus;
 import az.company.qwisedemoapp.model.request.AssignPacketRequest;
 import az.company.qwisedemoapp.service.UserPacketService;
@@ -24,19 +24,20 @@ import org.springframework.web.bind.annotation.RestController;
 @Validated
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/user/packets")
+@RequestMapping("/api/v1/qwise-app/user/packets")
 public class UserPacketController {
 
 
     private final UserPacketService userPacketService;
 
     @GetMapping("/all")
-    public ResponseEntity<PageableResponseDto<UserPacketDto>> getAll(
+    public ResponseEntity<PageableResponseDto<UserPacketResponseDto>> getAll(
             @RequestParam PacketUsageStatus status,
+            @RequestParam(required = false) Long studentId,
             @PageableDefault(size = 10) Pageable pageable
     ) {
-        Page<UserPacketDto> page = userPacketService.findAllUserPackets(status, pageable);
-        PageableResponseDto<UserPacketDto> responseDto = PageableResponseDto.of(
+        Page<UserPacketResponseDto> page = userPacketService.findAllUserPackets(status, studentId, pageable);
+        PageableResponseDto<UserPacketResponseDto> responseDto = PageableResponseDto.of(
                 page.getContent(),
                 page.getNumber(),
                 page.getSize(),
@@ -47,7 +48,7 @@ public class UserPacketController {
     }
 
     @PostMapping("/assign-to-course")
-    public ResponseEntity<UserPacketDto> assignToCourse(@RequestBody AssignPacketRequest request) {
+    public ResponseEntity<UserPacketResponseDto> assignToCourse(@RequestBody AssignPacketRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(
                 userPacketService.assignPacketToUser(request)
         );

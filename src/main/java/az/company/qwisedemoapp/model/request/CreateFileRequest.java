@@ -1,6 +1,6 @@
 package az.company.qwisedemoapp.model.request;
 
-import az.company.qwisedemoapp.model.enums.PacketStatus;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,21 +10,24 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UpdatePacketRequest {
+public class CreateFileRequest {
 
+    @NotBlank
     private String name;
 
+    @NotBlank
     private String subCategory;
+
+    @NotBlank
+    private String category;
 
     private String description;
 
-    private String category;
-
-    private Float rating;
-
     private Float price;
 
+    @NotBlank
     private String thumbnailUrl;
 
-    private PacketStatus status;
+    @NotBlank
+    private String fileUrl;
 }
