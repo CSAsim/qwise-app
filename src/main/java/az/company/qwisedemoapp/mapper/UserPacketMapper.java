@@ -1,7 +1,7 @@
 package az.company.qwisedemoapp.mapper;
 
 import az.company.qwisedemoapp.domain.entity.UserPacket;
-import az.company.qwisedemoapp.model.dto.UserPacketDto;
+import az.company.qwisedemoapp.model.dto.UserPacketResponseDto;
 import az.company.qwisedemoapp.model.request.AssignPacketRequest;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -21,11 +21,11 @@ public interface UserPacketMapper {
     @Mapping(target = "packet.authorName", source = "packet.author.fullName")
     @Mapping(target = "packet.authorId", source = "packet.author.id")
     @Mapping(target = "enrolledAt", source = "createdAt")
-    UserPacketDto toDto(UserPacket entity);
+    UserPacketResponseDto toDto(UserPacket entity);
 
-    List<UserPacketDto> toDtoList(List<UserPacket> entities);
+    List<UserPacketResponseDto> toDtoList(List<UserPacket> entities);
 
-    default Page<UserPacketDto> toDtoPage(Page<UserPacket> entities) {
+    default Page<UserPacketResponseDto> toDtoPage(Page<UserPacket> entities) {
         return entities.map(this::toDto);
     }
 
@@ -39,5 +39,5 @@ public interface UserPacketMapper {
     @Mapping(target = "updatedAt", ignore = true)
     UserPacket toEntity(AssignPacketRequest request);
 
-    UserPacket toEntity(UserPacketDto dto);
+    UserPacket toEntity(UserPacketResponseDto dto);
 }

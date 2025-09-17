@@ -13,7 +13,6 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -76,11 +75,20 @@ public class User extends BaseEntity {
     @ToString.Exclude
     private List<Packet> packets;
 
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ToString.Exclude
+    private List<File> files;
+
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @ToString.Exclude
     private List<UserPacket> enrolledPackets;
 
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @ToString.Exclude
+    private List<UserFile> userEnrolledFiles;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @ToString.Exclude
     private List<RefreshToken> refreshTokens;
 
     public void addOtpCode(OtpCode otpCode) {
@@ -103,6 +111,16 @@ public class User extends BaseEntity {
         packet.setAuthor(null);
     }
 
+    public void addFile(File file) {
+        file.setAuthor(this);
+        this.files.add(file);
+    }
+
+    public void removeFile(File file) {
+        file.setAuthor(null);
+        this.files.remove(file);
+    }
+
     public void addEnrolledPacket(UserPacket userPacket) {
         enrolledPackets.add(userPacket);
         userPacket.setStudent(this);
@@ -111,5 +129,15 @@ public class User extends BaseEntity {
     public void removeEnrolledPacket(UserPacket userPacket) {
         enrolledPackets.remove(userPacket);
         userPacket.setStudent(null);
+    }
+
+    public void addEnrolledFile(UserFile file) {
+        userEnrolledFiles.add(file);
+        file.setStudent(this);
+    }
+
+    public void removeEnrolledFile(UserFile file) {
+        userEnrolledFiles.remove(file);
+        file.setStudent(null);
     }
 }

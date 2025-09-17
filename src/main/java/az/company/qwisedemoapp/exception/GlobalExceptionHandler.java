@@ -70,7 +70,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MultipartException.class)
     public ResponseEntity<GlobalErrorResponse> handleMultipartException(MultipartException e) {
-        String message = "File upload error";
+        String message = "PacketFile upload error";
         List<String> errors = Collections.singletonList(e.getMessage());
 
         return buildResponse(ErrorCode.BAD_REQUEST, message, HttpStatus.BAD_REQUEST, errors);

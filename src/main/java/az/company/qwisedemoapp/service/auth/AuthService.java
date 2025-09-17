@@ -11,7 +11,7 @@ import az.company.qwisedemoapp.exception.TokenExpiredException;
 import az.company.qwisedemoapp.mapper.UserMapper;
 import az.company.qwisedemoapp.model.constants.ExceptionMessages;
 import az.company.qwisedemoapp.model.constants.ResponseMessages;
-import az.company.qwisedemoapp.model.dto.AuthResponse;
+import az.company.qwisedemoapp.model.dto.AuthResponseDto;
 import az.company.qwisedemoapp.model.enums.UserRole;
 import az.company.qwisedemoapp.model.enums.UserStatus;
 import az.company.qwisedemoapp.model.request.ChangePasswordRequest;
@@ -46,7 +46,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public AuthResponse login(LoginUserRequest request) {
+    public AuthResponseDto login(LoginUserRequest request) {
         log.info("Login user with email {}", request.getEmail());
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new NotFoundException("User" + ExceptionMessages.NOT_FOUND));
@@ -69,7 +69,7 @@ public class AuthService {
     }
 
     @Transactional
-    public AuthResponse refresh(String refreshToken) {
+    public AuthResponseDto refresh(String refreshToken) {
         RefreshToken existing = refreshTokenService.findByToken(refreshToken);
 
         if (existing.isExpired()) {
@@ -130,7 +130,7 @@ public class AuthService {
     }
 
     @Transactional
-    public AuthResponse loginOrRegisterOAuth2User(User user) {
+    public AuthResponseDto loginOrRegisterOAuth2User(User user) {
         User entity;
         try {
              entity = getUser(user.getEmail());
@@ -156,14 +156,14 @@ public class AuthService {
         return ResponseMessages.PASSWORD_CHANGED;
     }
 
-    AuthResponse generateNewToken(User user) {
+    AuthResponseDto generateNewToken(User user) {
 
         refreshTokenService.deleteRefreshTokenByUserId(user.getId());
 
         String newAccessToken = jwtService.generateToken(user);
         RefreshToken newRefreshToken = refreshTokenService.createRefreshToken(user);
 
-        return AuthResponse.builder()
+        return AuthResponseDto.builder()
                 .accessToken(newAccessToken)
                 .refreshToken(newRefreshToken.getToken())
                 .build();

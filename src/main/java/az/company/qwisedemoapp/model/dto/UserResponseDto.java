@@ -9,9 +9,15 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AuthResponse {
+public class UserResponseDto {
 
-    private String accessToken;
+    private Long id;
 
-    private String refreshToken;
+    private String profilePictureUrl;
+
+    private String fullName;
+
+    private String phoneNumber;
+
+    private String email;
 }
