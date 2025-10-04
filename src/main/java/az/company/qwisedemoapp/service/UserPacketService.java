@@ -10,9 +10,9 @@ import az.company.qwisedemoapp.exception.AlreadyExistsException;
 import az.company.qwisedemoapp.exception.NotFoundException;
 import az.company.qwisedemoapp.mapper.UserPacketMapper;
 import az.company.qwisedemoapp.model.constants.ExceptionMessages;
-import az.company.qwisedemoapp.model.dto.UserPacketResponseDto;
+import az.company.qwisedemoapp.model.dto.request.AssignPacketRequestDto;
+import az.company.qwisedemoapp.model.dto.response.UserPacketResponseDto;
 import az.company.qwisedemoapp.model.enums.PacketUsageStatus;
-import az.company.qwisedemoapp.model.request.AssignPacketRequest;
 import az.company.qwisedemoapp.service.auth.AuthService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,7 +38,7 @@ public class UserPacketService {
     }
 
     @Transactional
-    public UserPacketResponseDto assignPacketToUser(AssignPacketRequest request) {
+    public UserPacketResponseDto assignPacketToUser(AssignPacketRequestDto request) {
         Long currentUserId = AuthService.getCurrentUserId();
         User student = userRepository.findById(currentUserId)
                 .orElseThrow(() -> new NotFoundException("Student" + ExceptionMessages.NOT_FOUND));

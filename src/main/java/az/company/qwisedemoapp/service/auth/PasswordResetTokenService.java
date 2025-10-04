@@ -9,8 +9,8 @@ import az.company.qwisedemoapp.exception.NotFoundException;
 import az.company.qwisedemoapp.exception.TokenExpiredException;
 import az.company.qwisedemoapp.model.constants.ResponseMessages;
 import az.company.qwisedemoapp.model.enums.PasswordResetTokenStatus;
-import az.company.qwisedemoapp.model.request.EmailRequest;
-import az.company.qwisedemoapp.model.request.ResetPasswordRequest;
+import az.company.qwisedemoapp.model.dto.request.EmailRequestDto;
+import az.company.qwisedemoapp.model.dto.request.ResetPasswordRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -33,7 +33,7 @@ public class PasswordResetTokenService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public String forgotPassword(EmailRequest request) {
+    public String forgotPassword(EmailRequestDto request) {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new NotFoundException("User not found"));
 
@@ -50,7 +50,7 @@ public class PasswordResetTokenService {
     }
 
     @Transactional
-    public void resetPassword(ResetPasswordRequest request) {
+    public void resetPassword(ResetPasswordRequestDto request) {
 
         if (!request.getNewPassword().equals(request.getConfirmPassword())) {
             throw new InvalidInputException("Passwords do not match");

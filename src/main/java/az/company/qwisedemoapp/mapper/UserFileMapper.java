@@ -1,7 +1,7 @@
 package az.company.qwisedemoapp.mapper;
 
 import az.company.qwisedemoapp.domain.entity.UserFile;
-import az.company.qwisedemoapp.model.dto.UserFileResponseDto;
+import az.company.qwisedemoapp.model.dto.response.UserFileResponseDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;

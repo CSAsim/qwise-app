@@ -1,9 +1,9 @@
 package az.company.qwisedemoapp.mapper;
 
 import az.company.qwisedemoapp.domain.entity.File;
-import az.company.qwisedemoapp.model.dto.FileResponseDto;
-import az.company.qwisedemoapp.model.request.CreateFileRequest;
-import az.company.qwisedemoapp.model.request.UpdateFileRequest;
+import az.company.qwisedemoapp.model.dto.request.UpdateFileRequestDto;
+import az.company.qwisedemoapp.model.dto.response.FileResponseDto;
+import az.company.qwisedemoapp.model.dto.request.CreateFileRequestDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -34,7 +34,7 @@ public interface FileMapper {
     @Mapping(target = "updatedBy", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
-    File toEntity(CreateFileRequest request);
+    File toEntity(CreateFileRequestDto request);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "author", ignore = true)
@@ -42,5 +42,5 @@ public interface FileMapper {
     @Mapping(target = "updatedBy", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
-    File toEntity(@MappingTarget File entity, UpdateFileRequest request);
+    File toEntity(@MappingTarget File entity, UpdateFileRequestDto request);
 }

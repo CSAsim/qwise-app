@@ -8,11 +8,11 @@ import az.company.qwisedemoapp.exception.NotFoundException;
 import az.company.qwisedemoapp.exception.TokenExpiredException;
 import az.company.qwisedemoapp.filter.FileSpecificationFilter;
 import az.company.qwisedemoapp.mapper.FileMapper;
-import az.company.qwisedemoapp.model.dto.FileResponseDto;
+import az.company.qwisedemoapp.model.dto.response.FileResponseDto;
 import az.company.qwisedemoapp.model.enums.FileStatus;
-import az.company.qwisedemoapp.model.request.CreateFileRequest;
-import az.company.qwisedemoapp.model.request.FilteredRequest;
-import az.company.qwisedemoapp.model.request.UpdateFileRequest;
+import az.company.qwisedemoapp.model.dto.request.CreateFileRequestDto;
+import az.company.qwisedemoapp.model.dto.request.FilteredRequestDto;
+import az.company.qwisedemoapp.model.dto.request.UpdateFileRequestDto;
 import az.company.qwisedemoapp.service.auth.AuthService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +32,7 @@ public class FileService {
     private final UserRepository userRepository;
     private final FileMapper fileMapper;
 
-    public Page<FileResponseDto> findAllFiles(FilteredRequest request, Pageable pageable) {
+    public Page<FileResponseDto> findAllFiles(FilteredRequestDto request, Pageable pageable) {
         Specification<File> specification = FileSpecificationFilter.byFilters(request);
         Page<File> pages = fileRepository.findAll(specification, pageable);
         return fileMapper.toDtoPage(pages);
@@ -45,7 +45,7 @@ public class FileService {
     }
 
     @Transactional
-    public FileResponseDto createFile(CreateFileRequest request) {
+    public FileResponseDto createFile(CreateFileRequestDto request) {
         Long authorId = AuthService.getCurrentUserId();
         if(authorId == null) {
             throw new TokenExpiredException("Token expired!");
@@ -73,7 +73,7 @@ public class FileService {
     }
 
     @Transactional
-    public FileResponseDto updateFile(Long id, UpdateFileRequest request) {
+    public FileResponseDto updateFile(Long id, UpdateFileRequestDto request) {
         log.info("Updating file with id {}", id);
         File oldFile = fileRepository.findByIdWithStatus(id)
                 .orElseThrow(()

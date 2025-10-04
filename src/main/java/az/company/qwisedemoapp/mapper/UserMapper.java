@@ -1,8 +1,8 @@
 package az.company.qwisedemoapp.mapper;
 
 import az.company.qwisedemoapp.domain.entity.User;
-import az.company.qwisedemoapp.model.dto.UserResponseDto;
-import az.company.qwisedemoapp.model.request.RegisterUserRequest;
+import az.company.qwisedemoapp.model.dto.response.UserResponseDto;
+import az.company.qwisedemoapp.model.dto.request.RegisterUserRequestDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.NullValuePropertyMappingStrategy;
@@ -30,7 +30,7 @@ public interface UserMapper {
     @Mapping(target = "password", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
-    User toEntity(RegisterUserRequest request);
+    User toEntity(RegisterUserRequestDto request);
 
     default Page<UserResponseDto> toResponsePage(Page<User> entities) {
         return entities.map(this::toResponse);
