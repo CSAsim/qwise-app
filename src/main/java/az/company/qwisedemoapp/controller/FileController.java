@@ -1,8 +1,8 @@
 package az.company.qwisedemoapp.controller;
 
-import az.company.qwisedemoapp.model.dto.FileResponseDto;
-import az.company.qwisedemoapp.model.dto.PageableResponseDto;
-import az.company.qwisedemoapp.model.request.FilteredRequest;
+import az.company.qwisedemoapp.model.dto.response.FileResponseDto;
+import az.company.qwisedemoapp.model.dto.response.PageableResponseDto;
+import az.company.qwisedemoapp.model.dto.request.FilteredRequestDto;
 import az.company.qwisedemoapp.service.FileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -27,7 +27,7 @@ public class FileController {
     @GetMapping("/all")
     public ResponseEntity<PageableResponseDto<FileResponseDto>> getAll(
             @PageableDefault(size = 10) Pageable pageable,
-            @RequestBody FilteredRequest request
+            @RequestBody FilteredRequestDto request
     ) {
         Page<FileResponseDto> page = fileService.findAllFiles(request, pageable);
         PageableResponseDto<FileResponseDto> responseDto = PageableResponseDto.of(

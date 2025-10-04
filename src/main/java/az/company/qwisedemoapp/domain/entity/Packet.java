@@ -1,5 +1,6 @@
 package az.company.qwisedemoapp.domain.entity;
 
+import az.company.qwisedemoapp.domain.entity.test.question.Question;
 import az.company.qwisedemoapp.model.enums.PacketStatus;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -18,6 +19,7 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -62,7 +64,21 @@ public class Packet extends BaseEntity {
 
     @OneToMany(mappedBy = "packet", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @ToString.Exclude
-    private List<UserPacket> enrolledStudents;
+    private List<UserPacket> enrolledStudents = new ArrayList<>();
+
+    @OneToMany(mappedBy = "packet", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @ToString.Exclude
+    private List<Question> questions = new ArrayList<>();
+
+    public void addQuestion(Question question) {
+        questions.add(question);
+        question.setPacket(this);
+    }
+
+    public void removeQuestion(Question question) {
+        questions.remove(question);
+        question.setPacket(null);
+    }
 
     public void addEnrolledStudent(UserPacket userPacket) {
         enrolledStudents.add(userPacket);

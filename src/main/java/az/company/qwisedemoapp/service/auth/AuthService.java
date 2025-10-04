@@ -11,14 +11,14 @@ import az.company.qwisedemoapp.exception.TokenExpiredException;
 import az.company.qwisedemoapp.mapper.UserMapper;
 import az.company.qwisedemoapp.model.constants.ExceptionMessages;
 import az.company.qwisedemoapp.model.constants.ResponseMessages;
-import az.company.qwisedemoapp.model.dto.AuthResponseDto;
+import az.company.qwisedemoapp.model.dto.response.AuthResponseDto;
 import az.company.qwisedemoapp.model.enums.UserRole;
 import az.company.qwisedemoapp.model.enums.UserStatus;
-import az.company.qwisedemoapp.model.request.ChangePasswordRequest;
-import az.company.qwisedemoapp.model.request.EmailRequest;
-import az.company.qwisedemoapp.model.request.LoginUserRequest;
-import az.company.qwisedemoapp.model.request.RegisterUserRequest;
-import az.company.qwisedemoapp.model.request.VerifyOtpRequest;
+import az.company.qwisedemoapp.model.dto.request.ChangePasswordRequestDto;
+import az.company.qwisedemoapp.model.dto.request.EmailRequestDto;
+import az.company.qwisedemoapp.model.dto.request.LoginUserRequestDto;
+import az.company.qwisedemoapp.model.dto.request.RegisterUserRequestDto;
+import az.company.qwisedemoapp.model.dto.request.VerifyOtpRequestDto;
 import az.company.qwisedemoapp.domain.entity.RefreshToken;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -46,7 +46,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public AuthResponseDto login(LoginUserRequest request) {
+    public AuthResponseDto login(LoginUserRequestDto request) {
         log.info("Login user with email {}", request.getEmail());
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new NotFoundException("User" + ExceptionMessages.NOT_FOUND));
@@ -84,7 +84,7 @@ public class AuthService {
     }
 
     @Transactional
-    public String register(RegisterUserRequest request) {
+    public String register(RegisterUserRequestDto request) {
         log.info("Register user with email {}", request.getEmail());
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new AlreadyExistsException("The user already exists");
@@ -106,7 +106,7 @@ public class AuthService {
     }
 
     @Transactional
-    public String verifyOtpCode(VerifyOtpRequest request) {
+    public String verifyOtpCode(VerifyOtpRequestDto request) {
         otpCodeService.validateOtp(request.getOtpCode());
         User user = getUser(request.getEmail());
         user.setStatus(UserStatus.ACTIVE);
@@ -115,7 +115,7 @@ public class AuthService {
     }
 
     @Transactional
-    public void verifyPasswordResetToken(VerifyOtpRequest request) {
+    public void verifyPasswordResetToken(VerifyOtpRequestDto request) {
         passwordResetTokenService.validateToken(request.getOtpCode());
         User user = getUser(request.getEmail());
         user.setStatus(UserStatus.ACTIVE);
@@ -123,7 +123,7 @@ public class AuthService {
     }
 
     @Transactional
-    public String resendOtp(EmailRequest request) {
+    public String resendOtp(EmailRequestDto request) {
         User user = getUser(request.getEmail());
         sendOtp(user);
         return ResponseMessages.OTP_SENT_MESSAGE;
@@ -141,7 +141,7 @@ public class AuthService {
     }
 
     @Transactional
-    public String changePassword(ChangePasswordRequest request) {
+    public String changePassword(ChangePasswordRequestDto request) {
         User entity = getEntity();
         if(!passwordEncoder.matches(request.getOldPassword(), entity.getPassword())) {
             throw new InvalidInputException("Old password is incorrect");

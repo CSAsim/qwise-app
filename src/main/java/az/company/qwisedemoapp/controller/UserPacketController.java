@@ -1,9 +1,9 @@
 package az.company.qwisedemoapp.controller;
 
-import az.company.qwisedemoapp.model.dto.PageableResponseDto;
-import az.company.qwisedemoapp.model.dto.UserPacketResponseDto;
+import az.company.qwisedemoapp.model.dto.request.AssignPacketRequestDto;
+import az.company.qwisedemoapp.model.dto.response.PageableResponseDto;
+import az.company.qwisedemoapp.model.dto.response.UserPacketResponseDto;
 import az.company.qwisedemoapp.model.enums.PacketUsageStatus;
-import az.company.qwisedemoapp.model.request.AssignPacketRequest;
 import az.company.qwisedemoapp.service.UserPacketService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -48,7 +48,7 @@ public class UserPacketController {
     }
 
     @PostMapping("/assign-to-course")
-    public ResponseEntity<UserPacketResponseDto> assignToCourse(@RequestBody AssignPacketRequest request) {
+    public ResponseEntity<UserPacketResponseDto> assignToCourse(@RequestBody AssignPacketRequestDto request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(
                 userPacketService.assignPacketToUser(request)
         );

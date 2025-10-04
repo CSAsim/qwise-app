@@ -1,7 +1,7 @@
 package az.company.qwisedemoapp.handler;
 
 import az.company.qwisedemoapp.domain.entity.User;
-import az.company.qwisedemoapp.model.dto.AuthResponseDto;
+import az.company.qwisedemoapp.model.dto.response.AuthResponseDto;
 import az.company.qwisedemoapp.model.enums.UserRole;
 import az.company.qwisedemoapp.model.enums.UserStatus;
 import az.company.qwisedemoapp.service.auth.AuthService;

@@ -10,7 +10,7 @@ import az.company.qwisedemoapp.exception.AlreadyExistsException;
 import az.company.qwisedemoapp.exception.NotFoundException;
 import az.company.qwisedemoapp.mapper.UserFileMapper;
 import az.company.qwisedemoapp.model.constants.ExceptionMessages;
-import az.company.qwisedemoapp.model.dto.UserFileResponseDto;
+import az.company.qwisedemoapp.model.dto.response.UserFileResponseDto;
 import az.company.qwisedemoapp.service.auth.AuthService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -1,8 +1,8 @@
 package az.company.qwisedemoapp.mapper;
 
 import az.company.qwisedemoapp.domain.entity.UserPacket;
-import az.company.qwisedemoapp.model.dto.UserPacketResponseDto;
-import az.company.qwisedemoapp.model.request.AssignPacketRequest;
+import az.company.qwisedemoapp.model.dto.request.AssignPacketRequestDto;
+import az.company.qwisedemoapp.model.dto.response.UserPacketResponseDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
@@ -37,7 +37,7 @@ public interface UserPacketMapper {
     @Mapping(target = "updatedBy", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
-    UserPacket toEntity(AssignPacketRequest request);
+    UserPacket toEntity(AssignPacketRequestDto request);
 
     UserPacket toEntity(UserPacketResponseDto dto);
 }

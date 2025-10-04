@@ -1,9 +1,9 @@
 package az.company.qwisedemoapp.mapper;
 
 import az.company.qwisedemoapp.domain.entity.Packet;
-import az.company.qwisedemoapp.model.dto.PacketResponseDto;
-import az.company.qwisedemoapp.model.request.CreatePacketRequest;
-import az.company.qwisedemoapp.model.request.UpdatePacketRequest;
+import az.company.qwisedemoapp.model.dto.request.UpdatePacketRequestDto;
+import az.company.qwisedemoapp.model.dto.response.PacketResponseDto;
+import az.company.qwisedemoapp.model.dto.request.CreatePacketRequestDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -36,7 +36,7 @@ public interface PacketMapper {
     @Mapping(target = "updatedBy", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
-    Packet toEntity(CreatePacketRequest request);
+    Packet toEntity(CreatePacketRequestDto request);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "author", ignore = true)
@@ -46,7 +46,7 @@ public interface PacketMapper {
     @Mapping(target = "updatedBy", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
-    Packet toEntity(UpdatePacketRequest request, @MappingTarget Packet entity);
+    Packet toEntity(UpdatePacketRequestDto request, @MappingTarget Packet entity);
 
     Packet toEntity(PacketResponseDto packetDto);
 }
