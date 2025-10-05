@@ -1,7 +1,7 @@
 package az.company.qwisedemoapp.controller;
 
-import az.company.qwisedemoapp.model.dto.PageableResponseDto;
-import az.company.qwisedemoapp.model.dto.UserFileResponseDto;
+import az.company.qwisedemoapp.model.dto.response.PageableResponseDto;
+import az.company.qwisedemoapp.model.dto.response.UserFileResponseDto;
 import az.company.qwisedemoapp.service.UserFileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

@@ -4,9 +4,9 @@ import az.company.qwisedemoapp.domain.entity.User;
 import az.company.qwisedemoapp.domain.repository.UserRepository;
 import az.company.qwisedemoapp.exception.NotFoundException;
 import az.company.qwisedemoapp.mapper.UserMapper;
-import az.company.qwisedemoapp.model.dto.UserResponseDto;
+import az.company.qwisedemoapp.model.dto.response.UserResponseDto;
 import az.company.qwisedemoapp.model.enums.UserStatus;
-import az.company.qwisedemoapp.model.request.UpdateUserRequest;
+import az.company.qwisedemoapp.model.dto.request.UpdateUserRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -43,7 +43,7 @@ public class UserService {
     }
 
     @Transactional
-    public UserResponseDto updateUser(UpdateUserRequest request) {
+    public UserResponseDto updateUser(UpdateUserRequestDto request) {
         User entity = getEntity();
         entity.setFullName(request.getFullName());
         entity.setPhoneNumber(request.getPhoneNumber());

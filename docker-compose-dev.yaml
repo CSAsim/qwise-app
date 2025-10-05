@@ -1,0 +1,54 @@
+version: "3.9"
+
+services:
+  qwise-app:
+    image: qwise-app:1.0
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: java-app-container
+    ports:
+      - "7775:7775"
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      - SPRING_DATASOURCE_URL=${DB_URL}
+      - SPRING_DATASOURCE_USERNAME=${DB_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD}
+      - LOG_PATH=${LOG_PATH}
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+      - GMAIL_USERNAME=${GMAIL_USERNAME}
+      - GMAIL_APP_PASSWORD=${GMAIL_APP_PASSWORD}
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - shared-net
+    volumes:
+      - ./logs:/app/logs
+
+  db:
+    image: postgres:latest
+    container_name: qwise-db-container
+    environment:
+      POSTGRES_DB: qwise-db
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./db_data:/var/lib/postgresql/data
+    networks:
+      - shared-net
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "qwise-user", "-d", "qwise-db" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  db_data:
+  logs:
+networks:
+  shared-net:
+    driver: bridge

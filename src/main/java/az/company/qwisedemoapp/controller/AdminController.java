@@ -1,19 +1,18 @@
 package az.company.qwisedemoapp.controller;
 
-import az.company.qwisedemoapp.model.dto.FileResponseDto;
-import az.company.qwisedemoapp.model.dto.PacketResponseDto;
-import az.company.qwisedemoapp.model.dto.PageableResponseDto;
-import az.company.qwisedemoapp.model.dto.UserResponseDto;
-import az.company.qwisedemoapp.model.request.CreateFileRequest;
-import az.company.qwisedemoapp.model.request.CreatePacketRequest;
-import az.company.qwisedemoapp.model.request.UpdateFileRequest;
-import az.company.qwisedemoapp.model.request.UpdatePacketRequest;
+import az.company.qwisedemoapp.model.dto.request.CreatePacketRequestDto;
+import az.company.qwisedemoapp.model.dto.request.UpdateFileRequestDto;
+import az.company.qwisedemoapp.model.dto.request.UpdatePacketRequestDto;
+import az.company.qwisedemoapp.model.dto.response.FileResponseDto;
+import az.company.qwisedemoapp.model.dto.response.PacketResponseDto;
+import az.company.qwisedemoapp.model.dto.response.PageableResponseDto;
+import az.company.qwisedemoapp.model.dto.response.UserResponseDto;
+import az.company.qwisedemoapp.model.dto.request.CreateFileRequestDto;
 import az.company.qwisedemoapp.service.FileService;
 import az.company.qwisedemoapp.service.PacketService;
 import az.company.qwisedemoapp.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -59,7 +58,7 @@ public class AdminController {
     //Packet operations
 
     @PostMapping("/packet/new-packet")
-    public ResponseEntity<PacketResponseDto> create(@Valid @RequestBody CreatePacketRequest request) {
+    public ResponseEntity<PacketResponseDto> create(@Valid @RequestBody CreatePacketRequestDto request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(packetService.createPacket(request));
     }
 
@@ -71,7 +70,7 @@ public class AdminController {
     @PutMapping("/packet/update-packet/{id}")
     public ResponseEntity<PacketResponseDto> update(
             @PathVariable Long id,
-            @Valid @RequestBody UpdatePacketRequest request
+            @Valid @RequestBody UpdatePacketRequestDto request
     ) {
         return ResponseEntity.ok(packetService.updatePacket(id, request));
     }
@@ -84,7 +83,7 @@ public class AdminController {
 
     //File operations
     @PostMapping("/file/new-file")
-    public ResponseEntity<FileResponseDto> createFile(@Valid @RequestBody CreateFileRequest request) {
+    public ResponseEntity<FileResponseDto> createFile(@Valid @RequestBody CreateFileRequestDto request) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(fileService.createFile(request));
     }
@@ -96,7 +95,7 @@ public class AdminController {
 
     @PostMapping("/file/update-file/{id}")
     public ResponseEntity<FileResponseDto> updateFile(@PathVariable Long id,
-                                                      @Valid @RequestBody UpdateFileRequest request) {
+                                                      @Valid @RequestBody UpdateFileRequestDto request) {
         return ResponseEntity.ok(fileService.updateFile(id, request));
     }
 

@@ -1,6 +1,8 @@
 package az.company.qwisedemoapp.domain.entity;
 
+import az.company.qwisedemoapp.domain.entity.test.answer.UserAnswer;
 import az.company.qwisedemoapp.model.enums.PacketUsageStatus;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -8,6 +10,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,6 +18,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -42,4 +47,8 @@ public class UserPacket extends BaseEntity {
     @JoinColumn(name = "student_id")
     @ToString.Exclude
     private User student;
+
+    @ToString.Exclude
+    @OneToMany(mappedBy = "userPacket", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<UserAnswer> answers;
 }

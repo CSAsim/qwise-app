@@ -1,7 +1,7 @@
 package az.company.qwisedemoapp.controller;
 
-import az.company.qwisedemoapp.model.dto.UserResponseDto;
-import az.company.qwisedemoapp.model.request.UpdateUserRequest;
+import az.company.qwisedemoapp.model.dto.response.UserResponseDto;
+import az.company.qwisedemoapp.model.dto.request.UpdateUserRequestDto;
 import az.company.qwisedemoapp.service.UserService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
@@ -35,7 +35,7 @@ public class UserController {
     }
 
     @PutMapping("/update-user")
-    public ResponseEntity<UserResponseDto> update(@RequestBody @Valid UpdateUserRequest request) {
+    public ResponseEntity<UserResponseDto> update(@RequestBody @Valid UpdateUserRequestDto request) {
         return ResponseEntity.ok(userService.updateUser(request));
     }
 }

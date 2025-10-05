@@ -1,7 +1,7 @@
 package az.company.qwisedemoapp.filter;
 
 import az.company.qwisedemoapp.domain.entity.File;
-import az.company.qwisedemoapp.model.request.FilteredRequest;
+import az.company.qwisedemoapp.model.dto.request.FilteredRequestDto;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -10,7 +10,7 @@ public class FileSpecificationFilter {
     private FileSpecificationFilter() {
     }
 
-    public static Specification<File> byFilters(FilteredRequest request) {
+    public static Specification<File> byFilters(FilteredRequestDto request) {
 
         return (root, query, criterialBuilder) -> {
             Predicate predicate = criterialBuilder.conjunction();
