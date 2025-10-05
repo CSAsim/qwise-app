@@ -6,6 +6,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -25,11 +26,13 @@ import java.util.List;
 @Table(name = "matching_questions")
 public class MatchingQuestion extends Question {
 
+    @Builder.Default
     @ToString.Exclude
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MatchingPair> pairs = new ArrayList<>();
 
+    @Builder.Default
     @ToString.Exclude
-    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "matchingQuestion", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MatchingSelection> correctSelections = new ArrayList<>();
 }

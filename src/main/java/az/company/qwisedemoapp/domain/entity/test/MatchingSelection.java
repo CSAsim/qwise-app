@@ -11,6 +11,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -32,6 +33,7 @@ public class MatchingSelection extends BaseEntity {
 
     private String leftKey;
 
+    @Builder.Default
     @ElementCollection
     @CollectionTable(name = "matching_selection_values", joinColumns = @JoinColumn(name = "selection_id"))
     @Column(name = "right_value")
