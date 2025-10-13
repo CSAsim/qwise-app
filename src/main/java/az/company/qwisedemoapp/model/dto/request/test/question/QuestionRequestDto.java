@@ -16,7 +16,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreateQuestionRequestDto {
+public class QuestionRequestDto {
 
     @NotBlank
     private Long questionNumber;

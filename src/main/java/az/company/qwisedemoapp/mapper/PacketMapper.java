@@ -7,19 +7,22 @@ import az.company.qwisedemoapp.model.dto.request.CreatePacketRequestDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.factory.Mappers;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
 
 @Mapper(componentModel = "spring",
-        nullValuePropertyMappingStrategy = org.mapstruct.NullValuePropertyMappingStrategy.IGNORE)
+        uses = {QuestionMapper.class, UserMapper.class},
+        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface PacketMapper {
 
     PacketMapper INSTANCE = Mappers.getMapper(PacketMapper.class);
 
     @Mapping(target = "authorName", source = "author.fullName")
     @Mapping(target = "authorId", source = "author.id")
+    @Mapping(target = "questions", source = "questions")
     PacketResponseDto toDto(Packet entity);
 
     List<PacketResponseDto> toDtoList(List<Packet> entities);
@@ -36,6 +39,7 @@ public interface PacketMapper {
     @Mapping(target = "updatedBy", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
+    @Mapping(target = "questions", ignore = true)
     Packet toEntity(CreatePacketRequestDto request);
 
     @Mapping(target = "id", ignore = true)
@@ -46,7 +50,6 @@ public interface PacketMapper {
     @Mapping(target = "updatedBy", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
+    @Mapping(target = "questions", ignore = true)
     Packet toEntity(UpdatePacketRequestDto request, @MappingTarget Packet entity);
-
-    Packet toEntity(PacketResponseDto packetDto);
 }

@@ -33,6 +33,6 @@ public class MatchingQuestion extends Question {
 
     @Builder.Default
     @ToString.Exclude
-    @OneToMany(mappedBy = "matchingQuestion", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MatchingSelection> correctSelections = new ArrayList<>();
 }
