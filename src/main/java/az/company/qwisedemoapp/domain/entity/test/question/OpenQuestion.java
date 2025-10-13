@@ -19,7 +19,7 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "open_tests")
-public class OpenQuestion extends BaseEntity {
+public class OpenQuestion extends Question {
 
     @Column(name = "input_format", nullable = false)
     private String inputFormat;

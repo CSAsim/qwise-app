@@ -1,10 +1,9 @@
-package az.company.qwisedemoapp.model.dto.request.test.question;
+package az.company.qwisedemoapp.model.dto.response.test.question;
 
 import az.company.qwisedemoapp.model.dto.MatchingPairDto;
 import az.company.qwisedemoapp.model.dto.MatchingSelectionDto;
 import az.company.qwisedemoapp.model.dto.OptionDto;
 import az.company.qwisedemoapp.model.enums.TestType;
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,22 +15,20 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreateQuestionRequestDto {
+public class QuestionResponseDto {
 
-    @NotBlank
+    private Long id;
+
     private Long questionNumber;
 
-    @NotBlank
     private TestType testType;
 
-    @NotBlank
     private String questionText;
 
     private String questionImage;
 
     private String hintText;
 
-    @NotBlank
     private Long packetId;
 
     //For closed question

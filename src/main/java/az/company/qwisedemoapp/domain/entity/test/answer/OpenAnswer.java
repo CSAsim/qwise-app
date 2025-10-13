@@ -1,5 +1,6 @@
 package az.company.qwisedemoapp.domain.entity.test.answer;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -19,5 +20,6 @@ import lombok.experimental.SuperBuilder;
 @Table(name = "open_answers")
 public class OpenAnswer extends UserAnswer {
 
+    @Column(name = "answer")
     private String answer;
 }

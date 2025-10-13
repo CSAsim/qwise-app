@@ -43,5 +43,5 @@ public class MatchingSelection extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "question_id")
-    private MatchingQuestion matchingQuestion;
+    private MatchingQuestion question;
 }
