@@ -11,13 +11,10 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -60,7 +57,8 @@ public class File extends BaseEntity {
 
     @OneToMany(mappedBy = "file", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @ToString.Exclude
-    private List<UserFile> enrolledStudents;
+    @Builder.Default
+    private List<UserFile> enrolledStudents = new ArrayList<>();
 
     @ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "author_id")

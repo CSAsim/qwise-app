@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import java.util.List;
 
 @Mapper(componentModel = "spring",
+        uses = {QuestionMapper.class},
         nullValuePropertyMappingStrategy = org.mapstruct.NullValuePropertyMappingStrategy.IGNORE)
 public interface UserPacketMapper {
 
@@ -20,6 +21,7 @@ public interface UserPacketMapper {
     @Mapping(target = "packet", source = "packet")
     @Mapping(target = "packet.authorName", source = "packet.author.fullName")
     @Mapping(target = "packet.authorId", source = "packet.author.id")
+    @Mapping(target = "packet.questions", source = "packet.questions")
     @Mapping(target = "enrolledAt", source = "createdAt")
     UserPacketResponseDto toDto(UserPacket entity);
 
@@ -38,6 +40,4 @@ public interface UserPacketMapper {
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     UserPacket toEntity(AssignPacketRequestDto request);
-
-    UserPacket toEntity(UserPacketResponseDto dto);
 }

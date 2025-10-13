@@ -25,7 +25,7 @@ services:
     networks:
       - shared-net
     volumes:
-      - ./logs:/app/logs
+      - logs:/app/logs
 
   db:
     image: postgres:latest
@@ -37,7 +37,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ./db_data:/var/lib/postgresql/data
+      - db_data:/var/lib/postgresql/data
     networks:
       - shared-net
     healthcheck:
