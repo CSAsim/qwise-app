@@ -32,6 +32,11 @@ public class GlobalExceptionHandler {
         return buildResponse(ErrorCode.ALREADY_EXISTS, e.getMessage(), HttpStatus.BAD_REQUEST, null);
     }
 
+    @ExceptionHandler(InvalidInputException.class)
+    public ResponseEntity<GlobalErrorResponse> handleInvalidInputException(InvalidInputException e) {
+        return buildResponse(ErrorCode.INVALID_INPUT, e.getMessage(), HttpStatus.BAD_REQUEST, null);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<GlobalErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         List<String> errors = e.getBindingResult().getFieldErrors().stream()
