@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Validated
 @RestController
-@RequestMapping("/api/v1/qwise-app/admin")
+@RequestMapping("/admin")
 @RequiredArgsConstructor
 public class AdminController {
 
