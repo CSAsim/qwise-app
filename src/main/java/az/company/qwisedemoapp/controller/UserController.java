@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Validated
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/qwise-app/users")
+@RequestMapping("/users")
 @SecurityRequirement(name = "bearerAuth")
 public class UserController {
 
