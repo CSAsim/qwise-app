@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Validated
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/packets")
+@RequestMapping("/api/v1/qwise-app/packets")
 public class PacketController {
 
     private final PacketService packetService;

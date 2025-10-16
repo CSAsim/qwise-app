@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Validated
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/user/packets")
+@RequestMapping("/api/v1/qwise-app/user/packets")
 public class UserPacketController {
 
 

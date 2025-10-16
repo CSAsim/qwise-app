@@ -18,7 +18,6 @@ public class CorsConfig {
                         .allowedOrigins(
                                 "http://localhost:3000",   // React local
                                 "http://localhost:7775",   // Swagger local
-                                "http://qwise.codepays.dev", // deploy olunmuş frontend
                                 "https://qwise.codepays.dev"
                         )
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")

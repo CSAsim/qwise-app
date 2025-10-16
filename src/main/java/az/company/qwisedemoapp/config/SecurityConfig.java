@@ -52,10 +52,10 @@ public class SecurityConfig {
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint((request, response, authException) ->
+                                response.sendError(HttpServletResponse.SC_UNAUTHORIZED))
                         .accessDeniedHandler((req, res, ex) ->
-                                res.setStatus(HttpServletResponse.SC_UNAUTHORIZED))
-                        .accessDeniedHandler((req, res, ex) ->
-                                res.setStatus(HttpServletResponse.SC_FORBIDDEN))
+                                res.sendError(HttpServletResponse.SC_FORBIDDEN))
                 )
                 .build();
     }
@@ -67,7 +67,6 @@ public class SecurityConfig {
         configuration.setAllowedOrigins(List.of(
                 "http://localhost:3000",
                 "http://localhost:7775",   // Swagger UI
-                "http://qwise.codepays.dev", // Deploy frontend
                 "https://qwise.codepays.dev"
         ));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
