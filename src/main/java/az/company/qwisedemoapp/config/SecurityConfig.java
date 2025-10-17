@@ -53,7 +53,7 @@ public class SecurityConfig {
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(exception -> exception
-                        .authenticationEntryPoint((request, response, authException) ->
+                        .accessDeniedHandler((request, response, authException) ->
                                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED))
                         .accessDeniedHandler((req, res, ex) ->
                                 res.sendError(HttpServletResponse.SC_FORBIDDEN))
