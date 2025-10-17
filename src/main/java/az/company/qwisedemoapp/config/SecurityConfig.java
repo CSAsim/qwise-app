@@ -42,7 +42,7 @@ public class SecurityConfig {
                                 .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth -> oauth
-                       .loginPage("/oauth2/authorization/google")
+                       .loginPage("/login/oauth2/authorization/google")
                        .successHandler(oAuth2LoginSuccessHandler)
                 )
                 .formLogin(AbstractHttpConfigurer::disable)

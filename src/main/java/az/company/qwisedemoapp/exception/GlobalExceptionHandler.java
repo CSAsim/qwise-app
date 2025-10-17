@@ -46,47 +46,47 @@ public class GlobalExceptionHandler {
         return buildResponse(ErrorCode.INVALID_INPUT, "Validation failed", HttpStatus.BAD_REQUEST, errors);
     }
 
-    @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<GlobalErrorResponse> handleConstraintViolationException(ConstraintViolationException e) {
-        List<String> errors = e.getConstraintViolations().stream()
-                .map(this::formatViolation)
-                .toList();
+//    @ExceptionHandler(ConstraintViolationException.class)
+//    public ResponseEntity<GlobalErrorResponse> handleConstraintViolationException(ConstraintViolationException e) {
+//        List<String> errors = e.getConstraintViolations().stream()
+//                .map(this::formatViolation)
+//                .toList();
+//
+//        return buildResponse(ErrorCode.BAD_REQUEST, "Validation failed", HttpStatus.BAD_REQUEST, errors);
+//    }
+//
+//    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+//    public ResponseEntity<GlobalErrorResponse> handleArgumentTypeMismatchException(MethodArgumentTypeMismatchException e) {
+//        String typeName = Optional.ofNullable(e.getRequiredType())
+//                .map(Class::getSimpleName)
+//                .orElse("unknown");
+//
+//        String message = String.format("Parameter '%s' should be of type %s",
+//                e.getName(), e.getRequiredType() != null ? typeName : "unknown");
+//
+//        return buildResponse(ErrorCode.BAD_REQUEST, message, HttpStatus.BAD_REQUEST, null);
+//    }
+//
+//    @ExceptionHandler(MissingRequestHeaderException.class)
+//    public ResponseEntity<GlobalErrorResponse> handleMissingRequestHeaderException(MissingRequestHeaderException e) {
+//        String message = String.format("Missing request header: %s", e.getHeaderName());
+//        return buildResponse(ErrorCode.BAD_REQUEST, message, HttpStatus.BAD_REQUEST, null);
+//    }
+//
+//    @ExceptionHandler(MultipartException.class)
+//    public ResponseEntity<GlobalErrorResponse> handleMultipartException(MultipartException e) {
+//        String message = "PacketFile upload error";
+//        List<String> errors = Collections.singletonList(e.getMessage());
+//
+//        return buildResponse(ErrorCode.BAD_REQUEST, message, HttpStatus.BAD_REQUEST, errors);
+//    }
 
-        return buildResponse(ErrorCode.BAD_REQUEST, "Validation failed", HttpStatus.BAD_REQUEST, errors);
-    }
-
-    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public ResponseEntity<GlobalErrorResponse> handleArgumentTypeMismatchException(MethodArgumentTypeMismatchException e) {
-        String typeName = Optional.ofNullable(e.getRequiredType())
-                .map(Class::getSimpleName)
-                .orElse("unknown");
-
-        String message = String.format("Parameter '%s' should be of type %s",
-                e.getName(), e.getRequiredType() != null ? typeName : "unknown");
-
-        return buildResponse(ErrorCode.BAD_REQUEST, message, HttpStatus.BAD_REQUEST, null);
-    }
-
-    @ExceptionHandler(MissingRequestHeaderException.class)
-    public ResponseEntity<GlobalErrorResponse> handleMissingRequestHeaderException(MissingRequestHeaderException e) {
-        String message = String.format("Missing request header: %s", e.getHeaderName());
-        return buildResponse(ErrorCode.BAD_REQUEST, message, HttpStatus.BAD_REQUEST, null);
-    }
-
-    @ExceptionHandler(MultipartException.class)
-    public ResponseEntity<GlobalErrorResponse> handleMultipartException(MultipartException e) {
-        String message = "PacketFile upload error";
-        List<String> errors = Collections.singletonList(e.getMessage());
-
-        return buildResponse(ErrorCode.BAD_REQUEST, message, HttpStatus.BAD_REQUEST, errors);
-    }
-
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<GlobalErrorResponse> handleException(Exception e) {
-        e.printStackTrace();
-
-        return buildResponse(ErrorCode.BAD_REQUEST, null, HttpStatus.BAD_REQUEST, null);
-    }
+//    @ExceptionHandler(Exception.class)
+//    public ResponseEntity<GlobalErrorResponse> handleException(Exception e) {
+//        e.printStackTrace();
+//
+//        return buildResponse(ErrorCode.BAD_REQUEST, null, HttpStatus.BAD_REQUEST, null);
+//    }
 
     @ExceptionHandler(UnsupportedJwtException.class)
     public ResponseEntity<GlobalErrorResponse> handleUnsupportedJwtException(UnsupportedJwtException e) {
