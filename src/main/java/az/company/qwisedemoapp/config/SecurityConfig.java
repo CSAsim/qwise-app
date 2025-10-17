@@ -41,8 +41,9 @@ public class SecurityConfig {
                                 .requestMatchers(EndpointConstants.ADMIN_ENDPOINTS).hasRole("ADMIN")
                                 .anyRequest().authenticated()
                 )
-                .oauth2Login(oauth ->
-                        oauth.successHandler(oAuth2LoginSuccessHandler)
+                .oauth2Login(oauth -> oauth
+                       .loginPage("/oauth2/authorization/google")
+                       .successHandler(oAuth2LoginSuccessHandler)
                 )
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
