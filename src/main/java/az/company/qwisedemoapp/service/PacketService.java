@@ -35,6 +35,7 @@ public class PacketService {
     private final PacketRepository packetRepository;
     private final UserRepository userRepository;
     private final QuestionService questionService;
+    private final MinioService minioService;
     private final PacketMapper packetMapper;
 
     public Page<PacketResponseDto> findAllPackets(FilteredRequestDto request, Pageable pageable) {
