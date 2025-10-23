@@ -33,9 +33,8 @@ public class UserAnswerService {
     @Transactional
     public UserAnswerResponseDto saveUserAnswer(UserPacketAttempt attempt, List<UserAnswerRequestDto> answers) {
 
+        log.info("Saving user answers for attempt {}", attempt.getId());
         UserPacket userPacket = attempt.getUserPacket();
-
-
         List<UserAnswer> userAnswers = userAnswerMapper.toEntityList(attempt, answers);
         attempt.getAnswers().clear();
         for (UserAnswer a : userAnswers) {
