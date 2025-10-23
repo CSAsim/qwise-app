@@ -24,18 +24,6 @@ spring:
             scope: openid, profile, email
             redirect-uri: "https://qwise.codepays.dev/login/oauth2/code/google"
             client-name: Google
-  #          github:
-  #            client-id: ${GITHUB_CLIENT_ID} # GitHub Developer Settings-dən alın
-  #            client-secret: ${GITHUB_CLIENT_SECRET} # GitHub Developer Settings-dən alın
-  #            scope: user:email, read:user
-  #            redirect-uri: "{baseUrl}/login/oauth2/code/github"
-  #            client-name: GitHub
-  #        provider:
-  #          github:
-  #            authorization-uri: https://github.com/login/oauth/authorize
-  #            token-uri: https://github.com/login/oauth/access_token
-  #            user-info-uri: https://api.github.com/user
-  #            user-name-attribute: login
   mail:
     host: smtp.gmail.com
     port: 587
@@ -47,6 +35,17 @@ spring:
           auth: true
           starttls:
             enable: true
+
+minio:
+  url: qwise.codepays.dev
+  port: 9000
+  access-key: ${PROD_MINIO_ROOT_USER}
+  secret-key: ${PROD_MINIO_ROOT_PASSWORD}
+  secure: true
+  buckets:
+    question-images: question-images
+    user-profiles: user-avatars
+    thumbnail_images: thumbnail_images
 
 logging:
   level:
