@@ -3,7 +3,7 @@ package az.company.qwisedemoapp.domain.entity.test.question;
 import az.company.qwisedemoapp.domain.entity.BaseEntity;
 import az.company.qwisedemoapp.domain.entity.Packet;
 import az.company.qwisedemoapp.domain.entity.test.answer.UserAnswer;
-import az.company.qwisedemoapp.model.enums.TestType;
+import az.company.qwisedemoapp.model.enums.QuestionType;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -16,11 +16,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.util.List;
@@ -41,7 +37,7 @@ public abstract class Question extends BaseEntity {
 
     @Column(name = "type", nullable = false)
     @Enumerated(EnumType.STRING)
-    private TestType type;
+    private QuestionType type;
 
     @Column(name = "question", nullable = false)
     private String questionText;
@@ -52,8 +48,18 @@ public abstract class Question extends BaseEntity {
     @Column(name = "hint_text")
     private String hintText;
 
+    @Column(name = "description")
+    private String description;
+
+    @Column(name = "explanation_video_url")
+    private String explanationVideoUrl;
+
+    @Builder.Default
+    @Column(name = "score", nullable = false)
+    private Float score = 0.0f;
+
     @ManyToOne
-    @JoinColumn(name = "packet_id", nullable = false)
+    @JoinColumn(name = "packet_id")
     private Packet packet;
 
     @ToString.Exclude

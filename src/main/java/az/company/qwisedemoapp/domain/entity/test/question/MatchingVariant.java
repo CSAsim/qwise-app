@@ -20,8 +20,8 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "matching_pair")
-public class MatchingPair extends BaseEntity {
+@Table(name = "matching_variants")
+public class MatchingVariant extends BaseEntity {
 
     @Column(name = "left_item", nullable = false)
     private String leftItem;

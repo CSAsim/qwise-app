@@ -1,10 +1,7 @@
 package az.company.qwisedemoapp.model.dto.response.test.question;
 
 import az.company.qwisedemoapp.model.dto.OptionDto;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
@@ -12,7 +9,8 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ClosedQuestionResponseDto {
+@EqualsAndHashCode(callSuper = true)
+public class ClosedQuestionResponseDto extends QuestionResponseDto {
 
     List<OptionDto> options;
 }
