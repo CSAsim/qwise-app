@@ -22,7 +22,7 @@ public interface PacketMapper {
 
     @Mapping(target = "authorName", source = "author.fullName")
     @Mapping(target = "authorId", source = "author.id")
-    @Mapping(target = "questions", source = "questions")
+    @Mapping(target = "questions", ignore = true)
     PacketResponseDto toDto(Packet entity);
 
     List<PacketResponseDto> toDtoList(List<Packet> entities);

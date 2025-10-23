@@ -18,7 +18,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "open_tests")
+@Table(name = "open_questions")
 public class OpenQuestion extends Question {
 
     @Column(name = "input_format", nullable = false)

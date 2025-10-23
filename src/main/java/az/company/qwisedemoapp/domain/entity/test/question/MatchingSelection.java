@@ -1,8 +1,6 @@
-package az.company.qwisedemoapp.domain.entity.test;
+package az.company.qwisedemoapp.domain.entity.test.question;
 
 import az.company.qwisedemoapp.domain.entity.BaseEntity;
-import az.company.qwisedemoapp.domain.entity.test.answer.MatchingAnswer;
-import az.company.qwisedemoapp.domain.entity.test.question.MatchingQuestion;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -38,10 +36,6 @@ public class MatchingSelection extends BaseEntity {
     @CollectionTable(name = "matching_selection_values", joinColumns = @JoinColumn(name = "selection_id"))
     @Column(name = "right_value")
     private List<String> chosenRightKeys = new ArrayList<>();
-
-    @ManyToOne
-    @JoinColumn(name = "answer_id")
-    private MatchingAnswer answer;
 
     @ManyToOne
     @JoinColumn(name = "question_id")

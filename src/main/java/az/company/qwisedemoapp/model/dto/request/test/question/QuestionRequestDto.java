@@ -1,9 +1,10 @@
 package az.company.qwisedemoapp.model.dto.request.test.question;
 
-import az.company.qwisedemoapp.model.dto.MatchingPairDto;
+import az.company.qwisedemoapp.model.dto.MatchingListDto;
+import az.company.qwisedemoapp.model.dto.MatchingVariantDto;
 import az.company.qwisedemoapp.model.dto.MatchingSelectionDto;
 import az.company.qwisedemoapp.model.dto.OptionDto;
-import az.company.qwisedemoapp.model.enums.TestType;
+import az.company.qwisedemoapp.model.enums.QuestionType;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,7 +23,7 @@ public class QuestionRequestDto {
     private Long questionNumber;
 
     @NotBlank
-    private TestType testType;
+    private QuestionType questionType;
 
     @NotBlank
     private String questionText;
@@ -31,8 +32,14 @@ public class QuestionRequestDto {
 
     private String hintText;
 
+    private String description;
+
+    private String explanationVideoUrl;
+
     @NotBlank
     private Long packetId;
+
+    private Float score;
 
     //For closed question
     private List<OptionDto> options;
@@ -43,7 +50,9 @@ public class QuestionRequestDto {
     private String answer;
 
     //For matching question
-    private List<MatchingPairDto> matchingPairs;
+    private List<MatchingListDto> matchingLists;
+
+    private List<MatchingVariantDto> matchingVariants;
 
     private List<MatchingSelectionDto> correctSelections;
 }

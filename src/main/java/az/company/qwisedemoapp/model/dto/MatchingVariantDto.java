@@ -1,4 +1,4 @@
-package az.company.qwisedemoapp.model.dto.request.test.question;
+package az.company.qwisedemoapp.model.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -10,11 +10,13 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreateOpenQuestionRequestDto {
+public class MatchingVariantDto {
+
+    private Long id;
 
     @NotBlank
-    private String inputFormat;
+    private String leftItem;
 
     @NotBlank
-    private String answer;
+    private String rightItem;
 }

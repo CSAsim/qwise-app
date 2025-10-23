@@ -39,5 +39,6 @@ public interface UserPacketMapper {
     @Mapping(target = "updatedBy", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
+    @Mapping(target = "attempts", ignore = true)
     UserPacket toEntity(AssignPacketRequestDto request);
 }

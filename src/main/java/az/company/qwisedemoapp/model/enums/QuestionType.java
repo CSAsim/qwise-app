@@ -1,6 +1,6 @@
 package az.company.qwisedemoapp.model.enums;
 
-public enum TestType {
+public enum QuestionType {
 
     OPEN,
     CLOSED,
