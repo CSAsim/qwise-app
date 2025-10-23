@@ -37,14 +37,14 @@ public class GlobalExceptionHandler {
         return buildResponse(ErrorCode.INVALID_INPUT, e.getMessage(), HttpStatus.BAD_REQUEST, null);
     }
 
-//    @ExceptionHandler(MethodArgumentNotValidException.class)
-//    public ResponseEntity<GlobalErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
-//        List<String> errors = e.getBindingResult().getFieldErrors().stream()
-//                .map(error -> error.getField() + ": " + error.getDefaultMessage())
-//                .toList();
-//
-//        return buildResponse(ErrorCode.INVALID_INPUT, "Validation failed", HttpStatus.BAD_REQUEST, errors);
-//    }
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<GlobalErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+        List<String> errors = e.getBindingResult().getFieldErrors().stream()
+                .map(error -> error.getField() + ": " + error.getDefaultMessage())
+                .toList();
+
+        return buildResponse(ErrorCode.INVALID_INPUT, "Validation failed", HttpStatus.BAD_REQUEST, errors);
+    }
 
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<GlobalErrorResponse> handleConstraintViolationException(ConstraintViolationException e) {

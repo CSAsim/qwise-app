@@ -8,25 +8,30 @@ import io.minio.MakeBucketArgs;
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
 import io.minio.errors.MinioException;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
 import java.util.UUID;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class MinioService {
 
 
     private final MinioClient minioClient;
     private final MinioProperties minioProperties;
 
+    @Transactional
     public String uploadFile(MultipartFile file, FileCategory category) {
+        log.info("Uploading file: {}", file.getOriginalFilename());
         try {
-            if(file.isEmpty()) {
+            if (file.isEmpty()) {
                 return null;
             }
             String bucketName = switch (category) {
@@ -59,6 +64,7 @@ public class MinioService {
                                 .build()
                 );
             }
+            log.info("File uploaded successfully: {}", objectName);
 
             String url = minioProperties.getUrl();
             boolean secure = minioProperties.isSecure();
@@ -76,17 +82,15 @@ public class MinioService {
     @Transactional
     public String updateFile(MultipartFile newFile, String oldFileUrl, FileCategory category) {
         try {
-
             if (newFile == null || newFile.isEmpty()) {
                 throw new InvalidInputException("New file cannot be null or empty");
             }
-
+            log.info("Updating file: {}", newFile.getOriginalFilename());
             if (oldFileUrl != null && !oldFileUrl.isEmpty()) {
                 deleteFile(oldFileUrl);
             }
 
             return uploadFile(newFile, category);
-
         } catch (Exception e) {
             throw new RuntimeException("File update failed: " + e.getMessage(), e);
         }
@@ -94,6 +98,7 @@ public class MinioService {
 
     @Transactional
     public void deleteFile(String url) {
+        log.info("Deleting file: {}", url);
         try {
             String[] parts = getParts(url);
 
@@ -107,7 +112,7 @@ public class MinioService {
                             .build()
             );
 
-            System.out.printf("✅ File deleted successfully from bucket '%s': %s%n", bucketName, objectName);
+            log.info("File deleted successfully: {}", objectName);
 
         } catch (MinioException e) {
             throw new RuntimeException("Minio error during delete: " + e.getMessage(), e);

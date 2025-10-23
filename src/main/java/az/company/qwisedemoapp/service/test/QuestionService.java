@@ -22,20 +22,26 @@ public class QuestionService {
     private final QuestionRepository questionRepository;
     private final QuestionMapper questionMapper;
 
+    @Transactional
     public List<QuestionResponseDto> createQuestions(Packet packet, List<QuestionRequestDto> questions) {
+        log.info("Creating questions: {}", questions.size());
         List<Question> existingQuestions = questionMapper.toEntityList(questions, packet);
         existingQuestions.forEach(packet::addQuestion);
         questionRepository.saveAll(existingQuestions);
+        log.info("Questions created: {}", existingQuestions.size());
         return questionMapper.toResponseList(existingQuestions);
     }
 
+    @Transactional
     public List<QuestionResponseDto> updateQuestions(Packet packet, List<QuestionRequestDto> questions) {
         if (questions != null && !questions.isEmpty()) {
+            log.info("Updating questions: {}", questions.size());
             List<Question> newQuestions = questionMapper.toEntityList(questions, packet);
             List<QuestionResponseDto> questionResponses = questionMapper.toResponseList(newQuestions);
             newQuestions.forEach(q -> q.setPacket(packet));
             questionRepository.saveAll(newQuestions);
             packet.setQuestions(newQuestions);
+            log.info("Questions updated: {}", newQuestions.size());
             return questionResponses;
         }
         return null;

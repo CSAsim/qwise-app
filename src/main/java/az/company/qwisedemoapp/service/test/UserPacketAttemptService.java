@@ -38,6 +38,7 @@ public class UserPacketAttemptService {
 
     @Transactional
     public UserPacketAttemptResponseDto startAttempt(UserPacketAttemptRequestDto request) {
+        log.info("Starting attempt for user {} and packet {}", request.getUserId(), request.getUserPacketId());
         User user = userRepository.findById(request.getUserId())
                 .orElseThrow(() -> new NotFoundException("User not found"));
         UserPacket userPacket = user.getEnrolledPackets()
@@ -60,12 +61,14 @@ public class UserPacketAttemptService {
         userPacket.getAttempts().add(attempt);
 
         userPacketAttemptRepository.save(attempt);
+        log.info("Attempt started at {}", attempt.getStartedAt());
 
         return userPacketAttemptMapper.toResponseDto(attempt);
     }
 
     @Transactional
     public UserPacketAttemptResponseDto finishAttempt(UserPacketFinishAttemptRequestDto request) {
+        log.info("Finishing attempt {}", request.getAttemptId());
         UserPacketAttempt attempt = userPacketAttemptRepository.findById(request.getAttemptId())
                 .orElseThrow(() -> new NotFoundException("Attempt not found"));
         UserAnswerResponseDto response = userAnswerService
@@ -80,6 +83,7 @@ public class UserPacketAttemptService {
         response.setAnswers(answerResponses);
         UserPacketAttemptResponseDto responseDto = userPacketAttemptMapper.toResponseDto(attempt);
         responseDto.setResult(response);
+        log.info("Attempt finished at {}", attempt.getFinishedAt());
         return responseDto;
     }
 }

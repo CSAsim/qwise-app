@@ -91,6 +91,9 @@ public class User extends BaseEntity {
     @ToString.Exclude
     private List<RefreshToken> refreshTokens;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Contact> contacts;
+
     public void addOtpCode(OtpCode otpCode) {
         otpCodes.add(otpCode);
         otpCode.setUser(this);
