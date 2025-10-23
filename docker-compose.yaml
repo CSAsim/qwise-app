@@ -19,6 +19,8 @@ services:
       - PROD_GOOGLE_CLIENT_SECRET=${PROD_GOOGLE_CLIENT_SECRET}
       - PROD_GMAIL_USERNAME=${PROD_GMAIL_USERNAME}
       - PROD_GMAIL_APP_PASSWORD=${PROD_GMAIL_APP_PASSWORD}
+      - PROD_MINIO_ACCESS_KEY=${PROD_MINIO_ACCESS_KEY}
+      - PROD_MINIO_SECRET_KEY=${PROD_MINIO_SECRET_KEY}
     depends_on:
       db:
         condition: service_healthy
@@ -45,6 +47,22 @@ services:
       interval: 5s
       timeout: 5s
       retries: 10
+
+  minio:
+    image: minio/minio:latest
+    container_name: minio-server
+    restart: always
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: ${PROD_MINIO_ACCESS_KEY}
+      MINIO_ROOT_PASSWORD: ${PROD_MINIO_SECRET_KEY}
+    volumes:
+      - minio_data:/minio-data
+    command: server /data --console-address ":9001"
+    networks:
+      - shared-net
 
 volumes:
   db_data:

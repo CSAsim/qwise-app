@@ -1,5 +1,6 @@
 package az.company.qwisedemoapp.domain.entity;
 
+import az.company.qwisedemoapp.domain.entity.test.UserPacketAttempt;
 import az.company.qwisedemoapp.domain.entity.test.answer.UserAnswer;
 import az.company.qwisedemoapp.model.enums.PacketUsageStatus;
 import jakarta.persistence.CascadeType;
@@ -48,7 +49,16 @@ public class UserPacket extends BaseEntity {
     @ToString.Exclude
     private User student;
 
-    @ToString.Exclude
-    @OneToMany(mappedBy = "userPacket", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<UserAnswer> answers;
+    @OneToMany(mappedBy = "userPacket", cascade = CascadeType.ALL)
+    private List<UserPacketAttempt> attempts;
+
+    public void addAttempt(UserPacketAttempt attempt) {
+        attempts.add(attempt);
+        attempt.setUserPacket(this);
+    }
+
+    public void removeAttempt(UserPacketAttempt attempt) {
+        attempts.remove(attempt);
+        attempt.setUserPacket(null);
+    }
 }

@@ -1,10 +1,6 @@
 package az.company.qwisedemoapp.domain.entity.test.question;
 
-import az.company.qwisedemoapp.domain.entity.test.MatchingSelection;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,7 +25,12 @@ public class MatchingQuestion extends Question {
     @Builder.Default
     @ToString.Exclude
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MatchingPair> pairs = new ArrayList<>();
+    private List<MatchingList> matchingLists = new ArrayList<>();
+
+    @Builder.Default
+    @ToString.Exclude
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MatchingVariant> matchingVariants = new ArrayList<>();
 
     @Builder.Default
     @ToString.Exclude

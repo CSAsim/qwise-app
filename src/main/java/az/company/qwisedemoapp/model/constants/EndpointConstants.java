@@ -5,6 +5,7 @@ public final class EndpointConstants {
 
     public static final String[] PUBLIC_ENDPOINTS = {
             "/api/v1/qwise-app/auth/login",
+            "/api/v1/qwise-app/auth/resend-otp",
             "/api/v1/qwise-app/auth/register",
             "/api/v1/qwise-app/auth/refresh",
             "/api/v1/qwise-app/auth/verify-otp",

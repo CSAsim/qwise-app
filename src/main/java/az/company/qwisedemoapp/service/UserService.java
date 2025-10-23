@@ -56,7 +56,7 @@ public class UserService {
         return new NotFoundException("User not found");
     }
 
-    private User getEntity() {
+    public User getEntity() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         return userRepository.findByEmail(email)
                 .orElseThrow(UserService::notFound);

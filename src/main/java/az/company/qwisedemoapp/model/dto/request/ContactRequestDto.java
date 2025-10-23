@@ -1,4 +1,4 @@
-package az.company.qwisedemoapp.model.dto;
+package az.company.qwisedemoapp.model.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -10,13 +10,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class MatchingPairDto {
-
-    private Long id;
+public class ContactRequestDto {
 
     @NotBlank
-    private String leftItem;
-
-    @NotBlank
-    private String rightItem;
+    private String text;
 }

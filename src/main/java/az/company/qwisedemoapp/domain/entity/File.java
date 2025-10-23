@@ -39,6 +39,7 @@ public class File extends BaseEntity {
     @Column(name = "description")
     private String description;
 
+    @Builder.Default
     @Column(name = "rating", nullable = false)
     private Float rating = 0.0f;
 

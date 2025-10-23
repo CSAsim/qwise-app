@@ -1,6 +1,7 @@
-package az.company.qwisedemoapp.domain.entity.test.question;
+package az.company.qwisedemoapp.domain.entity.test;
 
 import az.company.qwisedemoapp.domain.entity.BaseEntity;
+import az.company.qwisedemoapp.domain.entity.test.question.ClosedQuestion;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;

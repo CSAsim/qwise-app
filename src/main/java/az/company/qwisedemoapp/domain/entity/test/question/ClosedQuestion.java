@@ -1,5 +1,6 @@
 package az.company.qwisedemoapp.domain.entity.test.question;
 
+import az.company.qwisedemoapp.domain.entity.test.Option;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
@@ -22,7 +23,7 @@ import java.util.List;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "closed_tests")
+@Table(name = "closed_questions")
 public class ClosedQuestion extends Question {
 
     @Builder.Default

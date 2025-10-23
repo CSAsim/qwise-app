@@ -1,6 +1,6 @@
 package az.company.qwisedemoapp.domain.entity.test.answer;
 
-import az.company.qwisedemoapp.domain.entity.test.MatchingSelection;
+import az.company.qwisedemoapp.domain.entity.test.question.MatchingSelection;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
@@ -26,8 +26,8 @@ import java.util.List;
 @Table(name = "matching_answers")
 public class MatchingAnswer extends UserAnswer {
 
-    @OneToMany(mappedBy = "answer", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
     @Builder.Default
-    private List<MatchingSelection> selections = new ArrayList<>();
+    @OneToMany(mappedBy = "answer", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MatchingUserSelection> selections = new ArrayList<>();
 }
