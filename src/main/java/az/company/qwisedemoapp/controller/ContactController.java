@@ -21,9 +21,9 @@ public class ContactController {
 
     private final ContactService contactService;
 
-    @GetMapping("/all/{id}")
+    @GetMapping("/all/{userId}")
     public ResponseEntity<PageableResponseDto<ContactResponseDto>> getAll(
-            @PathVariable("id") Long userId,
+            @PathVariable("userId") Long userId,
             @PageableDefault(size = 10) Pageable pageable) {
         Page<ContactResponseDto> page = contactService.findAllByUserId(userId, pageable);
         PageableResponseDto<ContactResponseDto> responseDto = PageableResponseDto.of(
