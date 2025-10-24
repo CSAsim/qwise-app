@@ -30,7 +30,7 @@ public class PacketResponseDto {
 
     private String subCategory;
 
-    private Float rating;
+    private Integer totalQuestionCount;
 
     private Float price;
 

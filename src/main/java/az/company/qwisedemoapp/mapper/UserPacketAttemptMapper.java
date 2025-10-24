@@ -16,6 +16,7 @@ public interface UserPacketAttemptMapper {
 
     @Mapping(target = "userPacketId", source = "userPacket.packet.id")
     @Mapping(target = "result", ignore = true)
+    @Mapping(target = "duration", ignore = true)
     UserPacketAttemptResponseDto toResponseDto(UserPacketAttempt entity);
 
     List<UserPacketAttemptResponseDto> toResponseDtoList(List<UserPacketAttempt> entities);

@@ -20,6 +20,10 @@ public class UserPacketAttemptResponseDto {
     private Integer attemptNumber;
     private LocalDateTime startedAt;
     private LocalDateTime finishedAt;
+    private String duration;
+    private Integer totalCorrectAnswerCount;
+    private Integer totalWrongAnswerCount;
+    private Integer totalSkippedAnswerCount;
     private Float totalScore;
     private UserAnswerResponseDto result;
     private AttemptStatus status;

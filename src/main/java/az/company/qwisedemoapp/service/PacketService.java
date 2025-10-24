@@ -59,11 +59,11 @@ public class PacketService {
         Packet packet = packetMapper.toEntity(request);
         packet.setAuthor(author);
         packet.setStatus(PacketStatus.ACTIVE);
-        packet.setRating(0.0f);
 
         Packet saved = packetRepository.save(packet);
         List<QuestionResponseDto> questionResponseDto = questionService.createQuestions(saved, request.getQuestions());
         PacketResponseDto response = packetMapper.toDto(saved);
+        response.setTotalQuestionCount(request.getQuestions().size());
         response.setQuestions(questionResponseDto);
         return response;
     }
@@ -87,6 +87,7 @@ public class PacketService {
         Packet savedPacket = packetRepository.save(newPacket);
         List<QuestionResponseDto> questions = questionService.updateQuestions(savedPacket, request.getQuestions());
         PacketResponseDto response = packetMapper.toDto(savedPacket);
+        response.setTotalQuestionCount(request.getQuestions().size());
         response.setQuestions(questions);
         log.info("Packet updated: {}", savedPacket);
         return packetMapper.toDto(savedPacket);

@@ -40,9 +40,6 @@ public class Packet extends BaseEntity {
     @Column(name = "category", nullable = false)
     private String category;
 
-    @Column(name = "rating", nullable = false)
-    private Float rating;
-
     @Column(name = "price", nullable = false)
     private Float price;
 

@@ -1,5 +1,6 @@
 package az.company.qwisedemoapp.model.dto.response.test.answer;
 
+import az.company.qwisedemoapp.model.enums.AnswerStatus;
 import az.company.qwisedemoapp.model.enums.QuestionType;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -26,7 +27,7 @@ public abstract class AnswerResponse {
 
     private QuestionType questionType;
 
-    private boolean isCorrect;
+    private AnswerStatus status;
 
     private Float score;
 }

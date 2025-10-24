@@ -15,7 +15,9 @@ import az.company.qwisedemoapp.model.dto.request.test.answer.MatchingAnswerReque
 import az.company.qwisedemoapp.model.dto.request.test.answer.OpenAnswerRequestDto;
 import az.company.qwisedemoapp.model.dto.request.test.answer.UserAnswerRequestDto;
 import az.company.qwisedemoapp.model.dto.response.test.answer.*;
+import az.company.qwisedemoapp.model.enums.AnswerStatus;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -51,22 +53,14 @@ public class UserAnswerMapper {
 
     private AnswerResponse toDto(UserAnswer answer) {
         if (answer instanceof OpenAnswer open) {
-            OpenAnswerResponseDto dto = new OpenAnswerResponseDto();
-            dto.setId(answer.getId());
-            dto.setQuestionId(answer.getQuestion().getId());
-            dto.setQuestionType(answer.getQuestion().getType());
-            dto.setScore(open.isCorrect() ? answer.getQuestion().getScore() : 0.0f);
-            dto.setYourAnswer(open.getAnswer());
-            dto.setCorrectAnswer(((OpenQuestion) answer.getQuestion()).getAnswer());
-            dto.setCorrect(open.isCorrect());
-            return dto;
+            return getOpenAnswerResponseDto(answer, open);
         }
         if (answer instanceof ClosedAnswer closed) {
             ClosedAnswerResponseDto dto = new ClosedAnswerResponseDto();
             dto.setId(answer.getId());
             dto.setQuestionId(answer.getQuestion().getId());
             dto.setQuestionType(answer.getQuestion().getType());
-            dto.setScore(closed.isCorrect() ? answer.getQuestion().getScore() : 0.0f);
+            dto.setScore(closed.getStatus() == AnswerStatus.CORRECT ? answer.getQuestion().getScore() : 0.0f);
             OptionDto optionDto = OptionDto.builder()
                     .id(closed.getOption().getId())
                     .text(closed.getOption().getText())
@@ -78,7 +72,7 @@ public class UserAnswerMapper {
                     .findFirst()
                     .map(o -> new OptionDto(o.getId(), o.getText(), o.isCorrect()))
                     .orElse(null);
-            dto.setCorrect(closed.isCorrect());
+            dto.setStatus(closed.getStatus());
             dto.setYourOption(optionDto);
             dto.setCorrectOption(correctOption);
             return dto;
@@ -89,7 +83,7 @@ public class UserAnswerMapper {
             dto.setId(answer.getId());
             dto.setQuestionId(answer.getQuestion().getId());
             dto.setQuestionType(answer.getQuestion().getType());
-            dto.setScore(matching.isCorrect() ? answer.getQuestion().getScore() : 0.0f);
+            dto.setScore(matching.getStatus() == AnswerStatus.CORRECT ? answer.getQuestion().getScore() : 0.0f);
 
             List<MatchingSelectionDto> matchingSelections = new ArrayList<>();
             for (MatchingUserSelection s : matching.getSelections()) {
@@ -102,10 +96,23 @@ public class UserAnswerMapper {
                 correctSelections.add(new MatchingSelectionDto(ms.getLeftKey(), new ArrayList<>(ms.getChosenRightKeys())));
             }
             dto.setCorrectSelections(correctSelections);
-            dto.setCorrect(matching.isCorrect());
+            dto.setStatus(matching.getStatus());
             return dto;
         }
         throw new IllegalArgumentException("Unsupported answer type: " + answer.getClass());
+    }
+
+    @NotNull
+    private static OpenAnswerResponseDto getOpenAnswerResponseDto(UserAnswer answer, OpenAnswer open) {
+        OpenAnswerResponseDto dto = new OpenAnswerResponseDto();
+        dto.setId(answer.getId());
+        dto.setQuestionId(answer.getQuestion().getId());
+        dto.setQuestionType(answer.getQuestion().getType());
+        dto.setScore(open.getStatus() == AnswerStatus.CORRECT ? answer.getQuestion().getScore() : 0.0f);
+        dto.setYourAnswer(open.getAnswer());
+        dto.setCorrectAnswer(((OpenQuestion) answer.getQuestion()).getAnswer());
+        dto.setStatus(open.getStatus());
+        return dto;
     }
 
     public List<AnswerResponse> toDtoList(List<UserAnswer> entities) {
@@ -123,7 +130,11 @@ public class UserAnswerMapper {
         answer.setQuestion(question);
         answer.setAttempt(attempt);
         answer.setAnswer(openDto.getYourAnswer());
-        answer.setCorrect(openDto.getYourAnswer().equalsIgnoreCase(((OpenQuestion) question).getAnswer()));
+        if(openDto.getYourAnswer() == null || openDto.getYourAnswer().isEmpty()) {
+            answer.setStatus(AnswerStatus.SKIPPED);
+        } else {
+            answer.setStatus(openDto.getYourAnswer().equalsIgnoreCase(((OpenQuestion) question).getAnswer()) ? AnswerStatus.CORRECT : AnswerStatus.WRONG);
+        }
         return answer;
     }
 
@@ -136,7 +147,11 @@ public class UserAnswerMapper {
         Option selectedOption = optionRepository.findById(closedDto.getOptionId())
                 .orElseThrow(() -> new NotFoundException("Option not found"));
         answer.setOption(selectedOption);
-        answer.setCorrect(selectedOption.isCorrect());
+        if(closedDto.getOptionId() == null) {
+            answer.setStatus(AnswerStatus.SKIPPED);
+        } else {
+            answer.setStatus(selectedOption.isCorrect() ? AnswerStatus.CORRECT : AnswerStatus.WRONG);
+        }
         return answer;
     }
 
@@ -165,7 +180,11 @@ public class UserAnswerMapper {
                         .anyMatch(cs -> cs.getLeftKey().equals(s.getLeftKey())
                                 && new HashSet<>(cs.getChosenRightKeys())
                                 .equals(new HashSet<>(s.getUserSelections()))));
-        answer.setCorrect(isCorrect);
+        if(selections.isEmpty() && !isCorrect) {
+            answer.setStatus(AnswerStatus.SKIPPED);
+        } else {
+            answer.setStatus(isCorrect ? AnswerStatus.CORRECT : AnswerStatus.WRONG);
+        }
         return answer;
     }
 }
