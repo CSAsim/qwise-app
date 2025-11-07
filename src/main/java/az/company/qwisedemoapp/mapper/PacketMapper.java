@@ -2,8 +2,9 @@ package az.company.qwisedemoapp.mapper;
 
 import az.company.qwisedemoapp.domain.entity.Packet;
 import az.company.qwisedemoapp.model.dto.request.UpdatePacketRequestDto;
-import az.company.qwisedemoapp.model.dto.response.PacketResponseDto;
+import az.company.qwisedemoapp.model.dto.response.PacketDetailResponseDto;
 import az.company.qwisedemoapp.model.dto.request.CreatePacketRequestDto;
+import az.company.qwisedemoapp.model.dto.response.PacketListResponseDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -20,20 +21,22 @@ public interface PacketMapper {
 
     PacketMapper INSTANCE = Mappers.getMapper(PacketMapper.class);
 
-    @Mapping(target = "authorName", source = "author.fullName")
-    @Mapping(target = "authorId", source = "author.id")
-    @Mapping(target = "questions", ignore = true)
-    PacketResponseDto toDto(Packet entity);
+    @Mapping(target = "authorName", source = "authorName")
+    @Mapping(target = "totalQuestionCount", ignore = true)
+    PacketListResponseDto toDto(Packet entity);
 
-    List<PacketResponseDto> toDtoList(List<Packet> entities);
+    @Mapping(target = "authorName", source = "authorName")
+    @Mapping(target = "totalQuestionCount", ignore = true)
+    PacketDetailResponseDto toDtoDetail(Packet entity);
 
-    default Page<PacketResponseDto> toDtoPage(Page<Packet> entities) {
+    List<PacketDetailResponseDto> toDtoList(List<Packet> entities);
+
+    default Page<PacketListResponseDto> toDtoPage(Page<Packet> entities) {
         return entities.map(this::toDto);
     }
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "author", ignore = true)
-    @Mapping(target = "rating", ignore = true)
     @Mapping(target = "enrolledStudents", ignore = true)
     @Mapping(target = "createdBy", ignore = true)
     @Mapping(target = "updatedBy", ignore = true)
@@ -44,7 +47,6 @@ public interface PacketMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "author", ignore = true)
-    @Mapping(target = "rating", ignore = true)
     @Mapping(target = "enrolledStudents", ignore = true)
     @Mapping(target = "createdBy", ignore = true)
     @Mapping(target = "updatedBy", ignore = true)

@@ -4,9 +4,6 @@ import az.company.qwisedemoapp.domain.entity.Packet;
 import az.company.qwisedemoapp.domain.entity.test.Option;
 import az.company.qwisedemoapp.domain.entity.test.question.MatchingSelection;
 import az.company.qwisedemoapp.domain.entity.test.question.*;
-import az.company.qwisedemoapp.domain.repository.PacketRepository;
-import az.company.qwisedemoapp.model.dto.MatchingListDto;
-import az.company.qwisedemoapp.model.dto.MatchingVariantDto;
 import az.company.qwisedemoapp.model.dto.MatchingSelectionDto;
 import az.company.qwisedemoapp.model.dto.OptionDto;
 import az.company.qwisedemoapp.model.dto.request.test.question.QuestionRequestDto;
@@ -20,13 +17,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class QuestionMapper {
 
-    private final PacketRepository packetRepository;
-
     public Question toEntity(QuestionRequestDto request, Packet packet) {
         return switch (request.getQuestionType()) {
             case CLOSED -> buildClosedQuestion(request, packet);
             case OPEN -> buildOpenQuestion(request, packet);
-            case MATCHING_QUESTION -> buildMatchingQuestion(request, packet);
+            case MATCHING -> buildMatchingQuestion(request, packet);
+            case INTERVIEW -> buildInterviewQuestion(request, packet);
         };
     }
 
@@ -43,7 +39,6 @@ public class QuestionMapper {
         existing.setHintText(request.getHintText());
         existing.setDescription(request.getDescription());
         existing.setExplanationVideoUrl(request.getExplanationVideoUrl());
-        existing.setScore(request.getScore());
 
         switch (existing) {
             case ClosedQuestion closed when request.getOptions() != null -> {
@@ -65,28 +60,6 @@ public class QuestionMapper {
                 open.setInputFormat(request.getInputFormat());
             }
             case MatchingQuestion matching -> {
-                matching.getMatchingLists().clear();
-                matching.setMatchingLists(request.getMatchingLists()
-                        .stream()
-                        .map(l -> {
-                            MatchingList list = new MatchingList();
-                            list.setText(l.getText());
-                            list.setQuestion(matching);
-                            return list;
-                        })
-                        .toList());
-
-                matching.getMatchingVariants().clear();
-                matching.setMatchingVariants(request.getMatchingVariants()
-                        .stream()
-                        .map(p -> {
-                            MatchingVariant pair = new MatchingVariant();
-                            pair.setLeftItem(p.getLeftItem());
-                            pair.setRightItem(p.getRightItem());
-                            pair.setQuestion(matching);
-                            return pair;
-                        })
-                        .toList());
 
                 matching.getCorrectSelections().clear();
                 matching.setCorrectSelections(request.getCorrectSelections()
@@ -106,47 +79,36 @@ public class QuestionMapper {
 
     public QuestionResponseDto toResponse(Question entity) {
         if (entity instanceof ClosedQuestion closed) {
-            ClosedQuestionResponseDto closedQuestionResponseDto = new ClosedQuestionResponseDto();
-            fillQuestionResponse(closedQuestionResponseDto, entity);
-            closedQuestionResponseDto.setOptions(closed.getOptions()
+            ClosedQuestionResponseDto responseDto = new ClosedQuestionResponseDto();
+            fillQuestionResponse(responseDto, entity);
+            responseDto.setHintText(entity.getHintText());
+            responseDto.setDescription(entity.getDescription());
+            responseDto.setExplanationVideoUrl(entity.getExplanationVideoUrl());
+            responseDto.setOptions(closed.getOptions()
                     .stream()
                     .map(o -> new OptionDto(o.getId(), o.getText(), o.isCorrect()))
                     .toList()
             );
-            return closedQuestionResponseDto;
+            return responseDto;
         }
         if (entity instanceof OpenQuestion open) {
-            OpenQuestionResponseDto openQuestion = new OpenQuestionResponseDto();
-            fillQuestionResponse(openQuestion, entity);
-            openQuestion.setAnswer(open.getAnswer());
-            openQuestion.setInputFormat(open.getInputFormat());
-            return openQuestion;
+            OpenQuestionResponseDto response = new OpenQuestionResponseDto();
+            fillQuestionResponse(response, entity);
+            response.setHintText(entity.getHintText());
+            response.setDescription(entity.getDescription());
+            response.setExplanationVideoUrl(entity.getExplanationVideoUrl());
+            response.setAnswer(open.getAnswer());
+            response.setInputFormat(open.getInputFormat());
+            return response;
         }
 
         if (entity instanceof MatchingQuestion matching) {
-            MatchingQuestionResponseDtoD matchingQuestion = new MatchingQuestionResponseDtoD();
-            fillQuestionResponse(matchingQuestion, entity);
-            matchingQuestion.setMatchingLists(matching.getMatchingLists()
-                    .stream()
-                    .map(l -> {
-                        MatchingListDto dto = new MatchingListDto();
-                        dto.setId(l.getId());
-                        dto.setText(l.getText());
-                        return dto;
-                    }).toList()
-            );
-            matchingQuestion.setMatchingVariants(matching.getMatchingVariants()
-                    .stream()
-                    .map(v -> {
-                        MatchingVariantDto dto = new MatchingVariantDto();
-                        dto.setId(v.getId());
-                        dto.setLeftItem(v.getLeftItem());
-                        dto.setRightItem(v.getRightItem());
-                        return dto;
-                    })
-                    .toList()
-            );
-            matchingQuestion.setMatchingSelections(matching.getCorrectSelections()
+            MatchingQuestionResponseDto response = new MatchingQuestionResponseDto();
+            fillQuestionResponse(response, entity);
+            response.setHintText(entity.getHintText());
+            response.setDescription(entity.getDescription());
+            response.setExplanationVideoUrl(entity.getExplanationVideoUrl());
+            response.setMatchingSelections(matching.getCorrectSelections()
                     .stream()
                     .map(s -> {
                         MatchingSelectionDto dto = new MatchingSelectionDto();
@@ -156,7 +118,13 @@ public class QuestionMapper {
                     })
                     .toList()
             );
-            return matchingQuestion;
+            return response;
+        }
+
+        if (entity instanceof InterviewQuestion interview) {
+            InterviewQuestionResponseDto interviewQuestionResponseDto = new InterviewQuestionResponseDto();
+            fillQuestionResponse(interviewQuestionResponseDto, entity);
+            return interviewQuestionResponseDto;
         }
         throw new IllegalArgumentException("Unsupported question type: " + entity.getClass());
     }
@@ -195,27 +163,6 @@ public class QuestionMapper {
         MatchingQuestion q = new MatchingQuestion();
         fillQuestionData(request, packet, q);
 
-        List<MatchingList> matchingLists = request.getMatchingLists()
-                .stream()
-                .map(l -> {
-                    MatchingList list = new MatchingList();
-                    list.setText(l.getText());
-                    list.setQuestion(q);
-                    return list;
-                }).toList();
-        q.setMatchingLists(matchingLists);
-
-        List<MatchingVariant> matchingVariants = request.getMatchingVariants()
-                .stream()
-                .map(p -> {
-                    MatchingVariant pair = new MatchingVariant();
-                    pair.setLeftItem(p.getLeftItem());
-                    pair.setRightItem(p.getRightItem());
-                    pair.setQuestion(q);
-                    return pair;
-                }).toList();
-        q.setMatchingVariants(matchingVariants);
-
         List<MatchingSelection> selections = request.getCorrectSelections()
                 .stream()
                 .map(s -> {
@@ -230,6 +177,12 @@ public class QuestionMapper {
         return q;
     }
 
+    private InterviewQuestion buildInterviewQuestion(QuestionRequestDto request, Packet packet) {
+        InterviewQuestion q = new InterviewQuestion();
+        fillQuestionData(request, packet, q);
+        return q;
+    }
+
     private void fillQuestionData(QuestionRequestDto request, Packet packet, Question q) {
         q.setQuestionNumber(request.getQuestionNumber());
         q.setType(request.getQuestionType());
@@ -239,7 +192,6 @@ public class QuestionMapper {
         q.setPacket(packet);
         q.setDescription(request.getDescription());
         q.setExplanationVideoUrl(request.getExplanationVideoUrl());
-        q.setScore(request.getScore());
     }
 
     private void fillQuestionResponse(QuestionResponseDto response, Question entity) {
@@ -248,7 +200,5 @@ public class QuestionMapper {
         response.setQuestionType(entity.getType());
         response.setQuestionText(entity.getQuestionText());
         response.setQuestionImage(entity.getQuestionImage());
-        response.setHintText(entity.getHintText());
-        response.setScore(entity.getScore());
     }
 }

@@ -11,7 +11,7 @@ import az.company.qwisedemoapp.exception.NotFoundException;
 import az.company.qwisedemoapp.mapper.UserPacketMapper;
 import az.company.qwisedemoapp.model.constants.ExceptionMessages;
 import az.company.qwisedemoapp.model.dto.request.AssignPacketRequestDto;
-import az.company.qwisedemoapp.model.dto.response.UserPacketResponseDto;
+import az.company.qwisedemoapp.model.dto.response.attempt.UserPacketResponseDto;
 import az.company.qwisedemoapp.model.enums.PacketUsageStatus;
 import az.company.qwisedemoapp.service.auth.AuthService;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +34,11 @@ public class UserPacketService {
 
     public Page<UserPacketResponseDto> findAllUserPackets(PacketUsageStatus status,Long studentId, Pageable pageable) {
         Page<UserPacket> entities = userPacketRepository.findAllByUsageStatusAndStudentId(status, studentId, pageable);
-        return userPacketMapper.toDtoPage(entities);
+        return entities.map(e -> {
+            UserPacketResponseDto dto = userPacketMapper.toDto(e);
+            dto.setTotalQuestionCount(e.getPacket().getQuestions() != null ? e.getPacket().getQuestions().size() : 0);
+            return dto;
+        });
     }
 
     @Transactional
@@ -57,7 +61,9 @@ public class UserPacketService {
         packet.addEnrolledStudent(userPacket);
         student.addEnrolledPacket(userPacket);
         UserPacket savedUserPacket = userPacketRepository.save(userPacket);
-        return userPacketMapper.toDto(savedUserPacket);
+        UserPacketResponseDto dto = userPacketMapper.toDto(savedUserPacket);
+        dto.setTotalQuestionCount(packet.getQuestions() != null ? packet.getQuestions().size() : 0);
+        return dto;
     }
 
     @Transactional

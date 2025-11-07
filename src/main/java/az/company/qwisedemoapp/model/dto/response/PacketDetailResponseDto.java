@@ -14,15 +14,11 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PacketResponseDto {
+public class PacketDetailResponseDto {
 
     private Long id;
 
-    private Long authorId;
-
     private String authorName;
-
-    private String name;
 
     private String description;
 
@@ -30,13 +26,11 @@ public class PacketResponseDto {
 
     private String subCategory;
 
-    private Float rating;
+    private Integer totalQuestionCount;
 
     private Float price;
 
     private String thumbnailUrl;
-
-    private List<QuestionResponseDto> questions;
 
     private PacketStatus status;
 

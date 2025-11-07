@@ -54,10 +54,6 @@ public abstract class Question extends BaseEntity {
     @Column(name = "explanation_video_url")
     private String explanationVideoUrl;
 
-    @Builder.Default
-    @Column(name = "score", nullable = false)
-    private Float score = 0.0f;
-
     @ManyToOne
     @JoinColumn(name = "packet_id")
     private Packet packet;

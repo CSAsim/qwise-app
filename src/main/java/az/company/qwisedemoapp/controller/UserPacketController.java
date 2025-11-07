@@ -2,7 +2,7 @@ package az.company.qwisedemoapp.controller;
 
 import az.company.qwisedemoapp.model.dto.request.AssignPacketRequestDto;
 import az.company.qwisedemoapp.model.dto.response.PageableResponseDto;
-import az.company.qwisedemoapp.model.dto.response.UserPacketResponseDto;
+import az.company.qwisedemoapp.model.dto.response.attempt.UserPacketResponseDto;
 import az.company.qwisedemoapp.model.enums.PacketUsageStatus;
 import az.company.qwisedemoapp.service.UserPacketService;
 import lombok.RequiredArgsConstructor;

@@ -23,6 +23,6 @@ import lombok.experimental.SuperBuilder;
 public class ClosedAnswer extends UserAnswer {
 
     @ManyToOne
-    @JoinColumn(name = "selected_option_id", nullable = false)
+    @JoinColumn(name = "selected_option_id")
     private Option option;
 }

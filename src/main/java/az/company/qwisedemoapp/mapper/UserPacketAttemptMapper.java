@@ -1,22 +1,85 @@
 package az.company.qwisedemoapp.mapper;
 
 import az.company.qwisedemoapp.domain.entity.test.UserPacketAttempt;
-import az.company.qwisedemoapp.model.dto.request.test.UserPacketAttemptResponseDto;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
+import az.company.qwisedemoapp.model.dto.response.attempt.CompletedAttemptResponseDto;
+import az.company.qwisedemoapp.model.dto.response.attempt.PausedAttemptResponseDto;
+import az.company.qwisedemoapp.model.dto.response.attempt.ResultAttemptResponseDto;
+import az.company.qwisedemoapp.model.dto.response.test.answer.AnswerResponse;
+import az.company.qwisedemoapp.model.enums.AnswerStatus;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring",
-        nullValuePropertyMappingStrategy = org.mapstruct.NullValuePropertyMappingStrategy.IGNORE)
-public interface UserPacketAttemptMapper {
+@Component
+public class UserPacketAttemptMapper {
 
-    UserPacketAttemptMapper INSTANCE = Mappers.getMapper(UserPacketAttemptMapper.class);
+    public ResultAttemptResponseDto toDto(UserPacketAttempt attempt,
+                                          List<AnswerResponse> answerResponse) {
 
-    @Mapping(target = "userPacketId", source = "userPacket.packet.id")
-    @Mapping(target = "result", ignore = true)
-    UserPacketAttemptResponseDto toResponseDto(UserPacketAttempt entity);
+        return switch (attempt.getStatus()) {
+            case PAUSED -> buildPausedAttemptResponse(attempt, answerResponse);
+            case COMPLETED -> buildCompletedAttemptResponse(attempt, answerResponse);
+            default -> throw new IllegalStateException("Unexpected value: " + attempt.getStatus());
+        };
+    }
 
-    List<UserPacketAttemptResponseDto> toResponseDtoList(List<UserPacketAttempt> entities);
+    private PausedAttemptResponseDto buildPausedAttemptResponse(UserPacketAttempt attempt, List<AnswerResponse> answerResponse) {
+        PausedAttemptResponseDto dto = new PausedAttemptResponseDto();
+        fillAttemptResponse(dto, answerResponse, attempt);
+        dto.setAnsweredQuestionCount((int)answerResponse
+                .stream()
+                .filter(obj ->
+                        obj.getStatus().equals(AnswerStatus.CORRECT) ||
+                                obj.getStatus().equals(AnswerStatus.WRONG))
+                .count());
+        dto.setUnansweredQuestionCount(answerResponse.size() - dto.getAnsweredQuestionCount());
+        return dto;
+    }
+
+    private CompletedAttemptResponseDto buildCompletedAttemptResponse(UserPacketAttempt attempt,
+                                                                      List<AnswerResponse> answerResponse) {
+        CompletedAttemptResponseDto dto = new CompletedAttemptResponseDto();
+        fillAttemptResponse(dto, answerResponse, attempt);
+        dto.setCorrectAnswerCount(attempt.getTotalCorrectAnswerCount());
+        dto.setSkippedAnswerCount(attempt.getTotalSkippedAnswerCount());
+        dto.setWrongAnswerCount(attempt.getTotalWrongAnswerCount());
+        dto.setTotalQuestionCount(
+                attempt.getTotalCorrectAnswerCount() +
+                        attempt.getTotalSkippedAnswerCount() +
+                        attempt.getTotalWrongAnswerCount());
+        return dto;
+    }
+
+    private void fillAttemptResponse(ResultAttemptResponseDto resultResponse,
+                                     List<AnswerResponse> answerResponse,
+                                     UserPacketAttempt attempt) {
+        CompletedAttemptResponseDto completedResponse = (CompletedAttemptResponseDto) resultResponse;
+        completedResponse.setId(attempt.getId());
+        completedResponse.setAuthorName(attempt.getUser().getFullName());
+        completedResponse.setDescription(attempt.getUserPacket().getPacket().getDescription());
+        completedResponse.setCategory(attempt.getUserPacket().getPacket().getCategory());
+        completedResponse.setSubCategory(attempt.getUserPacket().getPacket().getSubCategory());
+        completedResponse.setThumbnailUrl(attempt.getUserPacket().getPacket().getThumbnailUrl());
+        completedResponse.setPrice(attempt.getUserPacket().getPacket().getPrice());
+        completedResponse.setTotalQuestionCount(answerResponse.size());
+        completedResponse.setCreatedAt(attempt.getCreatedAt());
+        completedResponse.setStartedAt(attempt.getStartedAt());
+        completedResponse.setFinishedAt(attempt.getFinishedAt());
+        completedResponse.setStatus(attempt.getStatus());
+        completedResponse.setDuration(formatDuration(attempt.getDuration()));
+        completedResponse.setResult(answerResponse);
+    }
+
+    public String formatDuration(Long totalMinutes) {
+        long hours = totalMinutes / 60;
+        long minutes = totalMinutes % 60;
+
+        if (hours > 0 && minutes > 0) {
+            return String.format("%d saat %d dəqiqə", hours, minutes);
+        } else if (hours > 0) {
+            return String.format("%d saat", hours);
+        } else {
+            return String.format("%d dəqiqə", minutes);
+        }
+    }
 }

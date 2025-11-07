@@ -1,25 +1,18 @@
 package az.company.qwisedemoapp.service.test;
 
-import az.company.qwisedemoapp.domain.entity.UserPacket;
 import az.company.qwisedemoapp.domain.entity.test.UserPacketAttempt;
-import az.company.qwisedemoapp.domain.entity.test.answer.UserAnswer;
-import az.company.qwisedemoapp.domain.repository.UserPacketRepository;
-import az.company.qwisedemoapp.exception.NotFoundException;
+import az.company.qwisedemoapp.domain.entity.test.answer.*;
 import az.company.qwisedemoapp.mapper.UserAnswerMapper;
-import az.company.qwisedemoapp.model.dto.request.test.UserPacketFinishAttemptRequestDto;
 import az.company.qwisedemoapp.model.dto.request.test.answer.UserAnswerRequestDto;
 import az.company.qwisedemoapp.model.dto.response.test.answer.AnswerResponse;
-import az.company.qwisedemoapp.model.dto.response.test.answer.UserAnswerResponseDto;
-import az.company.qwisedemoapp.model.enums.AttemptStatus;
-import az.company.qwisedemoapp.model.enums.PacketUsageStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -27,35 +20,59 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class UserAnswerService {
 
-    private final UserPacketRepository userPacketRepository;
     private final UserAnswerMapper userAnswerMapper;
 
     @Transactional
-    public UserAnswerResponseDto saveUserAnswer(UserPacketAttempt attempt, List<UserAnswerRequestDto> answers) {
-
+    public void saveUserAnswer(UserPacketAttempt attempt, List<UserAnswerRequestDto> answers) {
         log.info("Saving user answers for attempt {}", attempt.getId());
-        UserPacket userPacket = attempt.getUserPacket();
-        List<UserAnswer> userAnswers = userAnswerMapper.toEntityList(attempt, answers);
-        attempt.getAnswers().clear();
-        for (UserAnswer a : userAnswers) {
-            attempt.addAnswer(a);
+
+        if (answers == null || answers.isEmpty()) {
+            return;
         }
-        userPacket.setProgress(0.0f);
-        userPacket.setUsageStatus(PacketUsageStatus.COMPLETED);
+        // Mövcud cavabları xəritəyə salırıq (questionId -> UserAnswer)
+        Map<Long, UserAnswer> existingAnswers = attempt.getAnswers().stream()
+                .collect(Collectors.toMap(a -> a.getQuestion().getId(), a -> a));
 
-        UserPacket savedPacket = userPacketRepository.save(userPacket);
+        for (UserAnswerRequestDto dto : answers) {
+            Long questionId = dto.getQuestionId();
 
-        return UserAnswerResponseDto.builder()
-                .userPacketId(savedPacket.getId())
-                .answers(null)
-                .build();
+            // Əgər bu suala artıq cavab varsa — update et
+            if (existingAnswers.containsKey(questionId)) {
+                UserAnswer existing = existingAnswers.get(questionId);
+
+                // Yeni cavabı (status, seçilmiş variant və s.) mapper-dən götür
+                UserAnswer updated = userAnswerMapper.toEntity(attempt, dto);
+
+                // Lazımi sahələri yenilə
+                existing.setStatus(updated.getStatus());
+
+                switch (existing) {
+                    case ClosedAnswer closedAnswer when updated instanceof ClosedAnswer ->
+                            closedAnswer.setOption(((ClosedAnswer) updated).getOption());
+                    case OpenAnswer openAnswer when updated instanceof OpenAnswer ->
+                            openAnswer.setAnswer(((OpenAnswer) updated).getAnswer());
+                    case MatchingAnswer matchingAnswer when updated instanceof MatchingAnswer ->
+                            matchingAnswer.setSelections(((MatchingAnswer) updated).getSelections());
+                    case InterviewAnswer interviewAnswer when updated instanceof InterviewAnswer ->
+                            interviewAnswer.setAnswer(((InterviewAnswer) updated).getAnswer());
+                    default -> {
+                    }
+                }
+
+            } else {
+                UserAnswer newAnswer = userAnswerMapper.toEntity(attempt, dto);
+                newAnswer.setAttempt(attempt);
+                attempt.getAnswers().add(newAnswer);
+            }
+        }
     }
 
-    public static Float calculateProgress(List<AnswerResponse> answers) {
-        Float progress = 0.0f;
-        for(AnswerResponse answer : answers) {
-            progress += answer.getScore();
+
+    public static Integer calculateScore(List<AnswerResponse> answers) {
+        Integer score = 0;
+        for (AnswerResponse answer : answers) {
+            score += answer.getScore();
         }
-        return progress;
+        return score;
     }
 }

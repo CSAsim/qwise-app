@@ -1,6 +1,7 @@
 package az.company.qwisedemoapp.controller;
 
-import az.company.qwisedemoapp.model.dto.response.PacketResponseDto;
+import az.company.qwisedemoapp.model.dto.response.PacketDetailResponseDto;
+import az.company.qwisedemoapp.model.dto.response.PacketListResponseDto;
 import az.company.qwisedemoapp.model.dto.response.PageableResponseDto;
 import az.company.qwisedemoapp.model.dto.request.FilteredRequestDto;
 import az.company.qwisedemoapp.service.PacketService;
@@ -21,12 +22,12 @@ public class PacketController {
     private final PacketService packetService;
 
     @PostMapping("/all")
-    public ResponseEntity<PageableResponseDto<PacketResponseDto>> getAll(
+    public ResponseEntity<PageableResponseDto<PacketListResponseDto>> getAll(
             @PageableDefault(size = 10) Pageable pageable,
             @RequestBody FilteredRequestDto request
             ) {
-        Page<PacketResponseDto> page = packetService.findAllPackets(request, pageable);
-        PageableResponseDto<PacketResponseDto> responseDto = PageableResponseDto.of(
+        Page<PacketListResponseDto> page = packetService.findAllPackets(request, pageable);
+        PageableResponseDto<PacketListResponseDto> responseDto = PageableResponseDto.of(
                 page.getContent(),
                 page.getPageable().getPageNumber(),
                 page.getSize(),
@@ -37,7 +38,7 @@ public class PacketController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PacketResponseDto> getById(@PathVariable Long id) {
+    public ResponseEntity<PacketDetailResponseDto> getById(@PathVariable Long id) {
         return ResponseEntity.ok(packetService.findById(id));
     }
 }
