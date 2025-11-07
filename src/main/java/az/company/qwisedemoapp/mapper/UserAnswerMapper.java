@@ -225,7 +225,8 @@ public class UserAnswerMapper {
 
     private InterviewAnswer buildInterviewAnswer(UserPacketAttempt attempt, Question question, UserAnswerRequestDto dto) {
         InterviewAnswerRequestDto requestDto = (InterviewAnswerRequestDto) dto;
-        InterviewAnswer answer = new InterviewAnswer();
+        InterviewAnswer answer = (InterviewAnswer) userAnswerRepository.findByQuestionId(question.getId())
+                .orElseGet(InterviewAnswer::new);
         answer.setUserPacket(attempt.getUserPacket());
         answer.setQuestion(question);
         answer.setAttempt(attempt);
