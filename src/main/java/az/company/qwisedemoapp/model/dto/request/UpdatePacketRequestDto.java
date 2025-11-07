@@ -17,6 +17,8 @@ public class UpdatePacketRequestDto {
 
     private String name;
 
+    private String authorName;
+
     private String subCategory;
 
     private String description;

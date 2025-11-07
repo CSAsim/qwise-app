@@ -4,5 +4,6 @@ public enum QuestionType {
 
     OPEN,
     CLOSED,
-    MATCHING_QUESTION,
+    MATCHING,
+    INTERVIEW
 }

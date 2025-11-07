@@ -2,6 +2,7 @@ package az.company.qwisedemoapp.model.dto.request;
 
 import az.company.qwisedemoapp.model.dto.request.test.question.QuestionRequestDto;
 import az.company.qwisedemoapp.model.enums.PacketStatus;
+import az.company.qwisedemoapp.model.enums.PacketType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -19,6 +20,9 @@ public class CreatePacketRequestDto {
 
     @NotBlank
     private String name;
+
+    @NotBlank
+    private String authorName;
 
     @NotBlank
     private String subCategory;
@@ -39,4 +43,7 @@ public class CreatePacketRequestDto {
 
     @NotNull
     private PacketStatus status;
+
+    @NotNull
+    private PacketType type;
 }

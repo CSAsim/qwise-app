@@ -1,7 +1,5 @@
 package az.company.qwisedemoapp.model.dto.response.test.question;
 
-import az.company.qwisedemoapp.model.dto.MatchingListDto;
-import az.company.qwisedemoapp.model.dto.MatchingVariantDto;
 import az.company.qwisedemoapp.model.dto.MatchingSelectionDto;
 import lombok.*;
 
@@ -12,11 +10,10 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class MatchingQuestionResponseDtoD extends QuestionResponseDto {
+public class MatchingQuestionResponseDto extends QuestionResponseDto {
 
-    private List<MatchingListDto> matchingLists;
-
-    private List<MatchingVariantDto> matchingVariants;
-
+    private String hintText;
+    private String description;
+    private String explanationVideoUrl;
     private List<MatchingSelectionDto> matchingSelections;
 }

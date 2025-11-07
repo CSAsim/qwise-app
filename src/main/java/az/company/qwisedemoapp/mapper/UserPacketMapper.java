@@ -2,7 +2,7 @@ package az.company.qwisedemoapp.mapper;
 
 import az.company.qwisedemoapp.domain.entity.UserPacket;
 import az.company.qwisedemoapp.model.dto.request.AssignPacketRequestDto;
-import az.company.qwisedemoapp.model.dto.response.UserPacketResponseDto;
+import az.company.qwisedemoapp.model.dto.response.attempt.UserPacketResponseDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
@@ -17,12 +17,11 @@ public interface UserPacketMapper {
 
     UserPacketMapper INSTANCE = Mappers.getMapper(UserPacketMapper.class);
 
-    @Mapping(target = "userId", source = "student.id")
-    @Mapping(target = "packet", source = "packet")
-    @Mapping(target = "packet.authorName", source = "packet.author.fullName")
-    @Mapping(target = "packet.authorId", source = "packet.author.id")
-    @Mapping(target = "packet.questions", source = "packet.questions")
-    @Mapping(target = "enrolledAt", source = "createdAt")
+    @Mapping(target = "authorName", source = "packet.author.fullName")
+    @Mapping(target = "name", source = "packet.name")
+    @Mapping(target = "category", source = "packet.category")
+    @Mapping(target = "subCategory", source = "packet.subCategory")
+    @Mapping(target = "thumbnailUrl", source = "packet.thumbnailUrl")
     UserPacketResponseDto toDto(UserPacket entity);
 
     List<UserPacketResponseDto> toDtoList(List<UserPacket> entities);
@@ -33,7 +32,6 @@ public interface UserPacketMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "student", ignore = true)
-    @Mapping(target = "packet", ignore = true)
     @Mapping(target = "usageStatus", ignore = true)
     @Mapping(target = "createdBy", ignore = true)
     @Mapping(target = "updatedBy", ignore = true)

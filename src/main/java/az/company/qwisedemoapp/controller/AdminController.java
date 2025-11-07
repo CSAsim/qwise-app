@@ -3,8 +3,8 @@ package az.company.qwisedemoapp.controller;
 import az.company.qwisedemoapp.model.dto.request.CreatePacketRequestDto;
 import az.company.qwisedemoapp.model.dto.request.UpdateFileRequestDto;
 import az.company.qwisedemoapp.model.dto.request.UpdatePacketRequestDto;
+import az.company.qwisedemoapp.model.dto.response.PacketDetailResponseDto;
 import az.company.qwisedemoapp.model.dto.response.FileResponseDto;
-import az.company.qwisedemoapp.model.dto.response.PacketResponseDto;
 import az.company.qwisedemoapp.model.dto.response.PageableResponseDto;
 import az.company.qwisedemoapp.model.dto.response.UserResponseDto;
 import az.company.qwisedemoapp.model.dto.request.CreateFileRequestDto;
@@ -58,17 +58,17 @@ public class AdminController {
     //Packet operations
 
     @PostMapping("/packet/new-packet")
-    public ResponseEntity<PacketResponseDto> create(@Valid @RequestBody CreatePacketRequestDto request) {
+    public ResponseEntity<PacketDetailResponseDto> create(@Valid @RequestBody CreatePacketRequestDto request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(packetService.createPacket(request));
     }
 
     @PostMapping("/packet/publish-packet/{id}")
-    public ResponseEntity<PacketResponseDto> publish(@PathVariable Long id) {
+    public ResponseEntity<PacketDetailResponseDto> publish(@PathVariable Long id) {
         return ResponseEntity.ok(packetService.publishPacket(id));
     }
 
     @PutMapping("/packet/update-packet/{id}")
-    public ResponseEntity<PacketResponseDto> update(
+    public ResponseEntity<PacketDetailResponseDto> update(
             @PathVariable Long id,
             @Valid @RequestBody UpdatePacketRequestDto request
     ) {

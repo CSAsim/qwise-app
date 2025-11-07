@@ -4,6 +4,7 @@ import az.company.qwisedemoapp.domain.entity.BaseEntity;
 import az.company.qwisedemoapp.domain.entity.UserPacket;
 import az.company.qwisedemoapp.domain.entity.test.UserPacketAttempt;
 import az.company.qwisedemoapp.domain.entity.test.question.Question;
+import az.company.qwisedemoapp.model.enums.AnswerStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -35,6 +36,7 @@ public abstract class UserAnswer extends BaseEntity {
     @JoinColumn(name = "attempt_id")
     private UserPacketAttempt attempt;
 
-    @Column(name = "is_correct", nullable = false)
-    private boolean isCorrect;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private AnswerStatus status;
 }

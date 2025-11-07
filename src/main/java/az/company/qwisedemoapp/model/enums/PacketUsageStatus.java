@@ -4,6 +4,5 @@ public enum PacketUsageStatus {
 
     STORED,
     ONGOING,
-    COMPLETED,
-    CANCELLED
+    COMPLETED
 }

@@ -59,7 +59,7 @@ services:
       MINIO_ROOT_USER: ${PROD_MINIO_ACCESS_KEY}
       MINIO_ROOT_PASSWORD: ${PROD_MINIO_SECRET_KEY}
     volumes:
-      - minio_data:/minio-data
+      - ./minio_data:/app/minio-data/minio-data
     command: server /data --console-address ":9001"
     networks:
       - shared-net
@@ -67,6 +67,7 @@ services:
 volumes:
   db_data:
   logs:
+  minio_data:
 networks:
   shared-net:
     driver: bridge

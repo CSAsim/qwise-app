@@ -9,6 +9,10 @@ import lombok.*;
 @EqualsAndHashCode(callSuper = true)
 public class OpenQuestionResponseDto extends QuestionResponseDto {
 
+    private String hintText;
+    private String description;
+    private String explanationVideoUrl;
+
     private String inputFormat;
 
     private String answer;

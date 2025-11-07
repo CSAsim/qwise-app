@@ -1,7 +1,5 @@
 package az.company.qwisedemoapp.model.dto.request.test.question;
 
-import az.company.qwisedemoapp.model.dto.MatchingListDto;
-import az.company.qwisedemoapp.model.dto.MatchingVariantDto;
 import az.company.qwisedemoapp.model.dto.MatchingSelectionDto;
 import az.company.qwisedemoapp.model.dto.OptionDto;
 import az.company.qwisedemoapp.model.enums.QuestionType;
@@ -36,10 +34,7 @@ public class QuestionRequestDto {
 
     private String explanationVideoUrl;
 
-    @NotBlank
     private Long packetId;
-
-    private Float score;
 
     //For closed question
     private List<OptionDto> options;
@@ -48,11 +43,6 @@ public class QuestionRequestDto {
     private String inputFormat;
 
     private String answer;
-
-    //For matching question
-    private List<MatchingListDto> matchingLists;
-
-    private List<MatchingVariantDto> matchingVariants;
 
     private List<MatchingSelectionDto> correctSelections;
 }

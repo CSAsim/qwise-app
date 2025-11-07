@@ -2,6 +2,8 @@ package az.company.qwisedemoapp.model.dto.request.test;
 
 
 import az.company.qwisedemoapp.model.dto.request.test.answer.UserAnswerRequestDto;
+import az.company.qwisedemoapp.model.enums.AttemptStatus;
+import az.company.qwisedemoapp.model.enums.PacketUsageStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,9 +15,9 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserPacketFinishAttemptRequestDto {
+public class AttemptRequestDto {
 
     private Long attemptId;
 
-    List<UserAnswerRequestDto> answers;
+    private List<UserAnswerRequestDto> answers;
 }
