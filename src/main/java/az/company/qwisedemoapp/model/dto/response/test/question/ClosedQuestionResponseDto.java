@@ -12,5 +12,11 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 public class ClosedQuestionResponseDto extends QuestionResponseDto {
 
+    private String hintText;
+
+    private String description;
+
+    private String explanationVideoUrl;
+
     List<OptionDto> options;
 }

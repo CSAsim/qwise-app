@@ -4,5 +4,6 @@ public enum AnswerStatus {
 
     CORRECT,
     WRONG,
-    SKIPPED
+    SKIPPED,
+    MARKED
 }

@@ -1,7 +1,7 @@
-package az.company.qwisedemoapp.model.dto.response;
+package az.company.qwisedemoapp.model.dto.response.attempt;
 
-import az.company.qwisedemoapp.model.dto.response.test.question.QuestionResponseDto;
-import az.company.qwisedemoapp.model.enums.PacketStatus;
+import az.company.qwisedemoapp.model.dto.response.test.answer.AnswerResponse;
+import az.company.qwisedemoapp.model.enums.AttemptStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,18 +11,13 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PacketResponseDto {
+public abstract class ResultAttemptResponseDto {
 
     private Long id;
 
-    private Long authorId;
-
     private String authorName;
-
-    private String name;
 
     private String description;
 
@@ -36,9 +31,15 @@ public class PacketResponseDto {
 
     private String thumbnailUrl;
 
-    private List<QuestionResponseDto> questions;
-
-    private PacketStatus status;
-
     private LocalDateTime createdAt;
+
+    private LocalDateTime startedAt;
+
+    private LocalDateTime finishedAt;
+
+    private String duration;
+
+    private List<AnswerResponse> result;
+
+    private AttemptStatus status;
 }

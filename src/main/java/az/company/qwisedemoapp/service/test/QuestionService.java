@@ -23,13 +23,13 @@ public class QuestionService {
     private final QuestionMapper questionMapper;
 
     @Transactional
-    public List<QuestionResponseDto> createQuestions(Packet packet, List<QuestionRequestDto> questions) {
+    public void createQuestions(Packet packet, List<QuestionRequestDto> questions) {
         log.info("Creating questions: {}", questions.size());
         List<Question> existingQuestions = questionMapper.toEntityList(questions, packet);
         existingQuestions.forEach(packet::addQuestion);
         questionRepository.saveAll(existingQuestions);
         log.info("Questions created: {}", existingQuestions.size());
-        return questionMapper.toResponseList(existingQuestions);
+        questionMapper.toResponseList(existingQuestions);
     }
 
     @Transactional

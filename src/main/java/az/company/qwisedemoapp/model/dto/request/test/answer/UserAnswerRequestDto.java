@@ -19,12 +19,12 @@ import lombok.NoArgsConstructor;
 @JsonSubTypes({
         @JsonSubTypes.Type(value = OpenAnswerRequestDto.class, name = "OPEN"),
         @JsonSubTypes.Type(value = ClosedAnswerRequestDto.class, name = "CLOSED"),
-        @JsonSubTypes.Type(value = MatchingAnswerRequestDto.class, name = "MATCHING_QUESTION")
+        @JsonSubTypes.Type(value = MatchingAnswerRequestDto.class, name = "MATCHING")
 })
 public abstract class UserAnswerRequestDto {
 
     private Long questionId;
 
-    private String questionType;
+    private QuestionType questionType;
 }
 

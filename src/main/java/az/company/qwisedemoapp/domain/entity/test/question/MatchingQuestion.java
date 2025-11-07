@@ -25,15 +25,5 @@ public class MatchingQuestion extends Question {
     @Builder.Default
     @ToString.Exclude
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MatchingList> matchingLists = new ArrayList<>();
-
-    @Builder.Default
-    @ToString.Exclude
-    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MatchingVariant> matchingVariants = new ArrayList<>();
-
-    @Builder.Default
-    @ToString.Exclude
-    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MatchingSelection> correctSelections = new ArrayList<>();
 }

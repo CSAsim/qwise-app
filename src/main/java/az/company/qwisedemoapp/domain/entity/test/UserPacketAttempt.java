@@ -37,11 +37,15 @@ public class UserPacketAttempt extends BaseEntity {
     @Column(name = "attempt_number", nullable = false)
     private Integer attemptNumber = 0;
 
+    @Builder.Default
     @Column(name = "duration")
-    private String duration;
+    private Long duration = 0L;
 
     @Column(name = "started_at", nullable = false)
     private LocalDateTime startedAt;
+
+    @Column(name = "last_resumed_at")
+    private LocalDateTime lastResumedAt;
 
     @Column(name = "finished_at")
     private LocalDateTime finishedAt;
@@ -59,7 +63,7 @@ public class UserPacketAttempt extends BaseEntity {
     private Integer totalSkippedAnswerCount = 0;
 
     @Column(name = "total_score")
-    private Float totalScore;
+    private Integer totalScore;
 
     @Column(name = "status", nullable = false)
     @Enumerated(value = EnumType.STRING)

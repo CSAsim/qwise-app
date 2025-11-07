@@ -3,6 +3,7 @@ package az.company.qwisedemoapp.controller;
 import az.company.qwisedemoapp.model.enums.FileCategory;
 import az.company.qwisedemoapp.service.MinioService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -14,24 +15,24 @@ public class MinioController {
 
     private final MinioService minioService;
 
-    @PostMapping("/upload-file")
+    @PostMapping(value = "/upload-file", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> uploadFile(
-            @RequestParam("file") MultipartFile file,
-            FileCategory fileCategory) {
+            @RequestPart("file") MultipartFile file,
+            @RequestParam FileCategory fileCategory) {
         return ResponseEntity.ok().body(minioService.uploadFile(file, fileCategory));
     }
 
-    @PutMapping("/update-file")
+    @PostMapping(value = "/update-file", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> updateFile(
-            @RequestParam("file") MultipartFile newFile,
+            @RequestPart("file") MultipartFile newFile,
             @RequestParam String oldFileUrl,
-            FileCategory fileCategory) {
+            @RequestParam FileCategory fileCategory) {
         return ResponseEntity.ok()
                 .body(minioService.updateFile(newFile, oldFileUrl, fileCategory));
     }
 
     @DeleteMapping("/delete-file")
-    public ResponseEntity<Void> deleteFile(@RequestParam String url) {
+    public ResponseEntity<Void> deleteFile(@RequestPart String url) {
         minioService.deleteFile(url);
         return ResponseEntity.noContent().build();
     }

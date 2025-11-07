@@ -9,7 +9,8 @@ import az.company.qwisedemoapp.filter.PacketSpecificationFilter;
 import az.company.qwisedemoapp.mapper.PacketMapper;
 import az.company.qwisedemoapp.model.constants.ExceptionMessages;
 import az.company.qwisedemoapp.model.dto.request.UpdatePacketRequestDto;
-import az.company.qwisedemoapp.model.dto.response.PacketResponseDto;
+import az.company.qwisedemoapp.model.dto.response.PacketDetailResponseDto;
+import az.company.qwisedemoapp.model.dto.response.PacketListResponseDto;
 import az.company.qwisedemoapp.model.dto.response.test.question.QuestionResponseDto;
 import az.company.qwisedemoapp.model.enums.PacketStatus;
 import az.company.qwisedemoapp.model.dto.request.CreatePacketRequestDto;
@@ -35,22 +36,29 @@ public class PacketService {
     private final PacketRepository packetRepository;
     private final UserRepository userRepository;
     private final QuestionService questionService;
-    private final MinioService minioService;
     private final PacketMapper packetMapper;
 
-    public Page<PacketResponseDto> findAllPackets(FilteredRequestDto request, Pageable pageable) {
+    public Page<PacketListResponseDto> findAllPackets(FilteredRequestDto request, Pageable pageable) {
         Specification<Packet> specification = PacketSpecificationFilter.byFilters(request);
         Page<Packet> page = packetRepository.findAll(specification, pageable);
-        return packetMapper.toDtoPage(page);
+
+        return page.map(packet -> {
+            PacketListResponseDto dto = packetMapper.toDto(packet);
+            dto.setTotalQuestionCount(packet.getQuestions() != null ? packet.getQuestions().size() : 0);
+            return dto;
+        });
     }
 
-    public PacketResponseDto findById(Long id) {
-        return packetMapper.toDto(packetRepository.findByIdWithStatus(id)
-                .orElseThrow(() -> new NotFoundException(Packet.class.getSimpleName() + ExceptionMessages.NOT_FOUND)));
+    public PacketDetailResponseDto findById(Long id) {
+        Packet packet = packetRepository.findByIdWithStatus(id)
+                .orElseThrow(() -> new NotFoundException(Packet.class.getSimpleName() + ExceptionMessages.NOT_FOUND));
+        PacketDetailResponseDto responseDto = packetMapper.toDtoDetail(packet);
+        responseDto.setTotalQuestionCount(packet.getQuestions().size());
+        return responseDto;
     }
 
     @Transactional
-    public PacketResponseDto createPacket(CreatePacketRequestDto request) {
+    public PacketDetailResponseDto createPacket(CreatePacketRequestDto request) {
         log.info("Creating packet: {}", request);
 
         User author = userRepository.findById(AuthService.getCurrentUserId())
@@ -61,36 +69,37 @@ public class PacketService {
         packet.setStatus(PacketStatus.ACTIVE);
 
         Packet saved = packetRepository.save(packet);
-        List<QuestionResponseDto> questionResponseDto = questionService.createQuestions(saved, request.getQuestions());
-        PacketResponseDto response = packetMapper.toDto(saved);
+        questionService.createQuestions(saved, request.getQuestions());
+        PacketDetailResponseDto response = packetMapper.toDtoDetail(saved);
         response.setTotalQuestionCount(request.getQuestions().size());
-        response.setQuestions(questionResponseDto);
         return response;
     }
 
     @Transactional
-    public PacketResponseDto publishPacket(Long id) {
+    public PacketDetailResponseDto publishPacket(Long id) {
         log.info("Publishing packet with id {}", id);
         Packet packet = packetRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(Packet.class.getSimpleName() + ExceptionMessages.NOT_FOUND));
         packet.setStatus(PacketStatus.PUBLISHED);
         Packet savedPacket = packetRepository.save(packet);
-        return packetMapper.toDto(savedPacket);
+        PacketDetailResponseDto response = packetMapper.toDtoDetail(savedPacket);
+        response.setTotalQuestionCount(packet.getQuestions().size());
+        log.info("Packet published: {}", savedPacket);
+        return response;
     }
 
     @Transactional
-    public PacketResponseDto updatePacket(Long id, UpdatePacketRequestDto request) {
+    public PacketDetailResponseDto updatePacket(Long id, UpdatePacketRequestDto request) {
         log.info("Updating packet with id {}: {}", id, request);
         Packet oldPacket = packetRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(Packet.class.getSimpleName() + ExceptionMessages.NOT_FOUND));
         Packet newPacket = packetMapper.toEntity(request, oldPacket);
         Packet savedPacket = packetRepository.save(newPacket);
         List<QuestionResponseDto> questions = questionService.updateQuestions(savedPacket, request.getQuestions());
-        PacketResponseDto response = packetMapper.toDto(savedPacket);
+        PacketDetailResponseDto response = packetMapper.toDtoDetail(savedPacket);
         response.setTotalQuestionCount(request.getQuestions().size());
-        response.setQuestions(questions);
         log.info("Packet updated: {}", savedPacket);
-        return packetMapper.toDto(savedPacket);
+        return response;
     }
 
     @Transactional

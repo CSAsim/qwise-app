@@ -15,8 +15,4 @@ public abstract class QuestionResponseDto {
     private QuestionType questionType;
     private String questionText;
     private String questionImage;
-    private String hintText;
-    private String description;
-    private String explanationVideoUrl;
-    private Float score;
 }
