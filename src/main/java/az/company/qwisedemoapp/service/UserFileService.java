@@ -30,7 +30,8 @@ public class UserFileService {
     private final FileRepository fileRepository;
     private final UserFileMapper userFileMapper;
 
-    public Page<UserFileResponseDto> findAllUserFiles(Long studentId, Pageable pageable) {
+    public Page<UserFileResponseDto> findAllUserFiles(Pageable pageable) {
+        Long studentId = AuthService.getCurrentUserId();
         Page<UserFile> pages = userFileRepository.findAllByStudentId(studentId, pageable);
         return userFileMapper.toDtoPage(pages);
     }

@@ -33,10 +33,9 @@ public class UserPacketController {
     @GetMapping("/all")
     public ResponseEntity<PageableResponseDto<UserPacketResponseDto>> getAll(
             @RequestParam PacketUsageStatus status,
-            @RequestParam(required = false) Long studentId,
             @PageableDefault(size = 10) Pageable pageable
     ) {
-        Page<UserPacketResponseDto> page = userPacketService.findAllUserPackets(status, studentId, pageable);
+        Page<UserPacketResponseDto> page = userPacketService.findAllUserPackets(status, pageable);
         PageableResponseDto<UserPacketResponseDto> responseDto = PageableResponseDto.of(
                 page.getContent(),
                 page.getNumber(),

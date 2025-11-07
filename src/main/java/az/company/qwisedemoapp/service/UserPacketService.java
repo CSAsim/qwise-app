@@ -32,7 +32,8 @@ public class UserPacketService {
     private final PacketRepository packetRepository;
     private final UserPacketMapper userPacketMapper;
 
-    public Page<UserPacketResponseDto> findAllUserPackets(PacketUsageStatus status,Long studentId, Pageable pageable) {
+    public Page<UserPacketResponseDto> findAllUserPackets(PacketUsageStatus status, Pageable pageable) {
+        Long studentId = AuthService.getCurrentUserId();
         Page<UserPacket> entities = userPacketRepository.findAllByUsageStatusAndStudentId(status, studentId, pageable);
         return entities.map(e -> {
             UserPacketResponseDto dto = userPacketMapper.toDto(e);

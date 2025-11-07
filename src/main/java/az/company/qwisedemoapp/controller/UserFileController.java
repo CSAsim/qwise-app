@@ -29,9 +29,8 @@ public class UserFileController {
 
     @GetMapping("/all/{studentId}")
     public ResponseEntity<PageableResponseDto<UserFileResponseDto>> getAll(
-            @PageableDefault(size = 10) Pageable pageable,
-            @PathVariable("studentId") Long studentId) {
-        Page<UserFileResponseDto> page = userFileService.findAllUserFiles(studentId, pageable);
+            @PageableDefault(size = 10) Pageable pageable) {
+        Page<UserFileResponseDto> page = userFileService.findAllUserFiles(pageable);
         PageableResponseDto<UserFileResponseDto> responseDto = PageableResponseDto.of(
                 page.getContent(),
                 page.getPageable().getPageNumber(),

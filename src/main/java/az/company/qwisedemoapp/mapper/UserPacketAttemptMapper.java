@@ -53,21 +53,20 @@ public class UserPacketAttemptMapper {
     private void fillAttemptResponse(ResultAttemptResponseDto resultResponse,
                                      List<AnswerResponse> answerResponse,
                                      UserPacketAttempt attempt) {
-        CompletedAttemptResponseDto completedResponse = (CompletedAttemptResponseDto) resultResponse;
-        completedResponse.setId(attempt.getId());
-        completedResponse.setAuthorName(attempt.getUser().getFullName());
-        completedResponse.setDescription(attempt.getUserPacket().getPacket().getDescription());
-        completedResponse.setCategory(attempt.getUserPacket().getPacket().getCategory());
-        completedResponse.setSubCategory(attempt.getUserPacket().getPacket().getSubCategory());
-        completedResponse.setThumbnailUrl(attempt.getUserPacket().getPacket().getThumbnailUrl());
-        completedResponse.setPrice(attempt.getUserPacket().getPacket().getPrice());
-        completedResponse.setTotalQuestionCount(answerResponse.size());
-        completedResponse.setCreatedAt(attempt.getCreatedAt());
-        completedResponse.setStartedAt(attempt.getStartedAt());
-        completedResponse.setFinishedAt(attempt.getFinishedAt());
-        completedResponse.setStatus(attempt.getStatus());
-        completedResponse.setDuration(formatDuration(attempt.getDuration()));
-        completedResponse.setResult(answerResponse);
+        resultResponse.setId(attempt.getId());
+        resultResponse.setAuthorName(attempt.getUser().getFullName());
+        resultResponse.setDescription(attempt.getUserPacket().getPacket().getDescription());
+        resultResponse.setCategory(attempt.getUserPacket().getPacket().getCategory());
+        resultResponse.setSubCategory(attempt.getUserPacket().getPacket().getSubCategory());
+        resultResponse.setThumbnailUrl(attempt.getUserPacket().getPacket().getThumbnailUrl());
+        resultResponse.setPrice(attempt.getUserPacket().getPacket().getPrice());
+        resultResponse.setTotalQuestionCount(answerResponse.size());
+        resultResponse.setCreatedAt(attempt.getCreatedAt());
+        resultResponse.setStartedAt(attempt.getStartedAt());
+        resultResponse.setFinishedAt(attempt.getFinishedAt());
+        resultResponse.setStatus(attempt.getStatus());
+        resultResponse.setDuration(formatDuration(attempt.getDuration()));
+        resultResponse.setResult(answerResponse);
     }
 
     public String formatDuration(Long totalMinutes) {
