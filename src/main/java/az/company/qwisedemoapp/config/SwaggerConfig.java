@@ -17,8 +17,8 @@ public class SwaggerConfig {
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
                 .info(new Info().title("Qwise Demo API").version("v1"))
-//                .addServersItem(new Server().url("https://qwise.codepays.dev"))
-                .addServersItem(new Server().url("http://localhost:7775"))
+                .addServersItem(new Server().url("https://qwise.codepays.dev"))
+//                .addServersItem(new Server().url("http://localhost:7775"))
                 .addSecurityItem(new SecurityRequirement().addList(SECURITY_SCHEME_NAME))
                 .components(new io.swagger.v3.oas.models.Components()
                         .addSecuritySchemes(SECURITY_SCHEME_NAME, new SecurityScheme()
