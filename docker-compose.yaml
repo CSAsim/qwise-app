@@ -30,7 +30,7 @@ services:
       - ./logs:/app/logs
 
   db:
-    image: postgres:latest
+    image: postgres:17-alpine
     container_name: qwise-db-container
     environment:
       POSTGRES_DB: qwise-db
