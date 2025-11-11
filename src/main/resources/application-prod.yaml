@@ -37,10 +37,9 @@ spring:
             enable: true
 
 minio:
-  url: qwise.codepays.dev
-  port: 9000
-  access-key: ${PROD_MINIO_ROOT_USER}
-  secret-key: ${PROD_MINIO_ROOT_PASSWORD}
+  url: http://minio:9000
+  access-key: ${PROD_MINIO_ACCESS_KEY}
+  secret-key: ${PROD_MINIO_SECRET_KEY}
   secure: true
   buckets:
     question-images: question-images

@@ -2,6 +2,8 @@ package az.company.qwisedemoapp.filter;
 
 import az.company.qwisedemoapp.service.auth.CustomUserDetailsService;
 import az.company.qwisedemoapp.service.auth.JwtService;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,34 +28,65 @@ public class JwtFilter extends OncePerRequestFilter {
     private final CustomUserDetailsService customUserDetailsService;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String authHeader = request.getHeader("Authorization");
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain)
+            throws ServletException, IOException {
 
+        String authHeader = request.getHeader("Authorization");
         String token = null;
         String username = null;
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            token = authHeader.substring(7);
-            username = jwtService.extractUserName(token);
-        } else {
-            log.info("Authorization header not found");
-        }
 
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-
-            UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
-            if (jwtService.validateToken(token, userDetails)) {
-
-                UsernamePasswordAuthenticationToken authToken =
-                        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authToken);
+        try {
+            if (authHeader != null && authHeader.startsWith("Bearer ")) {
+                token = authHeader.substring(7);
+                username = jwtService.extractUserName(token);
+            } else {
+                log.debug("Authorization header missing or invalid");
             }
-        } else {
-            log.info("Invalid token");
+
+            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
+
+                if (jwtService.validateToken(token, userDetails)) {
+                    UsernamePasswordAuthenticationToken authToken =
+                            new UsernamePasswordAuthenticationToken(
+                                    userDetails, null, userDetails.getAuthorities());
+                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                }
+            }
+
+            filterChain.doFilter(request, response);
+
+        } catch (ExpiredJwtException ex) {
+            handleExpiredJwtException(response, ex);
+        } catch (JwtException ex) {
+            handleInvalidJwtException(response, ex);
         }
-        log.info("Auth header: {}", authHeader);
-        log.info("Extracted username from JWT: {}", username);
-        log.info("Current authentication: {}", SecurityContextHolder.getContext().getAuthentication());
-        filterChain.doFilter(request, response);
+    }
+
+    private void handleExpiredJwtException(HttpServletResponse response, ExpiredJwtException ex) throws IOException {
+        log.warn("JWT expired: {}", ex.getMessage());
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setContentType("application/json");
+        response.getWriter().write("""
+            {
+                "error": "access_token_expired",
+                "message": "Access token expired. Please refresh your token."
+            }
+        """);
+    }
+
+    private void handleInvalidJwtException(HttpServletResponse response, JwtException ex) throws IOException {
+        log.warn("Invalid JWT: {}", ex.getMessage());
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setContentType("application/json");
+        response.getWriter().write("""
+            {
+                "error": "invalid_token",
+                "message": "JWT is malformed or invalid."
+            }
+        """);
     }
 }

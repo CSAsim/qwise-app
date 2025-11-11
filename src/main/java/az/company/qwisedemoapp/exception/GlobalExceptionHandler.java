@@ -1,6 +1,7 @@
 package az.company.qwisedemoapp.exception;
 
 import az.company.qwisedemoapp.model.constants.ErrorCode;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
@@ -35,6 +36,15 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(InvalidInputException.class)
     public ResponseEntity<GlobalErrorResponse> handleInvalidInputException(InvalidInputException e) {
         return buildResponse(ErrorCode.INVALID_INPUT, e.getMessage(), HttpStatus.BAD_REQUEST, null);
+    }
+
+    @ExceptionHandler(TokenExpiredException.class)
+    public ResponseEntity<GlobalErrorResponse> handleTokenExpiredException(TokenExpiredException e) {
+        return buildResponse(ErrorCode.INVALID_INPUT,
+                "Token expired",
+                HttpStatus.UNAUTHORIZED,
+                Collections.singletonList(e.getMessage())
+                );
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -86,16 +96,6 @@ public class GlobalExceptionHandler {
         e.printStackTrace();
 
         return buildResponse(ErrorCode.BAD_REQUEST, null, HttpStatus.BAD_REQUEST, null);
-    }
-
-    @ExceptionHandler(UnsupportedJwtException.class)
-    public ResponseEntity<GlobalErrorResponse> handleUnsupportedJwtException(UnsupportedJwtException e) {
-        return buildResponse(
-                "UNSUPPORTED_JWT",
-                "The provided JWT token is not supported.",
-                HttpStatus.UNAUTHORIZED,
-                List.of(e.getMessage())
-        );
     }
 
     private ResponseEntity<GlobalErrorResponse> buildResponse(String code, String message, HttpStatus status, List<String> errors) {
