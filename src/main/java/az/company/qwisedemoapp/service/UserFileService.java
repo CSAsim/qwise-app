@@ -43,6 +43,8 @@ public class UserFileService {
                 .orElseThrow(() -> new NotFoundException("Student" + ExceptionMessages.NOT_FOUND));
         File file = fileRepository.findById(fileId)
                 .orElseThrow(() -> new NotFoundException("File" + ExceptionMessages.NOT_FOUND));
+        file.setSoldCount(file.getSoldCount() + 1);
+        fileRepository.save(file);
         boolean alreadyExists = userFileRepository.existsByStudentIdAndFileId(student.getId(), file.getId());
         if (alreadyExists) {
             throw new AlreadyExistsException("File already assigned to student");

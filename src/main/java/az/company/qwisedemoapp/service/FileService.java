@@ -17,7 +17,9 @@ import az.company.qwisedemoapp.service.auth.AuthService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,9 +34,21 @@ public class FileService {
     private final UserRepository userRepository;
     private final FileMapper fileMapper;
 
-    public Page<FileResponseDto> findAllFiles(FilteredRequestDto request, Pageable pageable) {
+    public Page<FileResponseDto> findAllFilesByCategory(FilteredRequestDto request, Pageable pageable) {
         Specification<File> specification = FileSpecificationFilter.byFilters(request);
         Page<File> pages = fileRepository.findAll(specification, pageable);
+        return fileMapper.toDtoPage(pages);
+    }
+
+    public Page<FileResponseDto> findAllFilesByFilter(String sort, Pageable pageable) {
+        Sort sorting = resolveSort(sort);
+        Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sorting);
+        Page<File> pages = fileRepository.findAll(sortedPageable);
+        return fileMapper.toDtoPage(pages);
+    }
+
+    public Page<FileResponseDto> findAllFilesBySearch(String query, Pageable pageable) {
+        Page<File> pages = fileRepository.search(query, pageable);
         return fileMapper.toDtoPage(pages);
     }
 
@@ -94,5 +108,21 @@ public class FileService {
                 .orElseThrow(() -> new NotFoundException(String.format("File with id %s not found", id)));
         author.removeFile(file);
         fileRepository.delete(file);
+    }
+
+    private Sort resolveSort(String sort) {
+        Sort sorting = Sort.unsorted();
+        if ("latest".equals(sort)) {
+            sorting = Sort.by(Sort.Direction.DESC, "createdAt");
+        } else if ("oldest".equals(sort)) {
+            sorting = Sort.by(Sort.Direction.ASC, "createdAt");
+        } else if ("expensive".equals(sort)) {
+            sorting = Sort.by(Sort.Direction.DESC, "price");
+        } else if ("cheap".equals(sort)) {
+            sorting = Sort.by(Sort.Direction.ASC, "price");
+        } else if ("top-selling".equals(sort)) {
+            sorting = Sort.by(Sort.Direction.DESC, "soldCount");
+        }
+        return sorting;
     }
 }

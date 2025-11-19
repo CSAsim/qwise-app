@@ -16,6 +16,9 @@ public class CreateFileRequestDto {
     private String name;
 
     @NotBlank
+    private String authorName;
+
+    @NotBlank
     private String subCategory;
 
     @NotBlank
