@@ -27,7 +27,7 @@ public class UserFileController {
 
     private final UserFileService userFileService;
 
-    @GetMapping("/all/{studentId}")
+    @GetMapping("/all")
     public ResponseEntity<PageableResponseDto<UserFileResponseDto>> getAll(
             @PageableDefault(size = 10) Pageable pageable) {
         Page<UserFileResponseDto> page = userFileService.findAllUserFiles(pageable);
