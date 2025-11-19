@@ -30,6 +30,9 @@ public class File extends BaseEntity {
     @Column(name = "name", nullable = false)
     private String name;
 
+    @Column(name = "author_name", nullable = false)
+    private String authorName;
+
     @Column(name = "sub_category")
     private String subCategory;
 
@@ -38,6 +41,9 @@ public class File extends BaseEntity {
 
     @Column(name = "description")
     private String description;
+
+    @Column(name = "sold_count", nullable = false)
+    private Integer soldCount = 0;
 
     @Builder.Default
     @Column(name = "rating", nullable = false)

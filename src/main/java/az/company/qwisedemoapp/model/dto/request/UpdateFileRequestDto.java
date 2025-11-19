@@ -14,6 +14,8 @@ public class UpdateFileRequestDto {
 
     private String name;
 
+    private String authorName;
+
     private String subCategory;
 
     private String category;
