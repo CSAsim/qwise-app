@@ -41,7 +41,7 @@ public class FileController {
             @PageableDefault(size = 10) Pageable pageable,
             @RequestParam(required = false) String sort
     ) {
-        Page<FileResponseDto> page = fileService.findAllFilesBySearch(sort, pageable);
+        Page<FileResponseDto> page = fileService.findAllFilesByFilter(sort, pageable);
         PageableResponseDto<FileResponseDto> responseDto = PageableResponseDto.of(
                 page.getContent(),
                 page.getPageable().getPageNumber(),
@@ -54,10 +54,10 @@ public class FileController {
 
     @GetMapping("/search")
     public ResponseEntity<PageableResponseDto<FileResponseDto>> search(
-            @RequestParam(required = false) String search,
+            @RequestParam(required = false) String query,
             @PageableDefault(size = 10) Pageable pageable
     ) {
-        Page<FileResponseDto> page = fileService.findAllFilesBySearch(search, pageable);
+        Page<FileResponseDto> page = fileService.findAllFilesBySearch(query, pageable);
         PageableResponseDto<FileResponseDto> responseDto = PageableResponseDto.of(
                 page.getContent(),
                 page.getPageable().getPageNumber(),
