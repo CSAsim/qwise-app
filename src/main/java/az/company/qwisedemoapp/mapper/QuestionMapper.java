@@ -1,6 +1,6 @@
 package az.company.qwisedemoapp.mapper;
 
-import az.company.qwisedemoapp.domain.entity.Packet;
+import az.company.qwisedemoapp.domain.entity.packet.Packet;
 import az.company.qwisedemoapp.domain.entity.test.Option;
 import az.company.qwisedemoapp.domain.entity.test.question.MatchingSelection;
 import az.company.qwisedemoapp.domain.entity.test.question.*;

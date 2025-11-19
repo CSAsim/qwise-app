@@ -1,6 +1,6 @@
 package az.company.qwisedemoapp.service.test;
 
-import az.company.qwisedemoapp.domain.entity.Packet;
+import az.company.qwisedemoapp.domain.entity.packet.Packet;
 import az.company.qwisedemoapp.domain.entity.test.question.Question;
 import az.company.qwisedemoapp.domain.repository.test.QuestionRepository;
 import az.company.qwisedemoapp.mapper.QuestionMapper;

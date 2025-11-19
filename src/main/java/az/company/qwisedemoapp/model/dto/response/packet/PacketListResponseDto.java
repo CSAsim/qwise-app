@@ -1,4 +1,4 @@
-package az.company.qwisedemoapp.model.dto.response;
+package az.company.qwisedemoapp.model.dto.response.packet;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

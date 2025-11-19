@@ -1,4 +1,4 @@
-package az.company.qwisedemoapp.model.dto.request;
+package az.company.qwisedemoapp.model.dto.request.packet;
 
 import az.company.qwisedemoapp.model.dto.request.test.question.QuestionRequestDto;
 import az.company.qwisedemoapp.model.enums.PacketStatus;
@@ -25,13 +25,13 @@ public class CreatePacketRequestDto {
     private String authorName;
 
     @NotBlank
-    private String subCategory;
+    private Long subCategoryId;
+
+    @NotBlank
+    private Long categoryId;
 
     @NotNull
     private String description;
-
-    @NotBlank
-    private String category;
 
     @NotNull
     private Float price;

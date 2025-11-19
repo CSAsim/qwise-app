@@ -1,6 +1,8 @@
-package az.company.qwisedemoapp.domain.entity;
+package az.company.qwisedemoapp.domain.entity.packet;
 
-import az.company.qwisedemoapp.domain.entity.test.question.InterviewQuestion;
+import az.company.qwisedemoapp.domain.entity.BaseEntity;
+import az.company.qwisedemoapp.domain.entity.User;
+import az.company.qwisedemoapp.domain.entity.UserPacket;
 import az.company.qwisedemoapp.domain.entity.test.question.Question;
 import az.company.qwisedemoapp.model.enums.PacketStatus;
 import az.company.qwisedemoapp.model.enums.PacketType;
@@ -36,14 +38,16 @@ public class Packet extends BaseEntity {
     @Column(name = "author_name", nullable = false)
     private String authorName;
 
-    @Column(name = "sub_category")
-    private String subCategory;
+    @ManyToOne(targetEntity = PacketCategory.class, fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "category_id", nullable = false)
+    private PacketCategory category;
 
-    @Column(name = "description")
-    private String description;
+    @ManyToOne(targetEntity = PacketSubcategory.class, fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "sub_category_id", nullable = false)
+    private PacketSubcategory subCategory;
 
-    @Column(name = "category", nullable = false)
-    private String category;
+    @Column(name = "sold_count", nullable = false)
+    private Integer soldCount = 0;
 
     @Column(name = "price", nullable = false)
     private Float price;

@@ -1,6 +1,6 @@
 package az.company.qwisedemoapp.service;
 
-import az.company.qwisedemoapp.domain.entity.Packet;
+import az.company.qwisedemoapp.domain.entity.packet.Packet;
 import az.company.qwisedemoapp.domain.entity.User;
 import az.company.qwisedemoapp.domain.entity.UserPacket;
 import az.company.qwisedemoapp.domain.repository.PacketRepository;

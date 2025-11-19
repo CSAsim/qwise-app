@@ -1,10 +1,10 @@
 package az.company.qwisedemoapp.mapper;
 
-import az.company.qwisedemoapp.domain.entity.Packet;
-import az.company.qwisedemoapp.model.dto.request.UpdatePacketRequestDto;
-import az.company.qwisedemoapp.model.dto.response.PacketDetailResponseDto;
-import az.company.qwisedemoapp.model.dto.request.CreatePacketRequestDto;
-import az.company.qwisedemoapp.model.dto.response.PacketListResponseDto;
+import az.company.qwisedemoapp.domain.entity.packet.Packet;
+import az.company.qwisedemoapp.model.dto.request.packet.UpdatePacketRequestDto;
+import az.company.qwisedemoapp.model.dto.response.packet.PacketDetailResponseDto;
+import az.company.qwisedemoapp.model.dto.request.packet.CreatePacketRequestDto;
+import az.company.qwisedemoapp.model.dto.response.packet.PacketListResponseDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -23,10 +23,14 @@ public interface PacketMapper {
 
     @Mapping(target = "authorName", source = "authorName")
     @Mapping(target = "totalQuestionCount", ignore = true)
+    @Mapping(target = "category", source = "category.name")
+    @Mapping(target = "subCategory", source = "subCategory.name")
     PacketListResponseDto toDto(Packet entity);
 
     @Mapping(target = "authorName", source = "authorName")
     @Mapping(target = "totalQuestionCount", ignore = true)
+    @Mapping(target = "category", source = "category.name")
+    @Mapping(target = "subCategory", source = "subCategory.name")
     PacketDetailResponseDto toDtoDetail(Packet entity);
 
     List<PacketDetailResponseDto> toDtoList(List<Packet> entities);
@@ -38,6 +42,9 @@ public interface PacketMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "author", ignore = true)
     @Mapping(target = "enrolledStudents", ignore = true)
+    @Mapping(target = "soldCount", ignore = true)
+    @Mapping(target = "category", ignore = true)
+    @Mapping(target = "subCategory", ignore = true)
     @Mapping(target = "createdBy", ignore = true)
     @Mapping(target = "updatedBy", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
@@ -48,6 +55,9 @@ public interface PacketMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "author", ignore = true)
     @Mapping(target = "enrolledStudents", ignore = true)
+    @Mapping(target = "soldCount", ignore = true)
+    @Mapping(target = "category", ignore = true)
+    @Mapping(target = "subCategory", ignore = true)
     @Mapping(target = "createdBy", ignore = true)
     @Mapping(target = "updatedBy", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
