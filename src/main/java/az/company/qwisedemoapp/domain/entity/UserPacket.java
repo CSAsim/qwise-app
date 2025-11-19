@@ -1,7 +1,7 @@
 package az.company.qwisedemoapp.domain.entity;
 
+import az.company.qwisedemoapp.domain.entity.packet.Packet;
 import az.company.qwisedemoapp.domain.entity.test.UserPacketAttempt;
-import az.company.qwisedemoapp.domain.entity.test.answer.UserAnswer;
 import az.company.qwisedemoapp.model.enums.PacketUsageStatus;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;

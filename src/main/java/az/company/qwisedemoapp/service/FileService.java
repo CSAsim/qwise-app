@@ -14,6 +14,7 @@ import az.company.qwisedemoapp.model.dto.request.CreateFileRequestDto;
 import az.company.qwisedemoapp.model.dto.request.FilteredRequestDto;
 import az.company.qwisedemoapp.model.dto.request.UpdateFileRequestDto;
 import az.company.qwisedemoapp.service.auth.AuthService;
+import az.company.qwisedemoapp.util.SortUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -41,7 +42,7 @@ public class FileService {
     }
 
     public Page<FileResponseDto> findAllFilesByFilter(String sort, Pageable pageable) {
-        Sort sorting = resolveSort(sort);
+        Sort sorting = SortUtil.resolveSort(sort);
         Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sorting);
         Page<File> pages = fileRepository.findAll(sortedPageable);
         return fileMapper.toDtoPage(pages);
@@ -108,21 +109,5 @@ public class FileService {
                 .orElseThrow(() -> new NotFoundException(String.format("File with id %s not found", id)));
         author.removeFile(file);
         fileRepository.delete(file);
-    }
-
-    private Sort resolveSort(String sort) {
-        Sort sorting = Sort.unsorted();
-        if ("latest".equals(sort)) {
-            sorting = Sort.by(Sort.Direction.DESC, "createdAt");
-        } else if ("oldest".equals(sort)) {
-            sorting = Sort.by(Sort.Direction.ASC, "createdAt");
-        } else if ("expensive".equals(sort)) {
-            sorting = Sort.by(Sort.Direction.DESC, "price");
-        } else if ("cheap".equals(sort)) {
-            sorting = Sort.by(Sort.Direction.ASC, "price");
-        } else if ("top-selling".equals(sort)) {
-            sorting = Sort.by(Sort.Direction.DESC, "soldCount");
-        }
-        return sorting;
     }
 }

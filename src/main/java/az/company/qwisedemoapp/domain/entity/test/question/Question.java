@@ -1,7 +1,7 @@
 package az.company.qwisedemoapp.domain.entity.test.question;
 
 import az.company.qwisedemoapp.domain.entity.BaseEntity;
-import az.company.qwisedemoapp.domain.entity.Packet;
+import az.company.qwisedemoapp.domain.entity.packet.Packet;
 import az.company.qwisedemoapp.domain.entity.test.answer.UserAnswer;
 import az.company.qwisedemoapp.model.enums.QuestionType;
 import jakarta.persistence.CascadeType;

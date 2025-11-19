@@ -1,6 +1,6 @@
-package az.company.qwisedemoapp.service;
+package az.company.qwisedemoapp.service.packet;
 
-import az.company.qwisedemoapp.domain.entity.Packet;
+import az.company.qwisedemoapp.domain.entity.packet.Packet;
 import az.company.qwisedemoapp.domain.entity.User;
 import az.company.qwisedemoapp.domain.repository.PacketRepository;
 import az.company.qwisedemoapp.domain.repository.UserRepository;
@@ -8,19 +8,22 @@ import az.company.qwisedemoapp.exception.NotFoundException;
 import az.company.qwisedemoapp.filter.PacketSpecificationFilter;
 import az.company.qwisedemoapp.mapper.PacketMapper;
 import az.company.qwisedemoapp.model.constants.ExceptionMessages;
-import az.company.qwisedemoapp.model.dto.request.UpdatePacketRequestDto;
-import az.company.qwisedemoapp.model.dto.response.PacketDetailResponseDto;
-import az.company.qwisedemoapp.model.dto.response.PacketListResponseDto;
+import az.company.qwisedemoapp.model.dto.request.packet.UpdatePacketRequestDto;
+import az.company.qwisedemoapp.model.dto.response.packet.PacketDetailResponseDto;
+import az.company.qwisedemoapp.model.dto.response.packet.PacketListResponseDto;
 import az.company.qwisedemoapp.model.dto.response.test.question.QuestionResponseDto;
 import az.company.qwisedemoapp.model.enums.PacketStatus;
-import az.company.qwisedemoapp.model.dto.request.CreatePacketRequestDto;
+import az.company.qwisedemoapp.model.dto.request.packet.CreatePacketRequestDto;
 import az.company.qwisedemoapp.model.dto.request.FilteredRequestDto;
 import az.company.qwisedemoapp.service.auth.AuthService;
 import az.company.qwisedemoapp.service.test.QuestionService;
+import az.company.qwisedemoapp.util.SortUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,11 +41,31 @@ public class PacketService {
     private final QuestionService questionService;
     private final PacketMapper packetMapper;
 
-    public Page<PacketListResponseDto> findAllPackets(FilteredRequestDto request, Pageable pageable) {
+    public Page<PacketListResponseDto> findAllPacketsByFilterRequest(FilteredRequestDto request, Pageable pageable) {
         Specification<Packet> specification = PacketSpecificationFilter.byFilters(request);
         Page<Packet> page = packetRepository.findAll(specification, pageable);
 
         return page.map(packet -> {
+            PacketListResponseDto dto = packetMapper.toDto(packet);
+            dto.setTotalQuestionCount(packet.getQuestions() != null ? packet.getQuestions().size() : 0);
+            return dto;
+        });
+    }
+
+    public Page<PacketListResponseDto> findAllPacketsByFilter(String sort, Pageable pageable) {
+        Sort sorting = SortUtil.resolveSort(sort);
+        Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sorting);
+        Page<Packet> pages = packetRepository.findAll(sortedPageable);
+        return pages.map(packet -> {
+            PacketListResponseDto dto = packetMapper.toDto(packet);
+            dto.setTotalQuestionCount(packet.getQuestions() != null ? packet.getQuestions().size() : 0);
+            return dto;
+        });
+    }
+
+    public Page<PacketListResponseDto> findAllPacketsBySearch(String query, Pageable pageable) {
+        Page<Packet> pages = packetRepository.search(query, pageable);
+        return pages.map(packet -> {
             PacketListResponseDto dto = packetMapper.toDto(packet);
             dto.setTotalQuestionCount(packet.getQuestions() != null ? packet.getQuestions().size() : 0);
             return dto;

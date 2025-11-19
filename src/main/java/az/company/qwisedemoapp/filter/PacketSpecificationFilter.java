@@ -1,6 +1,6 @@
 package az.company.qwisedemoapp.filter;
 
-import az.company.qwisedemoapp.domain.entity.Packet;
+import az.company.qwisedemoapp.domain.entity.packet.Packet;
 import az.company.qwisedemoapp.model.dto.request.FilteredRequestDto;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
