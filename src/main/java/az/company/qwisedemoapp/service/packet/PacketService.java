@@ -2,8 +2,12 @@ package az.company.qwisedemoapp.service.packet;
 
 import az.company.qwisedemoapp.domain.entity.packet.Packet;
 import az.company.qwisedemoapp.domain.entity.User;
-import az.company.qwisedemoapp.domain.repository.PacketRepository;
+import az.company.qwisedemoapp.domain.entity.packet.PacketCategory;
+import az.company.qwisedemoapp.domain.entity.packet.PacketSubcategory;
+import az.company.qwisedemoapp.domain.repository.packet.PacketCategoryRepository;
+import az.company.qwisedemoapp.domain.repository.packet.PacketRepository;
 import az.company.qwisedemoapp.domain.repository.UserRepository;
+import az.company.qwisedemoapp.domain.repository.packet.PacketSubcategoryRepository;
 import az.company.qwisedemoapp.exception.NotFoundException;
 import az.company.qwisedemoapp.filter.PacketSpecificationFilter;
 import az.company.qwisedemoapp.mapper.PacketMapper;
@@ -38,6 +42,8 @@ public class PacketService {
 
     private final PacketRepository packetRepository;
     private final UserRepository userRepository;
+    private final PacketCategoryRepository packetCategoryRepository;
+    private final PacketSubcategoryRepository packetSubcategoryRepository;
     private final QuestionService questionService;
     private final PacketMapper packetMapper;
 
@@ -91,7 +97,17 @@ public class PacketService {
         packet.setAuthor(author);
         packet.setStatus(PacketStatus.ACTIVE);
 
+        PacketCategory packetCategory = packetCategoryRepository.findById(request.getCategoryId())
+                .orElseThrow(() -> new NotFoundException("Category not found"));
+        packet.setCategory(packetCategory);
+
+        PacketSubcategory packetSubcategory = packetSubcategoryRepository.findById(request.getSubCategoryId())
+                .orElseThrow(() -> new NotFoundException("Subcategory not found"));
+        packet.setSubCategory(packetSubcategory);
+
         Packet saved = packetRepository.save(packet);
+        log.info("Packet created: {}", saved);
+
         questionService.createQuestions(saved, request.getQuestions());
         PacketDetailResponseDto response = packetMapper.toDtoDetail(saved);
         response.setTotalQuestionCount(request.getQuestions().size());

@@ -1,6 +1,6 @@
-package az.company.qwisedemoapp.domain.repository;
+package az.company.qwisedemoapp.domain.repository.file;
 
-import az.company.qwisedemoapp.domain.entity.File;
+import az.company.qwisedemoapp.domain.entity.file.File;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,8 +22,8 @@ public interface FileRepository extends JpaRepository<File, Long>, JpaSpecificat
         SELECT f FROM File f
         WHERE LOWER(f.name) LIKE %:q%
            OR LOWER(f.description) LIKE %:q%
-           OR LOWER(f.category) LIKE %:q%
-           OR LOWER(f.subCategory) LIKE %:q%
+           OR LOWER(f.category.name) LIKE %:q%
+           OR LOWER(f.subcategory.name) LIKE %:q%
            OR LOWER(f.authorName) LIKE %:q%
         """)
     Page<File> search(@Param("q") String q, Pageable pageable);

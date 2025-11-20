@@ -24,10 +24,10 @@ public class CreatePacketRequestDto {
     @NotBlank
     private String authorName;
 
-    @NotBlank
+    @NotNull
     private Long subCategoryId;
 
-    @NotBlank
+    @NotNull
     private Long categoryId;
 
     @NotNull

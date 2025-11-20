@@ -1,4 +1,4 @@
-package az.company.qwisedemoapp.model.dto.request;
+package az.company.qwisedemoapp.model.dto.request.file;
 
 import az.company.qwisedemoapp.model.enums.FileStatus;
 import lombok.AllArgsConstructor;

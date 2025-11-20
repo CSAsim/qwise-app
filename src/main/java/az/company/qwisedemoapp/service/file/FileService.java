@@ -1,18 +1,22 @@
-package az.company.qwisedemoapp.service;
+package az.company.qwisedemoapp.service.file;
 
-import az.company.qwisedemoapp.domain.entity.File;
+import az.company.qwisedemoapp.domain.entity.file.File;
 import az.company.qwisedemoapp.domain.entity.User;
-import az.company.qwisedemoapp.domain.repository.FileRepository;
+import az.company.qwisedemoapp.domain.entity.file.FileCategory;
+import az.company.qwisedemoapp.domain.entity.file.FileSubcategory;
+import az.company.qwisedemoapp.domain.repository.file.FileCategoryRepository;
+import az.company.qwisedemoapp.domain.repository.file.FileRepository;
 import az.company.qwisedemoapp.domain.repository.UserRepository;
+import az.company.qwisedemoapp.domain.repository.file.FileSubcategoryRepository;
 import az.company.qwisedemoapp.exception.NotFoundException;
 import az.company.qwisedemoapp.exception.TokenExpiredException;
 import az.company.qwisedemoapp.filter.FileSpecificationFilter;
 import az.company.qwisedemoapp.mapper.FileMapper;
-import az.company.qwisedemoapp.model.dto.response.FileResponseDto;
+import az.company.qwisedemoapp.model.dto.response.file.FileResponseDto;
 import az.company.qwisedemoapp.model.enums.FileStatus;
-import az.company.qwisedemoapp.model.dto.request.CreateFileRequestDto;
+import az.company.qwisedemoapp.model.dto.request.file.CreateFileRequestDto;
 import az.company.qwisedemoapp.model.dto.request.FilteredRequestDto;
-import az.company.qwisedemoapp.model.dto.request.UpdateFileRequestDto;
+import az.company.qwisedemoapp.model.dto.request.file.UpdateFileRequestDto;
 import az.company.qwisedemoapp.service.auth.AuthService;
 import az.company.qwisedemoapp.util.SortUtil;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +37,8 @@ public class FileService {
 
     private final FileRepository fileRepository;
     private final UserRepository userRepository;
+    private final FileCategoryRepository fileCategoryRepository;
+    private final FileSubcategoryRepository fileSubcategoryRepository;
     private final FileMapper fileMapper;
 
     public Page<FileResponseDto> findAllFilesByCategory(FilteredRequestDto request, Pageable pageable) {
@@ -70,6 +76,15 @@ public class FileService {
         log.info("Creating file: {}", request);
         File file = fileMapper.toEntity(request);
         file.setStatus(FileStatus.ACTIVE);
+
+        FileCategory category = fileCategoryRepository.findById(request.getCategoryId())
+                        .orElseThrow(() -> new NotFoundException("Category not found"));
+        file.setCategory(category);
+
+        FileSubcategory subcategory = fileSubcategoryRepository.findById(request.getSubcategoryId())
+                        .orElseThrow(() -> new NotFoundException("Subcategory not found"));
+        file.setSubcategory(subcategory);
+
         author.addFile(file);
         File savedFile = fileRepository.save(file);
         log.info("File created: {}", savedFile);

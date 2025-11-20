@@ -1,6 +1,5 @@
-package az.company.qwisedemoapp.controller;
+package az.company.qwisedemoapp.controller.packet;
 
-import az.company.qwisedemoapp.model.dto.request.packet.PacketCategoryRequest;
 import az.company.qwisedemoapp.model.dto.response.packet.PacketCategoryResponseDto;
 import az.company.qwisedemoapp.service.packet.PacketCategoryService;
 import lombok.RequiredArgsConstructor;
@@ -22,5 +21,10 @@ public class PacketCategoryController {
     public ResponseEntity<List<PacketCategoryResponseDto>> getAll() {
         List<PacketCategoryResponseDto> responses = packetCategoryService.findAllCategories();
         return ResponseEntity.ok(responses);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<PacketCategoryResponseDto> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(packetCategoryService.findById(id));
     }
 }

@@ -1,5 +1,8 @@
-package az.company.qwisedemoapp.domain.entity;
+package az.company.qwisedemoapp.domain.entity.file;
 
+import az.company.qwisedemoapp.domain.entity.BaseEntity;
+import az.company.qwisedemoapp.domain.entity.User;
+import az.company.qwisedemoapp.domain.entity.UserFile;
 import az.company.qwisedemoapp.model.enums.FileStatus;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -33,21 +36,20 @@ public class File extends BaseEntity {
     @Column(name = "author_name", nullable = false)
     private String authorName;
 
-    @Column(name = "sub_category")
-    private String subCategory;
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private FileCategory category;
 
-    @Column(name = "category", nullable = false)
-    private String category;
+    @ManyToOne
+    @JoinColumn(name = "subcategory_id")
+    private FileSubcategory subcategory;
 
     @Column(name = "description")
     private String description;
 
+    @Builder.Default
     @Column(name = "sold_count", nullable = false)
     private Integer soldCount = 0;
-
-    @Builder.Default
-    @Column(name = "rating", nullable = false)
-    private Float rating = 0.0f;
 
     @Column(name = "price", nullable = false)
     private Float price;
@@ -62,14 +64,14 @@ public class File extends BaseEntity {
     @Enumerated(value = EnumType.STRING)
     private FileStatus status;
 
-    @OneToMany(mappedBy = "file", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @ToString.Exclude
     @Builder.Default
+    @ToString.Exclude
+    @OneToMany(mappedBy = "file", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<UserFile> enrolledStudents = new ArrayList<>();
 
-    @ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "author_id")
     @ToString.Exclude
+    @JoinColumn(name = "author_id")
+    @ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY, optional = false)
     private User author;
 
     public void addEnrolledStudent(UserFile userFile) {

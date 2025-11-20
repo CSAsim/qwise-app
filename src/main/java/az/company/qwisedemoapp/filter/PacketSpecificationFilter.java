@@ -14,14 +14,10 @@ public class PacketSpecificationFilter {
 
         return (root, query, criterialBuilder) -> {
             Predicate predicate = criterialBuilder.conjunction();
-            if (request.getAuthorId() != null) {
-                predicate = criterialBuilder
-                        .and(predicate, criterialBuilder.equal(root.get("author").get("id"), request.getAuthorId()));
-            }
 
             if (request.getCategory() != null) {
                 predicate = criterialBuilder
-                        .and(predicate, criterialBuilder.equal(root.get("category"), request.getCategory()));
+                        .and(predicate, criterialBuilder.equal(root.get("category").get("name"), request.getCategory()));
             }
 
             if (request.getStatus() != null) {
@@ -31,7 +27,7 @@ public class PacketSpecificationFilter {
 
             if (request.getSubCategory() != null) {
                 predicate = criterialBuilder
-                        .and(predicate, criterialBuilder.equal(root.get("subCategory"), request.getSubCategory()));
+                        .and(predicate, criterialBuilder.equal(root.get("subCategory").get("name"), request.getSubCategory()));
             }
             return predicate;
         };

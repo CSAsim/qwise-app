@@ -1,6 +1,7 @@
-package az.company.qwisedemoapp.model.dto.request;
+package az.company.qwisedemoapp.model.dto.request.file;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,11 +19,11 @@ public class CreateFileRequestDto {
     @NotBlank
     private String authorName;
 
-    @NotBlank
-    private String subCategory;
+    @NotNull
+    private Long subcategoryId;
 
-    @NotBlank
-    private String category;
+    @NotNull
+    private Long categoryId;
 
     private String description;
 

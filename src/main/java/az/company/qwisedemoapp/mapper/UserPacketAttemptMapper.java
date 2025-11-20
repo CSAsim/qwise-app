@@ -56,8 +56,8 @@ public class UserPacketAttemptMapper {
         resultResponse.setId(attempt.getId());
         resultResponse.setAuthorName(attempt.getUser().getFullName());
         resultResponse.setDescription(attempt.getUserPacket().getPacket().getDescription());
-        resultResponse.setCategory(attempt.getUserPacket().getPacket().getCategory());
-        resultResponse.setSubCategory(attempt.getUserPacket().getPacket().getSubCategory());
+        resultResponse.setCategory(attempt.getUserPacket().getPacket().getCategory().getName());
+        resultResponse.setSubCategory(attempt.getUserPacket().getPacket().getSubCategory().getName());
         resultResponse.setThumbnailUrl(attempt.getUserPacket().getPacket().getThumbnailUrl());
         resultResponse.setPrice(attempt.getUserPacket().getPacket().getPrice());
         resultResponse.setTotalQuestionCount(answerResponse.size());

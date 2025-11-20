@@ -1,4 +1,4 @@
-package az.company.qwisedemoapp.domain.repository;
+package az.company.qwisedemoapp.domain.repository.packet;
 
 import az.company.qwisedemoapp.domain.entity.packet.Packet;
 import org.springframework.data.domain.Page;
@@ -21,8 +21,8 @@ public interface PacketRepository extends JpaRepository<Packet, Long>, JpaSpecif
         SELECT p FROM Packet p
         WHERE LOWER(p.name) LIKE %:q%
            OR LOWER(p.description) LIKE %:q%
-           OR LOWER(p.category) LIKE %:q%
-           OR LOWER(p.subCategory) LIKE %:q%
+           OR LOWER(p.category.name) LIKE %:q%
+           OR LOWER(p.subCategory.name) LIKE %:q%
            OR LOWER(p.authorName) LIKE %:q%
         """)
     Page<Packet> search(@Param("q") String q, Pageable pageable);

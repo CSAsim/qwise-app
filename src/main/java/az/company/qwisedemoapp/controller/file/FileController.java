@@ -1,10 +1,9 @@
-package az.company.qwisedemoapp.controller;
+package az.company.qwisedemoapp.controller.file;
 
-import az.company.qwisedemoapp.model.dto.response.packet.PacketDetailResponseDto;
-import az.company.qwisedemoapp.model.dto.response.packet.PacketListResponseDto;
+import az.company.qwisedemoapp.model.dto.response.file.FileResponseDto;
 import az.company.qwisedemoapp.model.dto.response.PageableResponseDto;
 import az.company.qwisedemoapp.model.dto.request.FilteredRequestDto;
-import az.company.qwisedemoapp.service.packet.PacketService;
+import az.company.qwisedemoapp.service.file.FileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,18 +15,18 @@ import org.springframework.web.bind.annotation.*;
 @Validated
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/qwise-app/packets")
-public class PacketController {
+@RequestMapping("/api/v1/qwise-app/file")
+public class FileController {
 
-    private final PacketService packetService;
+    private final FileService fileService;
 
     @PostMapping("/all/by-category")
-    public ResponseEntity<PageableResponseDto<PacketListResponseDto>> getAll(
+    public ResponseEntity<PageableResponseDto<FileResponseDto>> getAll(
             @PageableDefault(size = 10) Pageable pageable,
             @RequestBody FilteredRequestDto request
-            ) {
-        Page<PacketListResponseDto> page = packetService.findAllPacketsByFilterRequest(request, pageable);
-        PageableResponseDto<PacketListResponseDto> responseDto = PageableResponseDto.of(
+    ) {
+        Page<FileResponseDto> page = fileService.findAllFilesByCategory(request, pageable);
+        PageableResponseDto<FileResponseDto> responseDto = PageableResponseDto.of(
                 page.getContent(),
                 page.getPageable().getPageNumber(),
                 page.getSize(),
@@ -37,13 +36,13 @@ public class PacketController {
         return ResponseEntity.ok(responseDto);
     }
 
-    @GetMapping("/all/by-filter")
-    public ResponseEntity<PageableResponseDto<PacketListResponseDto>> getAllByFilter(
+    @GetMapping("/all/by-filer")
+    public ResponseEntity<PageableResponseDto<FileResponseDto>> getAllByFiler(
             @PageableDefault(size = 10) Pageable pageable,
             @RequestParam(required = false) String sort
     ) {
-        Page<PacketListResponseDto> page = packetService.findAllPacketsByFilter(sort, pageable);
-        PageableResponseDto<PacketListResponseDto> responseDto = PageableResponseDto.of(
+        Page<FileResponseDto> page = fileService.findAllFilesByFilter(sort, pageable);
+        PageableResponseDto<FileResponseDto> responseDto = PageableResponseDto.of(
                 page.getContent(),
                 page.getPageable().getPageNumber(),
                 page.getSize(),
@@ -54,12 +53,12 @@ public class PacketController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<PageableResponseDto<PacketListResponseDto>> search(
+    public ResponseEntity<PageableResponseDto<FileResponseDto>> search(
             @RequestParam(required = false) String query,
             @PageableDefault(size = 10) Pageable pageable
     ) {
-        Page<PacketListResponseDto> page = packetService.findAllPacketsBySearch(query, pageable);
-        PageableResponseDto<PacketListResponseDto> responseDto = PageableResponseDto.of(
+        Page<FileResponseDto> page = fileService.findAllFilesBySearch(query, pageable);
+        PageableResponseDto<FileResponseDto> responseDto = PageableResponseDto.of(
                 page.getContent(),
                 page.getPageable().getPageNumber(),
                 page.getSize(),
@@ -70,7 +69,7 @@ public class PacketController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PacketDetailResponseDto> getById(@PathVariable Long id) {
-        return ResponseEntity.ok(packetService.findById(id));
+    public ResponseEntity<FileResponseDto> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(fileService.findById(id));
     }
 }

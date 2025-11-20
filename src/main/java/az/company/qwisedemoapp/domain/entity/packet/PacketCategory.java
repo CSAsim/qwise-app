@@ -21,6 +21,8 @@ public class PacketCategory extends BaseEntity {
     @Column(name = "name", nullable = false)
     private String name;
 
+    @Builder.Default
+    @ToString.Exclude
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<PacketSubcategory> subCategories = new ArrayList<>();
 
