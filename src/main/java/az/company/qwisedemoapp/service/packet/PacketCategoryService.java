@@ -3,6 +3,7 @@ package az.company.qwisedemoapp.service.packet;
 import az.company.qwisedemoapp.domain.entity.packet.PacketCategory;
 import az.company.qwisedemoapp.domain.repository.packet.PacketCategoryRepository;
 import az.company.qwisedemoapp.exception.AlreadyExistsException;
+import az.company.qwisedemoapp.exception.NotFoundException;
 import az.company.qwisedemoapp.model.dto.request.packet.PacketCategoryRequest;
 import az.company.qwisedemoapp.model.dto.response.packet.PacketCategoryResponseDto;
 import az.company.qwisedemoapp.model.dto.response.packet.PacketSubcategoryResponseDto;
@@ -23,23 +24,31 @@ public class PacketCategoryService {
 
     public List<PacketCategoryResponseDto> findAllCategories() {
         List<PacketCategory> categories = packetCategoryRepository.findAllByOrderByNameAsc();
-        List<PacketSubcategoryResponseDto> subCategories = categories.stream()
-                .flatMap(category -> category.getSubCategories().stream())
-                .map(subCategory -> {
-                    PacketSubcategoryResponseDto dto = new PacketSubcategoryResponseDto();
-                    dto.setId(subCategory.getId());
-                    dto.setName(subCategory.getName());
-                    return dto;
-                })
-                .toList();
         return categories.stream()
                 .map(category -> {
                     PacketCategoryResponseDto categoryResponseDto = new PacketCategoryResponseDto();
                     categoryResponseDto.setId(category.getId());
                     categoryResponseDto.setName(category.getName());
-                    categoryResponseDto.setSubCategories(subCategories);
                     return categoryResponseDto;
                 }).toList();
+    }
+
+    public PacketCategoryResponseDto findById(Long id) {
+        PacketCategory category = packetCategoryRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Category not found"));
+        List<PacketSubcategoryResponseDto> subcategories = category.getSubCategories()
+                .stream()
+                .map(s -> {
+                    PacketSubcategoryResponseDto dto = new PacketSubcategoryResponseDto();
+                    dto.setId(s.getId());
+                    dto.setName(s.getName());
+                    return dto;
+                }).toList();
+        return PacketCategoryResponseDto.builder()
+                .id(category.getId())
+                .name(category.getName())
+                .subCategories(subcategories)
+                .build();
     }
 
     @Transactional

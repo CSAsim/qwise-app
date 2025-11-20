@@ -1,18 +1,24 @@
 package az.company.qwisedemoapp.controller;
 
+import az.company.qwisedemoapp.model.dto.request.file.FileCategoryRequestDto;
+import az.company.qwisedemoapp.model.dto.request.file.FileSubcategoryRequestDto;
 import az.company.qwisedemoapp.model.dto.request.packet.CreatePacketRequestDto;
-import az.company.qwisedemoapp.model.dto.request.UpdateFileRequestDto;
+import az.company.qwisedemoapp.model.dto.request.file.UpdateFileRequestDto;
 import az.company.qwisedemoapp.model.dto.request.packet.PacketCategoryRequest;
 import az.company.qwisedemoapp.model.dto.request.packet.PacketSubcategoryRequest;
 import az.company.qwisedemoapp.model.dto.request.packet.UpdatePacketRequestDto;
+import az.company.qwisedemoapp.model.dto.response.file.FileCategoryResponseDto;
+import az.company.qwisedemoapp.model.dto.response.file.FileSubcategoryResponseDto;
 import az.company.qwisedemoapp.model.dto.response.packet.PacketCategoryResponseDto;
 import az.company.qwisedemoapp.model.dto.response.packet.PacketDetailResponseDto;
-import az.company.qwisedemoapp.model.dto.response.FileResponseDto;
+import az.company.qwisedemoapp.model.dto.response.file.FileResponseDto;
 import az.company.qwisedemoapp.model.dto.response.PageableResponseDto;
 import az.company.qwisedemoapp.model.dto.response.UserResponseDto;
-import az.company.qwisedemoapp.model.dto.request.CreateFileRequestDto;
+import az.company.qwisedemoapp.model.dto.request.file.CreateFileRequestDto;
 import az.company.qwisedemoapp.model.dto.response.packet.PacketSubcategoryResponseDto;
-import az.company.qwisedemoapp.service.FileService;
+import az.company.qwisedemoapp.service.file.FileCategoryService;
+import az.company.qwisedemoapp.service.file.FileService;
+import az.company.qwisedemoapp.service.file.FileSubcategoryService;
 import az.company.qwisedemoapp.service.packet.PacketCategoryService;
 import az.company.qwisedemoapp.service.packet.PacketService;
 import az.company.qwisedemoapp.service.UserService;
@@ -40,6 +46,8 @@ public class AdminController {
     private final FileService fileService;
     private final PacketCategoryService packetCategoryService;
     private final PacketSubcategoryService packetSubCategoryService;
+    private final FileCategoryService fileCategoryService;
+    private final FileSubcategoryService fileSubcategoryService;
 
     @GetMapping
     public ResponseEntity<PageableResponseDto<UserResponseDto>> getAllUsers(@PageableDefault(size = 10) Pageable pageable) {
@@ -53,6 +61,7 @@ public class AdminController {
         );
         return ResponseEntity.ok(responseDto);
     }
+
     @GetMapping("/email/{email}")
     public ResponseEntity<UserResponseDto> getByEmail(@PathVariable("email") String email) {
         return ResponseEntity.ok(userService.findByEmail(email));
@@ -137,6 +146,38 @@ public class AdminController {
     @DeleteMapping("/file/delete-file/{id}")
     public ResponseEntity<Void> deleteFile(@PathVariable Long id) {
         fileService.deleteFile(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    //File category operations
+
+    @PostMapping("/file-category/create")
+    public ResponseEntity<FileCategoryResponseDto> createFileCategory(@Valid @RequestBody FileCategoryRequestDto request) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(fileCategoryService.createFileCategory(request));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteFileCategory(@PathVariable("id") Long id) {
+        fileCategoryService.deleteCategory(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    //File subcategory operations
+
+    @PostMapping("/file-subcategory/create")
+    public ResponseEntity<List<FileSubcategoryResponseDto>> createFileSubcategory(
+            @RequestParam Long categoryId,
+            @Valid @RequestBody List<FileSubcategoryRequestDto> requests) {
+        List<FileSubcategoryResponseDto> subcategoryResponseDtos = fileSubcategoryService
+                .createSubcategories(categoryId, requests);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(subcategoryResponseDtos);
+    }
+
+    @DeleteMapping("/file-subcategory/delete")
+    public ResponseEntity<Void> deleteFileSubcategory(@RequestBody List<Long> ids) {
+        fileSubcategoryService.deleteSubcategory(ids);
         return ResponseEntity.noContent().build();
     }
 }

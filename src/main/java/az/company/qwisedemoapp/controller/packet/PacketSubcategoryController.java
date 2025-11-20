@@ -1,4 +1,4 @@
-package az.company.qwisedemoapp.controller;
+package az.company.qwisedemoapp.controller.packet;
 
 import az.company.qwisedemoapp.model.dto.response.packet.PacketSubcategoryResponseDto;
 import az.company.qwisedemoapp.service.packet.PacketSubcategoryService;

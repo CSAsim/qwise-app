@@ -1,9 +1,9 @@
 package az.company.qwisedemoapp.mapper;
 
-import az.company.qwisedemoapp.domain.entity.File;
-import az.company.qwisedemoapp.model.dto.request.UpdateFileRequestDto;
-import az.company.qwisedemoapp.model.dto.response.FileResponseDto;
-import az.company.qwisedemoapp.model.dto.request.CreateFileRequestDto;
+import az.company.qwisedemoapp.domain.entity.file.File;
+import az.company.qwisedemoapp.model.dto.request.file.UpdateFileRequestDto;
+import az.company.qwisedemoapp.model.dto.response.file.FileResponseDto;
+import az.company.qwisedemoapp.model.dto.request.file.CreateFileRequestDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -18,7 +18,9 @@ public interface FileMapper {
     FileMapper INSTANCE = Mappers.getMapper(FileMapper.class);
 
     @Mapping(target = "authorId", source = "author.id")
-    @Mapping(target = "authorFullName", source = "author.fullName")
+    @Mapping(target = "authorName", source = "authorName")
+    @Mapping(target = "category", source = "category.name")
+    @Mapping(target = "subcategory", source = "subcategory.name")
     FileResponseDto toDto(File file);
 
     List<FileResponseDto> toDtoList(List<File> entities);
@@ -31,6 +33,8 @@ public interface FileMapper {
     @Mapping(target = "status", ignore = true)
     @Mapping(target = "author", ignore = true)
     @Mapping(target = "soldCount", ignore = true)
+    @Mapping(target = "category", ignore = true)
+    @Mapping(target = "subcategory", ignore = true)
     @Mapping(target = "createdBy", ignore = true)
     @Mapping(target = "updatedBy", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
@@ -40,6 +44,8 @@ public interface FileMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "author", ignore = true)
     @Mapping(target = "soldCount", ignore = true)
+    @Mapping(target = "category", ignore = true)
+    @Mapping(target = "subcategory", ignore = true)
     @Mapping(target = "createdBy", ignore = true)
     @Mapping(target = "updatedBy", ignore = true)
     @Mapping(target = "createdAt", ignore = true)

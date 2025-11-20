@@ -46,6 +46,10 @@ public class Packet extends BaseEntity {
     @JoinColumn(name = "sub_category_id", nullable = false)
     private PacketSubcategory subCategory;
 
+    @Column(name = "description")
+    private String description;
+
+    @Builder.Default
     @Column(name = "sold_count", nullable = false)
     private Integer soldCount = 0;
 

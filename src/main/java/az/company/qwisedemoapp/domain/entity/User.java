@@ -1,5 +1,6 @@
 package az.company.qwisedemoapp.domain.entity;
 
+import az.company.qwisedemoapp.domain.entity.file.File;
 import az.company.qwisedemoapp.domain.entity.packet.Packet;
 import az.company.qwisedemoapp.model.enums.UserRole;
 import az.company.qwisedemoapp.model.enums.UserStatus;

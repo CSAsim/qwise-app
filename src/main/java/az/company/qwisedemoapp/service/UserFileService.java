@@ -1,9 +1,9 @@
 package az.company.qwisedemoapp.service;
 
-import az.company.qwisedemoapp.domain.entity.File;
+import az.company.qwisedemoapp.domain.entity.file.File;
 import az.company.qwisedemoapp.domain.entity.User;
 import az.company.qwisedemoapp.domain.entity.UserFile;
-import az.company.qwisedemoapp.domain.repository.FileRepository;
+import az.company.qwisedemoapp.domain.repository.file.FileRepository;
 import az.company.qwisedemoapp.domain.repository.UserFileRepository;
 import az.company.qwisedemoapp.domain.repository.UserRepository;
 import az.company.qwisedemoapp.exception.AlreadyExistsException;

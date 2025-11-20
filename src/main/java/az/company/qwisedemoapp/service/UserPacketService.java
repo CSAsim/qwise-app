@@ -3,7 +3,7 @@ package az.company.qwisedemoapp.service;
 import az.company.qwisedemoapp.domain.entity.packet.Packet;
 import az.company.qwisedemoapp.domain.entity.User;
 import az.company.qwisedemoapp.domain.entity.UserPacket;
-import az.company.qwisedemoapp.domain.repository.PacketRepository;
+import az.company.qwisedemoapp.domain.repository.packet.PacketRepository;
 import az.company.qwisedemoapp.domain.repository.UserPacketRepository;
 import az.company.qwisedemoapp.domain.repository.UserRepository;
 import az.company.qwisedemoapp.exception.AlreadyExistsException;
@@ -60,6 +60,7 @@ public class UserPacketService {
                 .progress(0.0f)
                 .build();
         packet.addEnrolledStudent(userPacket);
+        packet.setSoldCount(packet.getSoldCount() + 1);
         student.addEnrolledPacket(userPacket);
         UserPacket savedUserPacket = userPacketRepository.save(userPacket);
         UserPacketResponseDto dto = userPacketMapper.toDto(savedUserPacket);

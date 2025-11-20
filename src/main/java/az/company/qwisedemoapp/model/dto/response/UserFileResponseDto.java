@@ -1,5 +1,6 @@
 package az.company.qwisedemoapp.model.dto.response;
 
+import az.company.qwisedemoapp.model.dto.response.file.FileResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

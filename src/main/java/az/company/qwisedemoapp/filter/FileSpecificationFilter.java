@@ -1,6 +1,6 @@
 package az.company.qwisedemoapp.filter;
 
-import az.company.qwisedemoapp.domain.entity.File;
+import az.company.qwisedemoapp.domain.entity.file.File;
 import az.company.qwisedemoapp.model.dto.request.FilteredRequestDto;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
@@ -21,7 +21,7 @@ public class FileSpecificationFilter {
 
             if (request.getCategory() != null) {
                 predicate = criterialBuilder
-                        .and(predicate, criterialBuilder.equal(root.get("category"), request.getCategory()));
+                        .and(predicate, criterialBuilder.equal(root.get("category").get("name"), request.getCategory()));
             }
 
             if (request.getStatus() != null) {
@@ -31,7 +31,7 @@ public class FileSpecificationFilter {
 
             if (request.getSubCategory() != null) {
                 predicate = criterialBuilder
-                        .and(predicate, criterialBuilder.equal(root.get("subCategory"), request.getSubCategory()));
+                        .and(predicate, criterialBuilder.equal(root.get("subcategory").get("name"), request.getSubCategory()));
             }
             return predicate;
         };

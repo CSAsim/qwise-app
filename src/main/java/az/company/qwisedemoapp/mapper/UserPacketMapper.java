@@ -17,10 +17,10 @@ public interface UserPacketMapper {
 
     UserPacketMapper INSTANCE = Mappers.getMapper(UserPacketMapper.class);
 
-    @Mapping(target = "authorName", source = "packet.author.fullName")
+    @Mapping(target = "authorName", source = "packet.authorName")
     @Mapping(target = "name", source = "packet.name")
-    @Mapping(target = "category", source = "packet.category")
-    @Mapping(target = "subCategory", source = "packet.subCategory")
+    @Mapping(target = "category", source = "packet.category.name")
+    @Mapping(target = "subCategory", source = "packet.subCategory.name")
     @Mapping(target = "thumbnailUrl", source = "packet.thumbnailUrl")
     UserPacketResponseDto toDto(UserPacket entity);
 

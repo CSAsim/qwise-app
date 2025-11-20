@@ -1,4 +1,4 @@
-package az.company.qwisedemoapp.model.dto.response;
+package az.company.qwisedemoapp.model.dto.response.file;
 
 import az.company.qwisedemoapp.model.enums.FileStatus;
 import lombok.AllArgsConstructor;
@@ -18,11 +18,11 @@ public class FileResponseDto {
 
     private Long authorId;
 
-    private String authorFullName;
+    private String authorName;
 
     private String name;
 
-    private String subCategory;
+    private String subcategory;
 
     private String category;
 

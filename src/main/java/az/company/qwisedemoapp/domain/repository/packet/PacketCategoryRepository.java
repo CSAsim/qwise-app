@@ -11,5 +11,6 @@ import java.util.Optional;
 public interface PacketCategoryRepository extends JpaRepository<PacketCategory, Long> {
 
     List<PacketCategory> findAllByOrderByNameAsc();
+
     boolean existsByNameIgnoreCase(String name);
 }
