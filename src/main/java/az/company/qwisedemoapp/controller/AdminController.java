@@ -157,7 +157,7 @@ public class AdminController {
                 .body(fileCategoryService.createFileCategory(request));
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/file-category/delete/{id}")
     public ResponseEntity<Void> deleteFileCategory(@PathVariable("id") Long id) {
         fileCategoryService.deleteCategory(id);
         return ResponseEntity.noContent().build();
