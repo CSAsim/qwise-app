@@ -28,8 +28,6 @@ public class FileResponseDto {
 
     private String description;
 
-    private Float rating;
-
     private Float price;
 
     private String thumbnailUrl;
