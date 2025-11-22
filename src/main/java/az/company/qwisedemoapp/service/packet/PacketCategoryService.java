@@ -24,11 +24,21 @@ public class PacketCategoryService {
 
     public List<PacketCategoryResponseDto> findAllCategories() {
         List<PacketCategory> categories = packetCategoryRepository.findAllByOrderByNameAsc();
+        List<PacketSubcategoryResponseDto> subcategories = categories.stream()
+                .flatMap(c -> c.getSubCategories()
+                        .stream()
+                        .map(s -> {
+                            PacketSubcategoryResponseDto dto = new PacketSubcategoryResponseDto();
+                            dto.setId(s.getId());
+                            dto.setName(s.getName());
+                            return dto;
+                        })).toList();
         return categories.stream()
                 .map(category -> {
                     PacketCategoryResponseDto categoryResponseDto = new PacketCategoryResponseDto();
                     categoryResponseDto.setId(category.getId());
                     categoryResponseDto.setName(category.getName());
+                    categoryResponseDto.setSubCategories(subcategories);
                     return categoryResponseDto;
                 }).toList();
     }

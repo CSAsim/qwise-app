@@ -1,6 +1,7 @@
 package az.company.qwisedemoapp.service.file;
 
 import az.company.qwisedemoapp.domain.entity.file.FileCategory;
+import az.company.qwisedemoapp.domain.entity.file.FileSubcategory;
 import az.company.qwisedemoapp.domain.repository.file.FileCategoryRepository;
 import az.company.qwisedemoapp.exception.AlreadyExistsException;
 import az.company.qwisedemoapp.exception.NotFoundException;
@@ -24,11 +25,21 @@ public class FileCategoryService {
 
     public List<FileCategoryResponseDto> findAllCategories() {
         List<FileCategory> categories = fileCategoryRepository.findAllByOrderByNameAsc();
+        List<FileSubcategoryResponseDto> subcategories = categories.stream()
+                .flatMap(c -> c.getSubcategories()
+                        .stream()
+                        .map(s -> {
+                            FileSubcategoryResponseDto dto = new FileSubcategoryResponseDto();
+                            dto.setId(s.getId());
+                            dto.setName(s.getName());
+                            return dto;
+                        })).toList();
         return categories.stream()
                 .map(c -> {
                     FileCategoryResponseDto dto = new FileCategoryResponseDto();
                     dto.setId(c.getId());
                     dto.setName(c.getName());
+                    dto.setSubCategories(subcategories);
                     return dto;
                 }).toList();
     }
