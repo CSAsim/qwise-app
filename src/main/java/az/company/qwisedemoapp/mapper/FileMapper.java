@@ -17,7 +17,7 @@ public interface FileMapper {
 
     FileMapper INSTANCE = Mappers.getMapper(FileMapper.class);
 
-    @Mapping(target = "authorId", source = "author.id")
+    @Mapping(target = "authorId", source = "user.id")
     @Mapping(target = "authorName", source = "authorName")
     @Mapping(target = "category", source = "category.name")
     @Mapping(target = "subcategory", source = "subcategory.name")
@@ -31,7 +31,7 @@ public interface FileMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "status", ignore = true)
-    @Mapping(target = "author", ignore = true)
+    @Mapping(target = "user", ignore = true)
     @Mapping(target = "soldCount", ignore = true)
     @Mapping(target = "category", ignore = true)
     @Mapping(target = "subcategory", ignore = true)
@@ -42,7 +42,7 @@ public interface FileMapper {
     File toEntity(CreateFileRequestDto request);
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "author", ignore = true)
+    @Mapping(target = "user", ignore = true)
     @Mapping(target = "soldCount", ignore = true)
     @Mapping(target = "category", ignore = true)
     @Mapping(target = "subcategory", ignore = true)

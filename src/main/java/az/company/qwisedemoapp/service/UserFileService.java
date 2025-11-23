@@ -8,14 +8,21 @@ import az.company.qwisedemoapp.domain.repository.UserFileRepository;
 import az.company.qwisedemoapp.domain.repository.UserRepository;
 import az.company.qwisedemoapp.exception.AlreadyExistsException;
 import az.company.qwisedemoapp.exception.NotFoundException;
+import az.company.qwisedemoapp.filter.AdminResourceSpecificationFilter;
+import az.company.qwisedemoapp.filter.PurchasedResourceSpecificationFilter;
 import az.company.qwisedemoapp.mapper.UserFileMapper;
 import az.company.qwisedemoapp.model.constants.ExceptionMessages;
+import az.company.qwisedemoapp.model.dto.request.FilteredRequestDto;
 import az.company.qwisedemoapp.model.dto.response.UserFileResponseDto;
 import az.company.qwisedemoapp.service.auth.AuthService;
+import az.company.qwisedemoapp.util.SortUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,9 +37,13 @@ public class UserFileService {
     private final FileRepository fileRepository;
     private final UserFileMapper userFileMapper;
 
-    public Page<UserFileResponseDto> findAllUserFiles(Pageable pageable) {
+    public Page<UserFileResponseDto> findAllUserFiles(FilteredRequestDto request, Pageable pageable) {
         Long studentId = AuthService.getCurrentUserId();
-        Page<UserFile> pages = userFileRepository.findAllByStudentId(studentId, pageable);
+        request.setUserId(studentId);
+        Specification<UserFile> specification = new PurchasedResourceSpecificationFilter<UserFile>().byFilters(request);
+        Sort sorting = SortUtil.resolveSort(request.getSort());
+        Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sorting);
+        Page<UserFile> pages = userFileRepository.findAll(specification, sortedPageable);
         return userFileMapper.toDtoPage(pages);
     }
 
@@ -41,17 +52,17 @@ public class UserFileService {
         Long currentUserId = AuthService.getCurrentUserId();
         User student = userRepository.findById(currentUserId)
                 .orElseThrow(() -> new NotFoundException("Student" + ExceptionMessages.NOT_FOUND));
-        File file = fileRepository.findById(fileId)
+        File file = fileRepository.findPublishedPacketsById(fileId)
                 .orElseThrow(() -> new NotFoundException("File" + ExceptionMessages.NOT_FOUND));
         file.setSoldCount(file.getSoldCount() + 1);
         fileRepository.save(file);
-        boolean alreadyExists = userFileRepository.existsByStudentIdAndFileId(student.getId(), file.getId());
+        boolean alreadyExists = userFileRepository.existsByUserIdAndResourceId(student.getId(), file.getId());
         if (alreadyExists) {
             throw new AlreadyExistsException("File already assigned to student");
         }
         UserFile userFile = UserFile.builder()
-                .student(student)
-                .file(file)
+                .user(student)
+                .resource(file)
                 .build();
         student.addEnrolledFile(userFile);
         UserFile savedUserFile = userFileRepository.save(userFile);
@@ -66,7 +77,7 @@ public class UserFileService {
                 .orElseThrow(() -> new NotFoundException("User" + ExceptionMessages.NOT_FOUND));
         UserFile userFile = user.getUserEnrolledFiles()
                 .stream()
-                .filter(up -> up.getFile().getId().equals(fileId))
+                .filter(up -> up.getResource().getId().equals(fileId))
                 .findFirst()
                 .orElseThrow(() -> new NotFoundException("User file" + ExceptionMessages.NOT_FOUND));
         user.removeEnrolledFile(userFile);

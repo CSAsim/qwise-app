@@ -10,7 +10,7 @@ import az.company.qwisedemoapp.domain.repository.UserRepository;
 import az.company.qwisedemoapp.domain.repository.file.FileSubcategoryRepository;
 import az.company.qwisedemoapp.exception.NotFoundException;
 import az.company.qwisedemoapp.exception.TokenExpiredException;
-import az.company.qwisedemoapp.filter.FileSpecificationFilter;
+import az.company.qwisedemoapp.filter.AdminResourceSpecificationFilter;
 import az.company.qwisedemoapp.mapper.FileMapper;
 import az.company.qwisedemoapp.model.dto.response.file.FileResponseDto;
 import az.company.qwisedemoapp.model.enums.FileStatus;
@@ -41,21 +41,11 @@ public class FileService {
     private final FileSubcategoryRepository fileSubcategoryRepository;
     private final FileMapper fileMapper;
 
-    public Page<FileResponseDto> findAllFilesByCategory(FilteredRequestDto request, Pageable pageable) {
-        Specification<File> specification = FileSpecificationFilter.byFilters(request);
-        Page<File> pages = fileRepository.findAll(specification, pageable);
-        return fileMapper.toDtoPage(pages);
-    }
-
-    public Page<FileResponseDto> findAllFilesByFilter(String sort, Pageable pageable) {
-        Sort sorting = SortUtil.resolveSort(sort);
+    public Page<FileResponseDto> findAllFiles(FilteredRequestDto request, Pageable pageable) {
+        Specification<File> specification = new AdminResourceSpecificationFilter<File>().byFilters(request);
+        Sort sorting = SortUtil.resolveSort(request.getSort());
         Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sorting);
-        Page<File> pages = fileRepository.findAll(sortedPageable);
-        return fileMapper.toDtoPage(pages);
-    }
-
-    public Page<FileResponseDto> findAllFilesBySearch(String query, Pageable pageable) {
-        Page<File> pages = fileRepository.search(query, pageable);
+        Page<File> pages = fileRepository.findAll(specification, sortedPageable);
         return fileMapper.toDtoPage(pages);
     }
 
@@ -68,7 +58,7 @@ public class FileService {
     @Transactional
     public FileResponseDto createFile(CreateFileRequestDto request) {
         Long authorId = AuthService.getCurrentUserId();
-        if(authorId == null) {
+        if (authorId == null) {
             throw new TokenExpiredException("Token expired!");
         }
         User author = userRepository.findById(authorId)
@@ -78,11 +68,11 @@ public class FileService {
         file.setStatus(FileStatus.ACTIVE);
 
         FileCategory category = fileCategoryRepository.findById(request.getCategoryId())
-                        .orElseThrow(() -> new NotFoundException("Category not found"));
+                .orElseThrow(() -> new NotFoundException("Category not found"));
         file.setCategory(category);
 
         FileSubcategory subcategory = fileSubcategoryRepository.findById(request.getSubcategoryId())
-                        .orElseThrow(() -> new NotFoundException("Subcategory not found"));
+                .orElseThrow(() -> new NotFoundException("Subcategory not found"));
         file.setSubcategory(subcategory);
 
         author.addFile(file);

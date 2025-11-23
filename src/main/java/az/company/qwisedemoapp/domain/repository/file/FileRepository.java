@@ -18,6 +18,9 @@ public interface FileRepository extends JpaRepository<File, Long>, JpaSpecificat
     @Query(value = "SELECT f FROM File f WHERE f.status != 'DELETED' AND f.id = :id")
     Optional<File> findByIdWithStatus(@Param("id") Long id);
 
+    @Query(value = "SELECT f FROM File f WHERE f.id = :id AND f.status = 'PUBLISHED'")
+    Optional<File> findPublishedPacketsById(Long id);
+
     @Query("""
         SELECT f FROM File f
         WHERE LOWER(f.name) LIKE %:q%

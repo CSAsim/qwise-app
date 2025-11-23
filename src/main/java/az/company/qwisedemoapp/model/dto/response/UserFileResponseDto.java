@@ -16,5 +16,5 @@ public class UserFileResponseDto {
 
     private Long studentId;
 
-    private FileResponseDto file;
+    private FileResponseDto resource;
 }
