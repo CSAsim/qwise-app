@@ -56,7 +56,7 @@ public class PacketSubcategoryService {
                     .category(category)
                     .build();
             PacketSubcategory saved = packetSubCategoryRepository.save(packetSubCategory);
-            category.addSubCategory(packetSubCategory);
+            category.addSubCategory(saved);
             log.info("Sub category created: {}", saved);
             responses.add(PacketSubcategoryResponseDto.builder()
                     .id(saved.getId())

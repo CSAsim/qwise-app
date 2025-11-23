@@ -20,44 +20,12 @@ public class FileController {
 
     private final FileService fileService;
 
-    @PostMapping("/all/by-category")
+    @PostMapping("/all")
     public ResponseEntity<PageableResponseDto<FileResponseDto>> getAll(
             @PageableDefault(size = 10) Pageable pageable,
             @RequestBody FilteredRequestDto request
     ) {
-        Page<FileResponseDto> page = fileService.findAllFilesByCategory(request, pageable);
-        PageableResponseDto<FileResponseDto> responseDto = PageableResponseDto.of(
-                page.getContent(),
-                page.getPageable().getPageNumber(),
-                page.getSize(),
-                page.getTotalElements(),
-                page.getTotalPages()
-        );
-        return ResponseEntity.ok(responseDto);
-    }
-
-    @GetMapping("/all/by-filer")
-    public ResponseEntity<PageableResponseDto<FileResponseDto>> getAllByFiler(
-            @PageableDefault(size = 10) Pageable pageable,
-            @RequestParam(required = false) String sort
-    ) {
-        Page<FileResponseDto> page = fileService.findAllFilesByFilter(sort, pageable);
-        PageableResponseDto<FileResponseDto> responseDto = PageableResponseDto.of(
-                page.getContent(),
-                page.getPageable().getPageNumber(),
-                page.getSize(),
-                page.getTotalElements(),
-                page.getTotalPages()
-        );
-        return ResponseEntity.ok(responseDto);
-    }
-
-    @GetMapping("/search")
-    public ResponseEntity<PageableResponseDto<FileResponseDto>> search(
-            @RequestParam(required = false) String query,
-            @PageableDefault(size = 10) Pageable pageable
-    ) {
-        Page<FileResponseDto> page = fileService.findAllFilesBySearch(query, pageable);
+        Page<FileResponseDto> page = fileService.findAllFiles(request, pageable);
         PageableResponseDto<FileResponseDto> responseDto = PageableResponseDto.of(
                 page.getContent(),
                 page.getPageable().getPageNumber(),

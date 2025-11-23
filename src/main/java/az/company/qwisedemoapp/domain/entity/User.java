@@ -77,7 +77,7 @@ public class User extends BaseEntity {
     @ToString.Exclude
     private List<Packet> packets;
 
-    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @ToString.Exclude
     private List<File> files;
 
@@ -85,7 +85,7 @@ public class User extends BaseEntity {
     @ToString.Exclude
     private List<UserPacket> enrolledPackets;
 
-    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @ToString.Exclude
     private List<UserFile> userEnrolledFiles;
 
@@ -117,12 +117,12 @@ public class User extends BaseEntity {
     }
 
     public void addFile(File file) {
-        file.setAuthor(this);
+        file.setUser(this);
         this.files.add(file);
     }
 
     public void removeFile(File file) {
-        file.setAuthor(null);
+        file.setUser(null);
         this.files.remove(file);
     }
 
@@ -138,11 +138,11 @@ public class User extends BaseEntity {
 
     public void addEnrolledFile(UserFile file) {
         userEnrolledFiles.add(file);
-        file.setStudent(this);
+        file.setUser(this);
     }
 
     public void removeEnrolledFile(UserFile file) {
         userEnrolledFiles.remove(file);
-        file.setStudent(null);
+        file.setUser(null);
     }
 }

@@ -11,8 +11,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class FilteredRequestDto {
 
-    private Long authorId;
+    private Long userId;
+    private String status;
     private String category;
     private String subCategory;
-    private String status;
+    private String search;
+    private String sort;
 }

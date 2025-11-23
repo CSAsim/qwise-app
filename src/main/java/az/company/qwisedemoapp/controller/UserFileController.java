@@ -1,5 +1,6 @@
 package az.company.qwisedemoapp.controller;
 
+import az.company.qwisedemoapp.model.dto.request.FilteredRequestDto;
 import az.company.qwisedemoapp.model.dto.response.PageableResponseDto;
 import az.company.qwisedemoapp.model.dto.response.UserFileResponseDto;
 import az.company.qwisedemoapp.service.UserFileService;
@@ -10,13 +11,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @Validated
@@ -27,10 +22,11 @@ public class UserFileController {
 
     private final UserFileService userFileService;
 
-    @GetMapping("/all")
+    @PostMapping("/all")
     public ResponseEntity<PageableResponseDto<UserFileResponseDto>> getAll(
-            @PageableDefault(size = 10) Pageable pageable) {
-        Page<UserFileResponseDto> page = userFileService.findAllUserFiles(pageable);
+            @PageableDefault(size = 10) Pageable pageable,
+            @RequestBody FilteredRequestDto request) {
+        Page<UserFileResponseDto> page = userFileService.findAllUserFiles(request, pageable);
         PageableResponseDto<UserFileResponseDto> responseDto = PageableResponseDto.of(
                 page.getContent(),
                 page.getPageable().getPageNumber(),

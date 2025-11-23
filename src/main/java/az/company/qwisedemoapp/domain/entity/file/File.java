@@ -66,21 +66,21 @@ public class File extends BaseEntity {
 
     @Builder.Default
     @ToString.Exclude
-    @OneToMany(mappedBy = "file", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "resource", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<UserFile> enrolledStudents = new ArrayList<>();
 
     @ToString.Exclude
     @JoinColumn(name = "author_id")
     @ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY, optional = false)
-    private User author;
+    private User user;
 
     public void addEnrolledStudent(UserFile userFile) {
         enrolledStudents.add(userFile);
-        userFile.setFile(this);
+        userFile.setResource(this);
     }
 
     public void removeEnrolledStudent(UserFile userFile) {
         enrolledStudents.remove(userFile);
-        userFile.setFile(null);
+        userFile.setResource(null);
     }
 }

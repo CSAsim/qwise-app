@@ -56,7 +56,7 @@ public class FileSubcategoryService {
                     .category(category)
                     .build();
             FileSubcategory saved = fileSubcategoryRepository.save(subcategory);
-            category.addSubcategory(subcategory);
+            category.addSubcategory(saved);
             subcategoryResponses.add(FileSubcategoryResponseDto.builder()
                     .id(saved.getId())
                     .name(saved.getName())

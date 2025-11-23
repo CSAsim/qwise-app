@@ -14,8 +14,8 @@ public interface UserFileMapper {
 
     UserFileMapper INSTANCE = Mappers.getMapper(UserFileMapper.class);
 
-    @Mapping(target = "studentId", source = "student.id")
-    @Mapping(target = "file", source = "file")
+    @Mapping(target = "studentId", source = "user.id")
+    @Mapping(target = "resource", source = "resource")
     UserFileResponseDto toDto(UserFile entity);
 
     default Page<UserFileResponseDto> toDtoPage(Page<UserFile> entities) {

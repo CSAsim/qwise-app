@@ -27,10 +27,10 @@ public class UserFile extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "file_id")
     @ToString.Exclude
-    private File file;
+    private File resource;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "student_id")
     @ToString.Exclude
-    private User student;
+    private User user;
 }
