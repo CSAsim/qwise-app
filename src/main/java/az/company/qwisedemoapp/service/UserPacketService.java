@@ -7,8 +7,8 @@ import az.company.qwisedemoapp.domain.repository.packet.PacketRepository;
 import az.company.qwisedemoapp.domain.repository.UserPacketRepository;
 import az.company.qwisedemoapp.domain.repository.UserRepository;
 import az.company.qwisedemoapp.exception.AlreadyExistsException;
+import az.company.qwisedemoapp.exception.IllegalActionException;
 import az.company.qwisedemoapp.exception.NotFoundException;
-import az.company.qwisedemoapp.filter.AdminResourceSpecificationFilter;
 import az.company.qwisedemoapp.filter.PurchasedResourceSpecificationFilter;
 import az.company.qwisedemoapp.mapper.UserPacketMapper;
 import az.company.qwisedemoapp.model.constants.ExceptionMessages;
@@ -16,6 +16,7 @@ import az.company.qwisedemoapp.model.dto.request.AssignPacketRequestDto;
 import az.company.qwisedemoapp.model.dto.request.FilteredRequestDto;
 import az.company.qwisedemoapp.model.dto.response.attempt.UserPacketResponseDto;
 import az.company.qwisedemoapp.model.enums.PacketUsageStatus;
+import az.company.qwisedemoapp.model.enums.UserRole;
 import az.company.qwisedemoapp.service.auth.AuthService;
 import az.company.qwisedemoapp.util.SortUtil;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,6 +44,20 @@ public class UserPacketService {
 
     public Page<UserPacketResponseDto> findAllUserPackets(FilteredRequestDto request, Pageable pageable) {
         Long studentId = AuthService.getCurrentUserId();
+        UserRole userRole = userRepository.findById(studentId)
+                .orElseThrow(() -> new NotFoundException("User not found"))
+                .getRoles()
+                .contains(UserRole.ROLE_ADMIN) ?
+                UserRole.ROLE_ADMIN : UserRole.ROLE_STUDENT;
+
+        if(request.getUserId() != null && !request.getUserId().equals(studentId) && userRole != UserRole.ROLE_ADMIN) {
+            throw new IllegalActionException("Forbidden action");
+        }
+
+        if(request.getUserId() == null && userRole != UserRole.ROLE_ADMIN) {
+            request.setUserId(studentId);
+        }
+
         Specification<UserPacket> specification = new PurchasedResourceSpecificationFilter<UserPacket>().byFilters(request);
         Sort sort = SortUtil.resolveSort(request.getSort());
         Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);

@@ -46,6 +46,14 @@ public class GlobalExceptionHandler {
                 Collections.singletonList(e.getMessage())
                 );
     }
+    @ExceptionHandler(IllegalActionException.class)
+    public ResponseEntity<GlobalErrorResponse> handleIllegalActionException(IllegalActionException e) {
+        return buildResponse(ErrorCode.FORBIDDEN,
+                "Illegal action",
+                HttpStatus.FORBIDDEN,
+                Collections.singletonList(e.getMessage())
+        );
+    }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<GlobalErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
