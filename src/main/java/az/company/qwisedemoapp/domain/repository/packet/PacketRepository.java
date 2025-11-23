@@ -14,7 +14,7 @@ import java.util.Optional;
 @Repository
 public interface PacketRepository extends JpaRepository<Packet, Long>, JpaSpecificationExecutor<Packet> {
 
-    @Query(value = "SELECT p FROM Packet p WHERE p.status != 'DELETED'")
+    @Query(value = "SELECT p FROM Packet p WHERE p.status != 'DELETED' AND p.id = :id")
     Optional<Packet> findByIdWithStatus(Long id);
 
     @Query("""
@@ -22,7 +22,7 @@ public interface PacketRepository extends JpaRepository<Packet, Long>, JpaSpecif
         WHERE LOWER(p.name) LIKE %:q%
            OR LOWER(p.description) LIKE %:q%
            OR LOWER(p.category.name) LIKE %:q%
-           OR LOWER(p.subCategory.name) LIKE %:q%
+           OR LOWER(p.subcategory.name) LIKE %:q%
            OR LOWER(p.authorName) LIKE %:q%
         """)
     Page<Packet> search(@Param("q") String q, Pageable pageable);

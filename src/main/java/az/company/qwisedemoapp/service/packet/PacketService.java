@@ -9,6 +9,7 @@ import az.company.qwisedemoapp.domain.repository.packet.PacketRepository;
 import az.company.qwisedemoapp.domain.repository.UserRepository;
 import az.company.qwisedemoapp.domain.repository.packet.PacketSubcategoryRepository;
 import az.company.qwisedemoapp.exception.NotFoundException;
+import az.company.qwisedemoapp.filter.AdminResourceSpecificationFilter;
 import az.company.qwisedemoapp.filter.PacketSpecificationFilter;
 import az.company.qwisedemoapp.mapper.PacketMapper;
 import az.company.qwisedemoapp.model.constants.ExceptionMessages;
@@ -47,9 +48,11 @@ public class PacketService {
     private final QuestionService questionService;
     private final PacketMapper packetMapper;
 
-    public Page<PacketListResponseDto> findAllPacketsByFilterRequest(FilteredRequestDto request, Pageable pageable) {
-        Specification<Packet> specification = PacketSpecificationFilter.byFilters(request);
-        Page<Packet> page = packetRepository.findAll(specification, pageable);
+    public Page<PacketListResponseDto> findAllPackets(FilteredRequestDto request, Pageable pageable) {
+        Specification<Packet> specification = new AdminResourceSpecificationFilter<Packet>().byFilters(request);
+        Sort sorting = SortUtil.resolveSort(request.getSort());
+        Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sorting);
+        Page<Packet> page = packetRepository.findAll(specification, sortedPageable);
 
         return page.map(packet -> {
             PacketListResponseDto dto = packetMapper.toDto(packet);
@@ -58,25 +61,6 @@ public class PacketService {
         });
     }
 
-    public Page<PacketListResponseDto> findAllPacketsByFilter(String sort, Pageable pageable) {
-        Sort sorting = SortUtil.resolveSort(sort);
-        Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sorting);
-        Page<Packet> pages = packetRepository.findAll(sortedPageable);
-        return pages.map(packet -> {
-            PacketListResponseDto dto = packetMapper.toDto(packet);
-            dto.setTotalQuestionCount(packet.getQuestions() != null ? packet.getQuestions().size() : 0);
-            return dto;
-        });
-    }
-
-    public Page<PacketListResponseDto> findAllPacketsBySearch(String query, Pageable pageable) {
-        Page<Packet> pages = packetRepository.search(query, pageable);
-        return pages.map(packet -> {
-            PacketListResponseDto dto = packetMapper.toDto(packet);
-            dto.setTotalQuestionCount(packet.getQuestions() != null ? packet.getQuestions().size() : 0);
-            return dto;
-        });
-    }
 
     public PacketDetailResponseDto findById(Long id) {
         Packet packet = packetRepository.findByIdWithStatus(id)
@@ -94,7 +78,7 @@ public class PacketService {
                 .orElseThrow(() -> new NotFoundException("User not found"));
 
         Packet packet = packetMapper.toEntity(request);
-        packet.setAuthor(author);
+        packet.setUser(author);
         packet.setStatus(PacketStatus.ACTIVE);
 
         PacketCategory packetCategory = packetCategoryRepository.findById(request.getCategoryId())
@@ -103,7 +87,7 @@ public class PacketService {
 
         PacketSubcategory packetSubcategory = packetSubcategoryRepository.findById(request.getSubCategoryId())
                 .orElseThrow(() -> new NotFoundException("Subcategory not found"));
-        packet.setSubCategory(packetSubcategory);
+        packet.setSubcategory(packetSubcategory);
 
         Packet saved = packetRepository.save(packet);
         log.info("Packet created: {}", saved);

@@ -73,7 +73,7 @@ public class User extends BaseEntity {
     @ToString.Exclude
     private List<PasswordResetToken> passwordResetToken;
 
-    @OneToMany(mappedBy = "author", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @ToString.Exclude
     private List<Packet> packets;
 
@@ -81,7 +81,7 @@ public class User extends BaseEntity {
     @ToString.Exclude
     private List<File> files;
 
-    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @ToString.Exclude
     private List<UserPacket> enrolledPackets;
 
@@ -108,12 +108,12 @@ public class User extends BaseEntity {
 
     public void addPacket(Packet packet) {
         packets.add(packet);
-        packet.setAuthor(this);
+        packet.setUser(this);
     }
 
     public void removePacket(Packet packet) {
         packets.remove(packet);
-        packet.setAuthor(null);
+        packet.setUser(null);
     }
 
     public void addFile(File file) {
@@ -128,12 +128,12 @@ public class User extends BaseEntity {
 
     public void addEnrolledPacket(UserPacket userPacket) {
         enrolledPackets.add(userPacket);
-        userPacket.setStudent(this);
+        userPacket.setUser(this);
     }
 
     public void removeEnrolledPacket(UserPacket userPacket) {
         enrolledPackets.remove(userPacket);
-        userPacket.setStudent(null);
+        userPacket.setUser(null);
     }
 
     public void addEnrolledFile(UserFile file) {
