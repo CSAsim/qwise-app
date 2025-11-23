@@ -46,10 +46,10 @@ public class AttemptService {
         log.info("Starting attempt for user packet {}", request.getUserPacketId());
         UserPacket userPacket = userPacketRepository.findById(request.getUserPacketId())
                 .orElseThrow(() -> new NotFoundException("User packet not found"));
-        userPacket.setUsageStatus(PacketUsageStatus.ONGOING);
+        userPacket.setStatus(PacketUsageStatus.ONGOING);
 
         UserPacketAttempt attempt = UserPacketAttempt.builder()
-                .user(userPacket.getStudent())
+                .user(userPacket.getUser())
                 .userPacket(userPacket)
                 .attemptNumber(userPacket.getAttempts() != null ? userPacket.getAttempts().size() + 1 : 1)
                 .status(AttemptStatus.IN_PROGRESS)
@@ -64,13 +64,13 @@ public class AttemptService {
 
         userPacketAttemptRepository.save(attempt);
         List<QuestionResponseDto> questionResponses = questionMapper
-                .toResponseList(userPacket.getPacket().getQuestions());
+                .toResponseList(userPacket.getResource().getQuestions());
         log.info("Attempt started at {}", attempt.getStartedAt());
 
         return StartAttemptResponseDto.builder()
                 .attemptId(attempt.getId())
                 .userPacketId(attempt.getUserPacket().getId())
-                .packetName(userPacket.getPacket().getName())
+                .packetName(userPacket.getResource().getName())
                 .questionResponse(questionResponses)
                 .build();
     }
@@ -82,7 +82,7 @@ public class AttemptService {
 
         UserPacketAttempt attempt = userPacketAttemptRepository.findById(requestDto.getAttemptId())
                 .orElseThrow(() -> new NotFoundException("Attempt not found"));
-        attempt.getUserPacket().setUsageStatus(PacketUsageStatus.ONGOING);
+        attempt.getUserPacket().setStatus(PacketUsageStatus.ONGOING);
         long diff = Duration.between(attempt.getLastResumedAt(), LocalDateTime.now()).toMinutes();
         attempt.setDuration(attempt.getDuration() + diff);
         attempt.setFinishedAt(LocalDateTime.now());
@@ -109,7 +109,7 @@ public class AttemptService {
         log.info("Attempt resumed at {}", attempt.getStartedAt());
         return ResumeAttemptResponseDto.builder()
                 .attemptId(attempt.getId())
-                .packetName(attempt.getUserPacket().getPacket().getName())
+                .packetName(attempt.getUserPacket().getResource().getName())
                 .lastModifiedAnswers(answerResponseDto)
                 .build();
     }
@@ -119,7 +119,7 @@ public class AttemptService {
         log.info("Finishing attempt {}", request.getAttemptId());
         UserPacketAttempt attempt = userPacketAttemptRepository.findById(request.getAttemptId())
                 .orElseThrow(() -> new NotFoundException("Attempt not found"));
-        attempt.getUserPacket().setUsageStatus(PacketUsageStatus.COMPLETED);
+        attempt.getUserPacket().setStatus(PacketUsageStatus.COMPLETED);
         userAnswerService.saveUserAnswer(attempt, request.getAnswers());
         List<AnswerResponse> answerResponses = userAnswerMapper.toDtoList(attempt.getAnswers());
         updateAttempt(attempt, answerResponses);

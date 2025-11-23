@@ -24,13 +24,13 @@ public interface PacketMapper {
     @Mapping(target = "authorName", source = "authorName")
     @Mapping(target = "totalQuestionCount", ignore = true)
     @Mapping(target = "category", source = "category.name")
-    @Mapping(target = "subCategory", source = "subCategory.name")
+    @Mapping(target = "subCategory", source = "subcategory.name")
     PacketListResponseDto toDto(Packet entity);
 
     @Mapping(target = "authorName", source = "authorName")
     @Mapping(target = "totalQuestionCount", ignore = true)
     @Mapping(target = "category", source = "category.name")
-    @Mapping(target = "subCategory", source = "subCategory.name")
+    @Mapping(target = "subCategory", source = "subcategory.name")
     PacketDetailResponseDto toDtoDetail(Packet entity);
 
     List<PacketDetailResponseDto> toDtoList(List<Packet> entities);
@@ -40,11 +40,11 @@ public interface PacketMapper {
     }
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "author", ignore = true)
+    @Mapping(target = "user", ignore = true)
     @Mapping(target = "enrolledStudents", ignore = true)
     @Mapping(target = "soldCount", ignore = true)
     @Mapping(target = "category", ignore = true)
-    @Mapping(target = "subCategory", ignore = true)
+    @Mapping(target = "subcategory", ignore = true)
     @Mapping(target = "createdBy", ignore = true)
     @Mapping(target = "updatedBy", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
@@ -53,11 +53,11 @@ public interface PacketMapper {
     Packet toEntity(CreatePacketRequestDto request);
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "author", ignore = true)
+    @Mapping(target = "user", ignore = true)
     @Mapping(target = "enrolledStudents", ignore = true)
     @Mapping(target = "soldCount", ignore = true)
     @Mapping(target = "category", ignore = true)
-    @Mapping(target = "subCategory", ignore = true)
+    @Mapping(target = "subcategory", ignore = true)
     @Mapping(target = "createdBy", ignore = true)
     @Mapping(target = "updatedBy", ignore = true)
     @Mapping(target = "createdAt", ignore = true)

@@ -17,11 +17,11 @@ public interface UserPacketMapper {
 
     UserPacketMapper INSTANCE = Mappers.getMapper(UserPacketMapper.class);
 
-    @Mapping(target = "authorName", source = "packet.authorName")
-    @Mapping(target = "name", source = "packet.name")
-    @Mapping(target = "category", source = "packet.category.name")
-    @Mapping(target = "subCategory", source = "packet.subCategory.name")
-    @Mapping(target = "thumbnailUrl", source = "packet.thumbnailUrl")
+    @Mapping(target = "authorName", source = "resource.authorName")
+    @Mapping(target = "name", source = "resource.name")
+    @Mapping(target = "category", source = "resource.category.name")
+    @Mapping(target = "subCategory", source = "resource.subcategory.name")
+    @Mapping(target = "thumbnailUrl", source = "resource.thumbnailUrl")
     UserPacketResponseDto toDto(UserPacket entity);
 
     List<UserPacketResponseDto> toDtoList(List<UserPacket> entities);
@@ -31,8 +31,8 @@ public interface UserPacketMapper {
     }
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "student", ignore = true)
-    @Mapping(target = "usageStatus", ignore = true)
+    @Mapping(target = "user", ignore = true)
+    @Mapping(target = "status", ignore = true)
     @Mapping(target = "createdBy", ignore = true)
     @Mapping(target = "updatedBy", ignore = true)
     @Mapping(target = "createdAt", ignore = true)

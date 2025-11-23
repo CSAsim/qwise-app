@@ -8,16 +8,23 @@ import az.company.qwisedemoapp.domain.repository.UserPacketRepository;
 import az.company.qwisedemoapp.domain.repository.UserRepository;
 import az.company.qwisedemoapp.exception.AlreadyExistsException;
 import az.company.qwisedemoapp.exception.NotFoundException;
+import az.company.qwisedemoapp.filter.AdminResourceSpecificationFilter;
+import az.company.qwisedemoapp.filter.PurchasedResourceSpecificationFilter;
 import az.company.qwisedemoapp.mapper.UserPacketMapper;
 import az.company.qwisedemoapp.model.constants.ExceptionMessages;
 import az.company.qwisedemoapp.model.dto.request.AssignPacketRequestDto;
+import az.company.qwisedemoapp.model.dto.request.FilteredRequestDto;
 import az.company.qwisedemoapp.model.dto.response.attempt.UserPacketResponseDto;
 import az.company.qwisedemoapp.model.enums.PacketUsageStatus;
 import az.company.qwisedemoapp.service.auth.AuthService;
+import az.company.qwisedemoapp.util.SortUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,12 +39,15 @@ public class UserPacketService {
     private final PacketRepository packetRepository;
     private final UserPacketMapper userPacketMapper;
 
-    public Page<UserPacketResponseDto> findAllUserPackets(PacketUsageStatus status, Pageable pageable) {
+    public Page<UserPacketResponseDto> findAllUserPackets(FilteredRequestDto request, Pageable pageable) {
         Long studentId = AuthService.getCurrentUserId();
-        Page<UserPacket> entities = userPacketRepository.findAllByUsageStatusAndStudentId(status, studentId, pageable);
+        Specification<UserPacket> specification = new PurchasedResourceSpecificationFilter<UserPacket>().byFilters(request);
+        Sort sort = SortUtil.resolveSort(request.getSort());
+        Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
+        Page<UserPacket> entities = userPacketRepository.findAll(specification, sortedPageable);
         return entities.map(e -> {
             UserPacketResponseDto dto = userPacketMapper.toDto(e);
-            dto.setTotalQuestionCount(e.getPacket().getQuestions() != null ? e.getPacket().getQuestions().size() : 0);
+            dto.setTotalQuestionCount(e.getResource().getQuestions() != null ? e.getResource().getQuestions().size() : 0);
             return dto;
         });
     }
@@ -51,12 +61,12 @@ public class UserPacketService {
                 .orElseThrow(() -> new NotFoundException("Packet" + ExceptionMessages.NOT_FOUND));
         boolean alreadyAssigned = student.getEnrolledPackets()
                 .stream()
-                .anyMatch(up -> up.getPacket().getId().equals(request.getPacketId()));
+                .anyMatch(up -> up.getResource().getId().equals(request.getPacketId()));
         if (alreadyAssigned) {
             throw new AlreadyExistsException("User packet already assigned");
         }
         UserPacket userPacket = UserPacket.builder()
-                .usageStatus(PacketUsageStatus.STORED)
+                .status(PacketUsageStatus.NEW)
                 .progress(0.0f)
                 .build();
         packet.addEnrolledStudent(userPacket);

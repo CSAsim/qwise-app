@@ -1,6 +1,7 @@
 package az.company.qwisedemoapp.controller;
 
 import az.company.qwisedemoapp.model.dto.request.AssignPacketRequestDto;
+import az.company.qwisedemoapp.model.dto.request.FilteredRequestDto;
 import az.company.qwisedemoapp.model.dto.response.PageableResponseDto;
 import az.company.qwisedemoapp.model.dto.response.attempt.UserPacketResponseDto;
 import az.company.qwisedemoapp.model.enums.PacketUsageStatus;
@@ -30,12 +31,12 @@ public class UserPacketController {
 
     private final UserPacketService userPacketService;
 
-    @GetMapping("/all")
+    @PostMapping("/all")
     public ResponseEntity<PageableResponseDto<UserPacketResponseDto>> getAll(
-            @RequestParam PacketUsageStatus status,
-            @PageableDefault(size = 10) Pageable pageable
-    ) {
-        Page<UserPacketResponseDto> page = userPacketService.findAllUserPackets(status, pageable);
+            @PageableDefault(size = 10) Pageable pageable,
+            @RequestBody FilteredRequestDto request
+            ) {
+        Page<UserPacketResponseDto> page = userPacketService.findAllUserPackets(request, pageable);
         PageableResponseDto<UserPacketResponseDto> responseDto = PageableResponseDto.of(
                 page.getContent(),
                 page.getNumber(),

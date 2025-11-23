@@ -21,12 +21,12 @@ public class PacketController {
 
     private final PacketService packetService;
 
-    @PostMapping("/all/by-category")
+    @PostMapping("/all")
     public ResponseEntity<PageableResponseDto<PacketListResponseDto>> getAll(
             @PageableDefault(size = 10) Pageable pageable,
             @RequestBody FilteredRequestDto request
             ) {
-        Page<PacketListResponseDto> page = packetService.findAllPacketsByFilterRequest(request, pageable);
+        Page<PacketListResponseDto> page = packetService.findAllPackets(request, pageable);
         PageableResponseDto<PacketListResponseDto> responseDto = PageableResponseDto.of(
                 page.getContent(),
                 page.getPageable().getPageNumber(),
@@ -37,37 +37,6 @@ public class PacketController {
         return ResponseEntity.ok(responseDto);
     }
 
-    @GetMapping("/all/by-filter")
-    public ResponseEntity<PageableResponseDto<PacketListResponseDto>> getAllByFilter(
-            @PageableDefault(size = 10) Pageable pageable,
-            @RequestParam(required = false) String sort
-    ) {
-        Page<PacketListResponseDto> page = packetService.findAllPacketsByFilter(sort, pageable);
-        PageableResponseDto<PacketListResponseDto> responseDto = PageableResponseDto.of(
-                page.getContent(),
-                page.getPageable().getPageNumber(),
-                page.getSize(),
-                page.getTotalElements(),
-                page.getTotalPages()
-        );
-        return ResponseEntity.ok(responseDto);
-    }
-
-    @GetMapping("/search")
-    public ResponseEntity<PageableResponseDto<PacketListResponseDto>> search(
-            @RequestParam(required = false) String query,
-            @PageableDefault(size = 10) Pageable pageable
-    ) {
-        Page<PacketListResponseDto> page = packetService.findAllPacketsBySearch(query, pageable);
-        PageableResponseDto<PacketListResponseDto> responseDto = PageableResponseDto.of(
-                page.getContent(),
-                page.getPageable().getPageNumber(),
-                page.getSize(),
-                page.getTotalElements(),
-                page.getTotalPages()
-        );
-        return ResponseEntity.ok(responseDto);
-    }
 
     @GetMapping("/{id}")
     public ResponseEntity<PacketDetailResponseDto> getById(@PathVariable Long id) {

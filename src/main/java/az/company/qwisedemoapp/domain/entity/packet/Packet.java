@@ -44,7 +44,7 @@ public class Packet extends BaseEntity {
 
     @ManyToOne(targetEntity = PacketSubcategory.class, fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "sub_category_id", nullable = false)
-    private PacketSubcategory subCategory;
+    private PacketSubcategory subcategory;
 
     @Column(name = "description")
     private String description;
@@ -70,11 +70,11 @@ public class Packet extends BaseEntity {
     @JoinColumn(name = "author_id")
     @ToString.Exclude
     @ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY, optional = false)
-    private User author;
+    private User user;
 
     @ToString.Exclude
     @Builder.Default
-    @OneToMany(mappedBy = "packet", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "resource", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<UserPacket> enrolledStudents = new ArrayList<>();
 
     @ToString.Exclude
@@ -94,11 +94,11 @@ public class Packet extends BaseEntity {
 
     public void addEnrolledStudent(UserPacket userPacket) {
         enrolledStudents.add(userPacket);
-        userPacket.setPacket(this);
+        userPacket.setResource(this);
     }
 
     public void removeEnrolledStudent(UserPacket userPacket) {
         enrolledStudents.remove(userPacket);
-        userPacket.setPacket(null);
+        userPacket.setResource(null);
     }
 }

@@ -37,17 +37,17 @@ public class UserPacket extends BaseEntity {
 
     @Column(name = "usage_status", nullable = false)
     @Enumerated(EnumType.STRING)
-    private PacketUsageStatus usageStatus;
+    private PacketUsageStatus status;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "packet_id")
     @ToString.Exclude
-    private Packet packet;
+    private Packet resource;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "student_id")
     @ToString.Exclude
-    private User student;
+    private User user;
 
     @OneToMany(mappedBy = "userPacket", cascade = CascadeType.ALL)
     private List<UserPacketAttempt> attempts;
