@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -24,41 +25,18 @@ public class PacketCategoryService {
 
     public List<PacketCategoryResponseDto> findAllCategories() {
         List<PacketCategory> categories = packetCategoryRepository.findAllByOrderByNameAsc();
-        List<PacketSubcategoryResponseDto> subcategories = categories.stream()
-                .flatMap(c -> c.getSubCategories()
-                        .stream()
-                        .map(s -> {
-                            PacketSubcategoryResponseDto dto = new PacketSubcategoryResponseDto();
-                            dto.setId(s.getId());
-                            dto.setName(s.getName());
-                            return dto;
-                        })).toList();
-        return categories.stream()
-                .map(category -> {
-                    PacketCategoryResponseDto categoryResponseDto = new PacketCategoryResponseDto();
-                    categoryResponseDto.setId(category.getId());
-                    categoryResponseDto.setName(category.getName());
-                    categoryResponseDto.setSubCategories(subcategories);
-                    return categoryResponseDto;
-                }).toList();
+        List<PacketCategoryResponseDto> categoryResponses = new ArrayList<>();
+        for(PacketCategory category : categories) {
+            PacketCategoryResponseDto dto = getPacketCategoryResponse(category);
+            categoryResponses.add(dto);
+        }
+        return categoryResponses;
     }
 
     public PacketCategoryResponseDto findById(Long id) {
         PacketCategory category = packetCategoryRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Category not found"));
-        List<PacketSubcategoryResponseDto> subcategories = category.getSubCategories()
-                .stream()
-                .map(s -> {
-                    PacketSubcategoryResponseDto dto = new PacketSubcategoryResponseDto();
-                    dto.setId(s.getId());
-                    dto.setName(s.getName());
-                    return dto;
-                }).toList();
-        return PacketCategoryResponseDto.builder()
-                .id(category.getId())
-                .name(category.getName())
-                .subCategories(subcategories)
-                .build();
+        return getPacketCategoryResponse(category);
     }
 
     @Transactional
@@ -81,5 +59,21 @@ public class PacketCategoryService {
     public void deleteCategory(Long id) {
         log.info("Deleting category with id {}", id);
         packetCategoryRepository.deleteById(id);
+    }
+
+    private PacketCategoryResponseDto getPacketCategoryResponse(PacketCategory category) {
+        List<PacketSubcategoryResponseDto> subcategories = category.getSubCategories()
+                .stream()
+                .map(s -> {
+                    PacketSubcategoryResponseDto dto = new PacketSubcategoryResponseDto();
+                    dto.setId(s.getId());
+                    dto.setName(s.getName());
+                    return dto;
+                }).toList();
+        PacketCategoryResponseDto dto = new PacketCategoryResponseDto();
+        dto.setId(category.getId());
+        dto.setName(category.getName());
+        dto.setSubCategories(subcategories);
+        return dto;
     }
 }

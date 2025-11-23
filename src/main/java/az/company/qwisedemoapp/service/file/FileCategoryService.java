@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -25,41 +26,18 @@ public class FileCategoryService {
 
     public List<FileCategoryResponseDto> findAllCategories() {
         List<FileCategory> categories = fileCategoryRepository.findAllByOrderByNameAsc();
-        List<FileSubcategoryResponseDto> subcategories = categories.stream()
-                .flatMap(c -> c.getSubcategories()
-                        .stream()
-                        .map(s -> {
-                            FileSubcategoryResponseDto dto = new FileSubcategoryResponseDto();
-                            dto.setId(s.getId());
-                            dto.setName(s.getName());
-                            return dto;
-                        })).toList();
-        return categories.stream()
-                .map(c -> {
-                    FileCategoryResponseDto dto = new FileCategoryResponseDto();
-                    dto.setId(c.getId());
-                    dto.setName(c.getName());
-                    dto.setSubCategories(subcategories);
-                    return dto;
-                }).toList();
+        List<FileCategoryResponseDto> fileCategoryResponseDtos = new ArrayList<>();
+        for (FileCategory category : categories) {
+            FileCategoryResponseDto dto = getCategoryResponses(category);
+            fileCategoryResponseDtos.add(dto);
+        }
+        return fileCategoryResponseDtos;
     }
 
     public FileCategoryResponseDto findById(Long id) {
         FileCategory category = fileCategoryRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Category not found"));
-        List<FileSubcategoryResponseDto> subcategories = category.getSubcategories()
-                .stream()
-                .map(s -> {
-                    FileSubcategoryResponseDto dto = new FileSubcategoryResponseDto();
-                    dto.setId(s.getId());
-                    dto.setName(s.getName());
-                    return dto;
-                }).toList();
-        FileCategoryResponseDto dto = new FileCategoryResponseDto();
-        dto.setId(category.getId());
-        dto.setName(category.getName());
-        dto.setSubCategories(subcategories);
-        return dto;
+        return getCategoryResponses(category);
     }
 
     @Transactional
@@ -82,5 +60,21 @@ public class FileCategoryService {
     public void deleteCategory(Long id) {
         log.info("Deleting category with id {}", id);
         fileCategoryRepository.deleteById(id);
+    }
+
+    private FileCategoryResponseDto getCategoryResponses(FileCategory category) {
+        List<FileSubcategoryResponseDto> subcategories = category.getSubcategories()
+                .stream()
+                .map(s -> {
+                    FileSubcategoryResponseDto dto = new FileSubcategoryResponseDto();
+                    dto.setId(s.getId());
+                    dto.setName(s.getName());
+                    return dto;
+                }).toList();
+        FileCategoryResponseDto dto = new FileCategoryResponseDto();
+        dto.setId(category.getId());
+        dto.setName(category.getName());
+        dto.setSubCategories(subcategories);
+        return dto;
     }
 }
