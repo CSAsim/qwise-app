@@ -29,6 +29,7 @@ public interface PacketMapper {
 
     @Mapping(target = "authorName", source = "authorName")
     @Mapping(target = "totalQuestionCount", ignore = true)
+    @Mapping(target = "questions", ignore = true)
     @Mapping(target = "category", source = "category.name")
     @Mapping(target = "subCategory", source = "subcategory.name")
     PacketDetailResponseDto toDtoDetail(Packet entity);

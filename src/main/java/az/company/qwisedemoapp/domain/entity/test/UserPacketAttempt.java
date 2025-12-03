@@ -37,6 +37,9 @@ public class UserPacketAttempt extends BaseEntity {
     @Column(name = "attempt_number", nullable = false)
     private Integer attemptNumber = 0;
 
+    @Column(name = "time_limit")
+    private Long timeLimit;
+
     @Builder.Default
     @Column(name = "duration")
     private Long duration = 0L;

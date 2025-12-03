@@ -92,9 +92,10 @@ public class PacketService {
         Packet saved = packetRepository.save(packet);
         log.info("Packet created: {}", saved);
 
-        questionService.createQuestions(saved, request.getQuestions());
+        List<QuestionResponseDto> questionResponseDtos = questionService.createQuestions(saved, request.getQuestions());
         PacketDetailResponseDto response = packetMapper.toDtoDetail(saved);
         response.setTotalQuestionCount(request.getQuestions().size());
+        response.setQuestions(questionResponseDtos);
         return response;
     }
 

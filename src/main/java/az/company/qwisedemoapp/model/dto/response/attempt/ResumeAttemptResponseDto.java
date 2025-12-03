@@ -16,7 +16,11 @@ public class ResumeAttemptResponseDto {
 
     private Long attemptId;
 
+    private Integer attemptNumber;
+
     private String packetName;
+
+    private Long remainingTime;
 
     private List<AnswerResponse> lastModifiedAnswers;
 }
