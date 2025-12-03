@@ -19,6 +19,8 @@ public class StartAttemptResponseDto {
 
     private Long attemptId;
 
+    private Integer attemptNumber;
+
     private String packetName;
 
     private List<QuestionResponseDto> questionResponse;

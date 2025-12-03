@@ -25,5 +25,7 @@ public class PacketListResponseDto {
 
     private String thumbnailUrl;
 
+    private Float price;
+
     private Integer totalQuestionCount;
 }

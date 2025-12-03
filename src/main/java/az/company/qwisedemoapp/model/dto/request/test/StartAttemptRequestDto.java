@@ -12,4 +12,6 @@ import lombok.NoArgsConstructor;
 public class StartAttemptRequestDto {
 
     private Long userPacketId;
+
+    private Long timeLimit;
 }
