@@ -94,27 +94,12 @@ public class User extends BaseEntity {
     private List<RefreshToken> refreshTokens;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @ToString.Exclude
     private List<Contact> contacts;
 
-    public void addOtpCode(OtpCode otpCode) {
-        otpCodes.add(otpCode);
-        otpCode.setUser(this);
-    }
-
-    public void removeOtpCode(OtpCode otpCode) {
-        otpCodes.remove(otpCode);
-        otpCode.setUser(null);
-    }
-
-    public void addPacket(Packet packet) {
-        packets.add(packet);
-        packet.setUser(this);
-    }
-
-    public void removePacket(Packet packet) {
-        packets.remove(packet);
-        packet.setUser(null);
-    }
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @ToString.Exclude
+    private List<Rating> ratings;
 
     public void addFile(File file) {
         file.setUser(this);

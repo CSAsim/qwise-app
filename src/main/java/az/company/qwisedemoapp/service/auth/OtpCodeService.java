@@ -56,8 +56,8 @@ public class OtpCodeService {
         log.info("After save - OTP status: {}", token.getStatus());
     }
 
-    @Scheduled(fixedRate = 60000)
     @Transactional
+    @Scheduled(fixedRate = 180000)
     public void cleanUpExpiredOtpCodes() {
         List<OtpCode> otpCodes = otpCodeRepository.findByExpirationDateTimeBefore(LocalDateTime.now());
         otpCodes.forEach(obj -> obj.setStatus(OtpCodeStatus.DEACTIVATED));
