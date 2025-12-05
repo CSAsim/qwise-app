@@ -17,6 +17,7 @@ import az.company.qwisedemoapp.model.dto.response.test.answer.AnswerResponse;
 import az.company.qwisedemoapp.model.dto.response.test.question.QuestionResponseDto;
 import az.company.qwisedemoapp.model.enums.AttemptStatus;
 import az.company.qwisedemoapp.model.enums.PacketUsageStatus;
+import az.company.qwisedemoapp.service.RatingService;
 import az.company.qwisedemoapp.util.MathUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,6 +40,7 @@ public class AttemptService {
     private final QuestionMapper questionMapper;
     private final UserPacketRepository userPacketRepository;
     private final UserAnswerService userAnswerService;
+    private final RatingService ratingService;
     private final UserAnswerMapper userAnswerMapper;
 
     @Transactional
@@ -130,6 +132,9 @@ public class AttemptService {
         updateAttempt(attempt, answerResponses);
         attempt.setStatus(AttemptStatus.COMPLETED);
         attempt = userPacketAttemptRepository.save(attempt);
+
+        ratingService.updateRating(attempt.getUser().getId(), attempt.getTotalScore());
+
         answerResponses = userAnswerMapper.toDtoList(attempt.getAnswers());
         ResultAttemptResponseDto responseDto = userPacketAttemptMapper.toDto(attempt, answerResponses);
         log.info("Attempt finished at {}", attempt.getFinishedAt());

@@ -20,6 +20,7 @@ import az.company.qwisedemoapp.model.dto.request.LoginUserRequestDto;
 import az.company.qwisedemoapp.model.dto.request.RegisterUserRequestDto;
 import az.company.qwisedemoapp.model.dto.request.VerifyOtpRequestDto;
 import az.company.qwisedemoapp.domain.entity.RefreshToken;
+import az.company.qwisedemoapp.service.RatingService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -37,6 +38,7 @@ import java.util.Set;
 public class AuthService {
 
     private final UserRepository userRepository;
+    private final RatingService ratingService;
     private final RefreshTokenService refreshTokenService;
     private final PasswordResetTokenService passwordResetTokenService;
     private final JwtService jwtService;
@@ -101,6 +103,9 @@ public class AuthService {
         User user = userRepository.save(entity);
 
         sendOtp(user);
+
+        ratingService.createInitialRatingsForUser(user);
+
         log.info("Register user with email {} successfully", request.getEmail());
         return ResponseMessages.OTP_SENT_MESSAGE;
     }
