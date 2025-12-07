@@ -51,7 +51,7 @@ public class UserFileService {
             throw new IllegalActionException("Forbidden action");
         }
 
-        if(request.getUserId() == null && userRole != UserRole.ROLE_ADMIN) {
+        if(request.getUserId() == null) {
             request.setUserId(studentId);
         }
 
