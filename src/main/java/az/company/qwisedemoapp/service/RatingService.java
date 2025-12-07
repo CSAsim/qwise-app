@@ -22,6 +22,8 @@ import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -33,9 +35,18 @@ public class RatingService {
 
     public Page<RatingResponseDto> findAllUserRatings(RatingRequestDto request, Pageable pageable) {
         Page<Rating> pages = ratingRepository.findAllUserRatingsByType(request.getPeriodStart(), request.getType(), pageable);
+        List<Long> ratingIds = pages.stream().map(Rating::getId).toList();
+        log.info("Rating: {}", pages.getContent());
+        Map<Long, Long> rankMap = ratingRepository.findRanksForRatingIds(ratingIds)
+                .stream()
+                .collect(Collectors.toMap(
+                        row -> ((Number) row[0]).longValue(),
+                        row -> ((Number) row[1]).longValue()
+                ));
         return pages.map(rp -> {
             RatingResponseDto responseDto = new RatingResponseDto();
             responseDto.setId(rp.getId());
+            responseDto.setUserRank(rankMap.get(rp.getId()));
             responseDto.setFullName(rp.getUser().getFullName());
             responseDto.setProfilePictureUrl(rp.getUser().getProfilePictureUrl());
             responseDto.setScore(rp.getScore());
@@ -49,14 +60,14 @@ public class RatingService {
 
         Long userId = AuthService.getCurrentUserId();
 
-        Integer myRank = ratingRepository.findUserRank(
+        Long myRank = ratingRepository.findUserRank(
                 userId,
                 request.getType(),
                 request.getPeriodStart()
         );
 
         if (myRank == null) {
-            myRank = 0;
+            myRank = 0L;
         }
 
         PageableResponseDto<RatingResponseDto> pageableResponseDto = PageableResponseDto.of(
@@ -72,6 +83,7 @@ public class RatingService {
 
         RatingResponseDto ratingResponseDto = RatingResponseDto.builder()
                 .id(rating.getId())
+                .userRank(myRank)
                 .score(rating.getScore())
                 .fullName(rating.getUser().getFullName())
                 .profilePictureUrl(rating.getUser().getProfilePictureUrl())

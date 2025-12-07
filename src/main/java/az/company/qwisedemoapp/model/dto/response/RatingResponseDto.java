@@ -13,6 +13,8 @@ public class RatingResponseDto {
 
     private Long id;
 
+    private Long userRank;
+
     private String profilePictureUrl;
 
     private String fullName;

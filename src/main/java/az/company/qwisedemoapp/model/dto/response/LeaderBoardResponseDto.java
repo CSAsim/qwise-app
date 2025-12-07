@@ -13,7 +13,7 @@ public class LeaderBoardResponseDto {
 
     private PageableResponseDto<RatingResponseDto> ratings;
 
-    private Integer myRank;
+    private Long myRank;
 
     private RatingResponseDto myRating;
 }

@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -27,6 +28,19 @@ public interface RatingRepository extends JpaRepository<Rating, Long> {
 
     Optional<Rating> findByUserIdAndType(Long userId, RatingType type);
 
+    @Query(value = """
+            SELECT t.id, t.rank FROM (
+                SELECT r.id,
+                       RANK() OVER (
+                           PARTITION BY r.type, r.period_start
+                           ORDER BY r.score DESC
+                       ) AS rank
+                FROM ratings r
+            ) t
+            WHERE t.id IN :ratingIds
+            """, nativeQuery = true)
+    List<Object[]> findRanksForRatingIds(@Param("ratingIds") List<Long> ratingIds);
+
     @Query("""
                 SELECT COUNT(*) + 1 AS user_rank FROM Rating ur
                 WHERE ur.type = :type AND ur.periodStart = :periodStart AND
@@ -35,7 +49,7 @@ public interface RatingRepository extends JpaRepository<Rating, Long> {
                               ur1.periodStart = :periodStart AND
                               ur1.type = :type)
             """)
-    Integer findUserRank(Long userId, RatingType type, LocalDateTime periodStart);
+    Long findUserRank(Long userId, RatingType type, LocalDateTime periodStart);
 
     @Query("""
                 SELECT r FROM Rating r
